@@ -57,6 +57,26 @@
   .nav-cta { background: var(--red) !important; color: var(--white) !important; padding: 0.45rem 1.1rem; border-radius: 2px; font-weight: 700 !important; }
   .nav-cta:hover { background: var(--red-light) !important; }
 
+  /* FIX 6: Hamburger menu for mobile */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+  .nav-hamburger span {
+    width: 24px; height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
   .hero {
     min-height: 100vh;
     background: var(--dark);
@@ -73,9 +93,10 @@
       linear-gradient(170deg, rgba(13,24,36,0.88) 0%, rgba(17,30,53,0.82) 55%, rgba(10,16,24,0.92) 100%);
     z-index: 1;
   }
+  /* FIX 3/5: Added fallback background color for hero image */
   .hero-photo {
     position: absolute; inset: 0;
-    background: url('img/hero.jpg') center 35%/cover no-repeat;
+    background: var(--dark) url('img/hero.jpg') center 35%/cover no-repeat;
     z-index: 0;
   }
   .hero-stripe, .terrain-lines, .hero-watermark, .hero-badge, .hero h1, .hero-sub, .hero-actions, .hero-stats {
@@ -302,9 +323,31 @@
   .footer-links a { color:rgba(255,255,255,0.3); text-decoration:none; transition:color 0.2s; }
   .footer-links a:hover { color:var(--red); }
 
+  /* FIX 5: Fallback background for image containers */
+  .img-fallback {
+    background: var(--blue-pale);
+  }
+  .img-fallback-dark {
+    background: rgba(22,57,122,0.3);
+  }
+
   @media (max-width:768px) {
     nav { padding:0.9rem 1.2rem; }
-    .nav-links { display:none; }
+    /* FIX 6: Show hamburger, hide nav links by default on mobile */
+    .nav-hamburger { display: flex; }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      flex-direction: column;
+      background: rgba(13, 24, 36, 0.98);
+      padding: 1.5rem;
+      gap: 1rem;
+      border-bottom: 2px solid var(--red);
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { font-size: 0.95rem; }
     section, .nm-section, .reg-section { padding:4rem 1.5rem; }
     .hero { padding:0 1.5rem 4rem; }
     .hero h1 { font-size:3.8rem; }
@@ -326,6 +369,10 @@
     <img src="img/Sandelogo_nobg.png" alt="Sande Sportsklubb logo" class="nav-logo-svg" style="width:44px;height:44px;object-fit:contain;">
     <div class="nav-logo-text">Sande<span>rittet</span></div>
   </a>
+  <!-- FIX 6: Hamburger button for mobile -->
+  <button class="nav-hamburger" aria-label="Åpne meny" onclick="document.querySelector('.nav-links').classList.toggle('open');this.classList.toggle('active');">
+    <span></span><span></span><span></span>
+  </button>
   <ul class="nav-links">
     <li><a href="#nm">NM 2026</a></li>
     <li><a href="#tidsskjema">Tidsskjema</a></li>
@@ -401,7 +448,6 @@
     </div>
 
     <div class="nm-grid">
-      <!-- FIX 1: Added missing closing </div> tags for nm-info-item elements -->
       <div class="nm-card reveal">
         <div class="nm-card-icon">📅</div>
         <h3>Datoer</h3>
@@ -451,10 +497,9 @@
       </div>
     </div>
 
-    <!-- FIX 2: Removed the extra closing </div> that was breaking the gallery -->
     <!-- Bildegalleri fra ritthelgen -->
     <div style="margin-top:3.5rem;" class="reveal">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;height:300px;border-radius:6px;overflow:hidden;">
+      <div class="img-fallback-dark" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;height:300px;border-radius:6px;overflow:hidden;">
         <img src="img/nm1.jpg" alt="Startfelt Sanderittet på Lersbrygga" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.85);transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
         <img src="img/nm2.jpg" alt="Rytter i løypen på Lersbrygga" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.85);transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
         <img src="img/nm3.jpg" alt="Norgescup-start" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.85);transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
@@ -464,12 +509,12 @@
 </section>
 
 <!-- LØYPEBANNER -->
-<div style="position:relative;overflow:hidden;height:280px;">
+<div style="position:relative;overflow:hidden;height:280px;background:var(--dark);">
   <img src="img/banner.jpg" alt="Sanderittet folkemasse" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(0.65);">
   <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,24,36,0.7) 0%,transparent 50%,rgba(13,24,36,0.5) 100%);display:flex;align-items:center;padding:0 2.5rem;">
     <div>
       <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.5rem;">Lersbrygga · Sande i Vestfold</div>
-      <div style="font-family:'Bebas Neue',cursive;font-size:clamp(2rem,5vw,3.8rem);color:#fff;letter-spacing:0.04em;line-height:1;">Teknisk terreng.<br><span style="color:var(--red)">Norsk mesterskap.</span></div>
+      <div style="font-family:'Bebas Neue',cursive;font-size:clamp(2rem,5vw,3.8rem);color:#fff;letter-spacing:0.04em;line-height:1;">Teknisk terreng.<br><span style="color:var(--red);">Norsk mesterskap.</span></div>
     </div>
   </div>
 </div>
@@ -606,7 +651,7 @@
           Vi er en del av <a class="inline-link" href="https://sandesk.no/grupper/sykkel/" target="_blank">Sande Sportsklubb</a> med motto <em>«Klart vi kan det!»</em> Etter Norgescupper i 2024 og 2025 er vi klare for å ta imot hele Norge til NM i 2026.
         </p>
 
-        <div style="border-radius:6px;overflow:hidden;height:200px;margin-bottom:1.8rem;position:relative;" class="reveal">
+        <div class="img-fallback" style="border-radius:6px;overflow:hidden;height:200px;margin-bottom:1.8rem;position:relative;" class="reveal">
           <img src="img/om_klubben.jpg" alt="Sande SK på treningstur" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(0.82);">
           <div style="position:absolute;bottom:0.7rem;right:0.8rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.3);letter-spacing:0.08em;">📸 Erstatt med bilde fra Lersbrygga</div>
         </div>
@@ -647,8 +692,7 @@
     <div class="divider"></div>
     <p class="lead">Vi trener på Lersbrygga mellom påske og høstferie. Alle aldre og ferdighetsnivåer er velkomne!</p>
 
-    <!-- FIX 3: Removed spurious extra </div> after the training image container -->
-    <div style="border-radius:6px;overflow:hidden;margin-bottom:2.5rem;position:relative;height:260px;" class="reveal">
+    <div class="img-fallback" style="border-radius:6px;overflow:hidden;margin-bottom:2.5rem;position:relative;height:260px;" class="reveal">
       <img src="img/trening.jpg" alt="Sande SK trening" style="width:100%;height:100%;object-fit:cover;object-position:center 55%;filter:brightness(0.75);">
       <div style="position:absolute;bottom:1.2rem;left:1.5rem;">
         <div style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#fff;letter-spacing:0.05em;line-height:1.1;">Treninger for <span style="color:var(--red)">alle aldre</span></div>
@@ -717,15 +761,15 @@
     <h2>Våre <span style="color:var(--red)">sponsorer</span></h2>
     <p style="color:var(--muted);margin:0.5rem auto 3rem;max-width:480px;font-size:0.95rem;">Stor takk til alle som støtter Sanderittet og muliggjør NM 2026.</p>
     <div style="display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;align-items:center;" class="reveal">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SRBvXmMxSdGaLfPE1riZ8ZVpBzEWaBKBWb7J_FSchx5-glTgmZeaiMhJEDdYz8xjepM8E15KD5xlLBPhGm15Z19b1DBTOvWACEBpuW28MGmhtdM87xHIbmAzdIKPUKZWhxwq2A13tR7ics4kns4kfozVqKoEO7NnN7-ipznP5dg81BUKo1f92f-AKh-SYO1-VZAVq9UIOhNYTVOoBiDXh4OwNAP_JvslyrQNi8=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SQHoQUQKT1KeW6PKLmQudmcJDvw4vBMnY2Z7nGE3quXsZDCpR7-L6wlfLwHaIcatB_bq27dwXVXyGkYpkgiqbv4jtzVAQavsFaGLFsgcQJNKStrsVwuz9I8C887NSBCvszcoLgCKA7xIPYSUySNTlxZn25yvz0zwi1qV1CXxi_tTkVKjE72QgUkf4kYodHRFEfp70eEXMLbFEbkE-90G7dGSEfYaEwawXqFuLo=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STVIk5ED3axlsmiGjYzmqec7sOhNo4dBhI5iiuhoP6H4tDFzMDMmH0xxPjwqs04saukuCME_9C9--_Hf7Z3fv3Oh92U2bmrKAbMRSrNw9r8o4QyNH59bBbj_vgKrhWkJDPPqcmK_1_YTAEzzGKCyHvaFtiqSXf5O-KqV7oW8X_gyu6RuGbGAtn_i9OP9KlHU6pR6ULI7zz4IbS0geSOsszScoxzzOYebAjKhKA=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SQsrwVxYh0O1qQkB2_uoKcs_16gmIx7WzkxBsmef34Tmo5jKLnG3ULQhgD5_6OCQLd83ZTTmPAMHWmCovjei7bc-8SoGcR7TDIKlNgc18zvCdqQ4GsyTSJQwtFHo5jBOaUw3xwXhaDolC2gQK_nCr3wHE62ZHUWyRO3xkL5j5pLs79pL0D4VqkVFKFAU0F_o1e7k2fodmW_tbUspbB_FbSMaRDMZ9l0CF1M=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STrSUstwKi76pbbgrunmEnD5uHMXNU-WIT0UhDWO_BUaF0I3hJ-9IALd60-20dcfBXC72rvP11pUiDUiOkgJ5KNoclGIjl5hVrB7NXwVsk9h2CSX8lJdSVOvdA-7WqIS5585K0j3uaZHM0mtqNFTnE3e3MNY2-jZwCL6AW0bZuJm1ikXKggJdg9SzIhFu-w9pJ9Cm9xdsL7xgDD3dcm7yP71togugoa5UeU=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STaC-npSX0Cnt3Nm8yIwV_wk2xvQuaQM3bC_Aa0aZpSopXZbcuqjJ67HqJ7VOvMg8XhDtDz1K0w0EBtoK1ZECgU16qYO1-BBqDWW2PFXyQgFxorCA2wnxiXXJFoAeQC-cONcpvMyO0tYFcV8-BiEtooVL1iwYQeCyAlSZDZyqaK0jPZznu8NiAEnzVZ64uLGEbCmJ2caJwfWFz2bu7yuB5QW86pBbek6TyJ=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SRCzDzsFZLv8tkN-o60p9jyq6n7bNkFgLZS1_59Of3W-nDsfS9LNhx5IHzg3SEtVjYBNzYtaRN-lob1O4MLHrldLFISL1UjQGv9eFC1UjGjpa6vFEHhJwV1e9AjDia2QZ_8CM5xdA8I3A4bF-FZrBlz-z1dSMnPe214uEhYyki79XOm0TfFiNHvXl-mtQKzEEqsp_M31-7E-pSDhgkAdqafkgBsEP30PNg7=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SQGu1gquXQHqsTXAlV_Es9DtnvJSOF8GbVuzuAvpmYahXkaHAY0mblJxEpRP2H3GpR4YIOrETxhVigOPKqgvT38Hy7TMsmvjYkFKkdD1jlPpQ96B_WAiTEDLb7gutHp7PxVwAxEhItIjIZGuPSJhdwCfAKjqB_MaN00UEjaYiqQzcXbvWP6Sur46eJCeQdM5S-lgvQadOa_u4prMxY_FGYWTXwtbcCTDQO_fNk=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
-      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SQHDym2SdZXWhWMDyKS-9s-bUOdZnytbA-ily14ldn902mCpahzx7KilOnlUIThR_nHuCX-AlOSf7HEMgfjxa8a1opJMLdHTXy79-sszS9wnmH_wSDUbjy0DWTN8DhbRX_aa4Qz425EP1S5u1M76Mot2vUAciQWAL98roK4hAZbAn-Vk-_Dz5G3lx8=w300" alt="Sponsor" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SRBvXmMxSdGaLfPE1riZ8ZVpBzEWaBKBWb7J_FSchx5-glTgmZeaiMhJEDdYz8xjepM8E15KD5xlLBPhGm15Z19b1DBTOvWACEBpuW28MGmhtdM87xHIbmAzdIKPUKZWhxwq2A13tR7ics4kns4kfozVqKoEO7NnN7-ipznP5dg81BUKo1f92f-AKh-SYO1-VZAVq9UIOhNYTVOoBiDXh4OwNAP_JvslyrQNi8=w300" alt="Sponsor 1" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SQHoQUQKT1KeW6PKLmQudmcJDvw4vBMnY2Z7nGE3quXsZDCpR7-L6wlfLwHaIcatB_bq27dwXVXyGkYpkgiqbv4jtzVAQavsFaGLFsgcQJNKStrsVwuz9I8C887NSBCvszcoLgCKA7xIPYSUySNTlxZn25yvz0zwi1qV1CXxi_tTkVKjE72QgUkf4kYodHRFEfp70eEXMLbFEbkE-90G7dGSEfYaEwawXqFuLo=w300" alt="Sponsor 2" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STVIk5ED3axlsmiGjYzmqec7sOhNo4dBhI5iiuhoP6H4tDFzMDMmH0xxPjwqs04saukuCME_9C9--_Hf7Z3fv3Oh92U2bmrKAbMRSrNw9r8o4QyNH59bBbj_vgKrhWkJDPPqcmK_1_YTAEzzGKCyHvaFtiqSXf5O-KqV7oW8X_gyu6RuGbGAtn_i9OP9KlHU6pR6ULI7zz4IbS0geSOsszScoxzzOYebAjKhKA=w300" alt="Sponsor 3" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SQsrwVxYh0O1qQkB2_uoKcs_16gmIx7WzkxBsmef34Tmo5jKLnG3ULQhgD5_6OCQLd83ZTTmPAMHWmCovjei7bc-8SoGcR7TDIKlNgc18zvCdqQ4GsyTSJQwtFHo5jBOaUw3xwXhaDolC2gQK_nCr3wHE62ZHUWyRO3xkL5j5pLs79pL0D4VqkVFKFAU0F_o1e7k2fodmW_tbUspbB_FbSMaRDMZ9l0CF1M=w300" alt="Sponsor 4" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STrSUstwKi76pbbgrunmEnD5uHMXNU-WIT0UhDWO_BUaF0I3hJ-9IALd60-20dcfBXC72rvP11pUiDUiOkgJ5KNoclGIjl5hVrB7NXwVsk9h2CSX8lJdSVOvdA-7WqIS5585K0j3uaZHM0mtqNFTnE3e3MNY2-jZwCL6AW0bZuJm1ikXKggJdg9SzIhFu-w9pJ9Cm9xdsL7xgDD3dcm7yP71togugoa5UeU=w300" alt="Sponsor 5" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STaC-npSX0Cnt3Nm8yIwV_wk2xvQuaQM3bC_Aa0aZpSopXZbcuqjJ67HqJ7VOvMg8XhDtDz1K0w0EBtoK1ZECgU16qYO1-BBqDWW2PFXyQgFxorCA2wnxiXXJFoAeQC-cONcpvMyO0tYFcV8-BiEtooVL1iwYQeCyAlSZDZyqaK0jPZznu8NiAEnzVZ64uLGEbCmJ2caJwfWFz2bu7yuB5QW86pBbek6TyJ=w300" alt="Sponsor 6" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SRCzDzsFZLv8tkN-o60p9jyq6n7bNkFgLZS1_59Of3W-nDsfS9LNhx5IHzg3SEtVjYBNzYtaRN-lob1O4MLHrldLFISL1UjQGv9eFC1UjGjpa6vFEHhJwV1e9AjDia2QZ_8CM5xdA8I3A4bF-FZrBlz-z1dSMnPe214uEhYyki79XOm0TfFiNHvXl-mtQKzEEqsp_M31-7E-pSDhgkAdqafkgBsEP30PNg7=w300" alt="Sponsor 7" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SQGu1gquXQHqsTXAlV_Es9DtnvJSOF8GbVuzuAvpmYahXkaHAY0mblJxEpRP2H3GpR4YIOrETxhVigOPKqgvT38Hy7TMsmvjYkFKkdD1jlPpQ96B_WAiTEDLb7gutHp7PxVwAxEhItIjIZGuPSJhdwCfAKjqB_MaN00UEjaYiqQzcXbvWP6Sur46eJCeQdM5S-lgvQadOa_u4prMxY_FGYWTXwtbcCTDQO_fNk=w300" alt="Sponsor 8" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SQHDym2SdZXWhWMDyKS-9s-bUOdZnytbA-ily14ldn902mCpahzx7KilOnlUIThR_nHuCX-AlOSf7HEMgfjxa8a1opJMLdHTXy79-sszS9wnmH_wSDUbjy0DWTN8DhbRX_aa4Qz425EP1S5u1M76Mot2vUAciQWAL98roK4hAZbAn-Vk-_Dz5G3lx8=w300" alt="Sponsor 9" style="height:60px;object-fit:contain;filter:grayscale(20%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(20%)'">
     </div>
     <p style="margin-top:2.5rem;font-size:0.82rem;color:var(--muted);">Interessert i å sponse NM 2026? <a href="#kontakt" style="color:var(--red);font-weight:600;">Ta kontakt med oss.</a></p>
   </div>
@@ -747,7 +791,9 @@
           </div>
           <div class="kontakt-item">
             <div class="kontakt-icon">✉️</div>
-            <div><h4>Leder sykkelgruppa</h4><a href="/cdn-cgi/l/email-protection#196a6072727c75596a78777d7c6a72377776"><span class="__cf_email__" data-cfemail="42313b2929272e0231232c262731296c2c2d">[email&#160;protected]</span></a></div>
+            <!-- FIX 2: Replaced Cloudflare obfuscated email with real mailto link -->
+            <!-- VIKTIG: Oppdater e-postadressen nedenfor med riktig adresse -->
+            <div><h4>Leder sykkelgruppa</h4><a href="mailto:sykkel@sandesk.no">sykkel@sandesk.no</a></div>
           </div>
           <div class="kontakt-item">
             <div class="kontakt-icon">🌐</div>
@@ -764,7 +810,8 @@
           <h3 style="font-family:'Bebas Neue',cursive;font-size:2rem;color:var(--white);margin-bottom:0.5rem;letter-spacing:0.05em;">Vil du bidra til NM?</h3>
           <div style="width:40px;height:3px;background:var(--red);margin-bottom:1.2rem;border-radius:2px;"></div>
           <p style="color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:1.5rem;">Et NM krever mange frivillige! Funksjonær, løypevakt, sekretariat – alle bidrag settes enormt pris på.</p>
-          <a href="/cdn-cgi/l/email-protection#394a4052525c55794a58575d5c4a52175756" class="btn btn-red" style="width:100%;text-align:center;justify-content:center;">Send oss en e-post</a>
+          <!-- FIX 2: Replaced Cloudflare obfuscated email with real mailto link -->
+          <a href="mailto:sykkel@sandesk.no" class="btn btn-red" style="width:100%;text-align:center;justify-content:center;">Send oss en e-post</a>
         </div>
       </div>
     </div>
@@ -788,14 +835,43 @@
   <div>© 2026 Sande Sportsklubb · Sykkelgruppa</div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<!-- FIX 1: Complete, working JavaScript -->
+<script>
+  // Countdown timer
   function tick() {
     const diff = new Date('2026-05-30T08:00:00') - new Date();
-    if (diff <= 0) return;
-    const d=Math.floor(diff/864e5), h=Math.floor(diff%864e5/36e5), m=Math.floor(diff%36e5/6e4), s=Math.floor(diff%6e4/1e3);
-    document.getElementById('cd-days').textContent=String(d).padStart(2,'0');
-    document.getElementById('cd-hours').textContent=String(h).padStart(2,'0');
-    document.getElementById('cd-min').textContent=String(m).padStart(2,'0');
-    document.getElementById('cd-sec').textContent=String(s).padStart(2,'0');
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '00';
+      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-min').textContent = '00';
+      document.getElementById('cd-sec').textContent = '00';
+      return;
+    }
+    const d = Math.floor(diff / 864e5);
+    const h = Math.floor(diff % 864e5 / 36e5);
+    const m = Math.floor(diff % 36e5 / 6e4);
+    const s = Math.floor(diff % 6e4 / 1e3);
+    document.getElementById('cd-days').textContent = String(d).padStart(2, '0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2, '0');
+    document.getElementById('cd-min').textContent = String(m).padStart(2, '0');
+    document.getElementById('cd-sec').textContent = String(s).padStart(2, '0');
   }
-  tick(); setInterv
+  tick();
+  setInterval(tick, 1000);
+
+  // Scroll reveal observer for .reveal elements
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    revealObserver.observe(el);
+  });
+</script>
+</body>
+</html>
