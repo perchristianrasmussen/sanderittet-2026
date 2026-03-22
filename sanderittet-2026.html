@@ -164,16 +164,6 @@
   .terrain-lines svg { width: 100%; height: 100%; opacity: 0.12; }
   .hero-watermark { position: absolute; right: -0.05em; bottom: -0.15em; font-family: 'Bebas Neue', cursive; font-size: 32vw; line-height: 1; color: rgba(255,255,255,0.025); pointer-events: none; user-select: none; }
 
-  .hero-badge {
-    position: relative; display: inline-flex; align-items: center; gap: 0.5rem;
-    background: var(--red); color: var(--white);
-    font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
-    padding: 0.38rem 1rem; margin-bottom: 1.4rem; width: fit-content;
-    animation: fadeUp 0.8s ease both; border-radius: 1px;
-  }
-  .hero-badge::before { content:''; width:6px; height:6px; background:var(--white); border-radius:50%; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.3;transform:scale(0.6);} }
-
   .hero h1 { position:relative; font-family:'Bebas Neue',cursive; font-size:clamp(4rem,12vw,10rem); line-height:0.88; color:var(--white); letter-spacing:0.02em; margin-bottom:0.5rem; animation:fadeUp 0.9s 0.1s ease both; }
   .hero h1 .accent { color:var(--red); }
   .hero-sub { position:relative; font-size:clamp(0.95rem,2vw,1.3rem); color:rgba(255,255,255,0.55); font-weight:300; margin-bottom:2.5rem; animation:fadeUp 0.9s 0.2s ease both; }
@@ -397,8 +387,7 @@
     </svg>
   </div>
   <div class="hero-watermark">NM</div>
-  <div class="hero-badge">🏆 NM Terreng­sykling 2026</div>
-  <h1>Sande<br><span class="accent">Rittet</span></h1>
+  <h1>NM<br><span class="accent">Terreng­sykling</span></h1>
   <p class="hero-sub">
     <strong>30.–31. mai 2026</strong> · Lersbrygga, Sande i Vestfold
     &nbsp;·&nbsp; <span class="disc">NM Rundbane (XCO) &amp; Kortbane (XCC)</span>
@@ -507,17 +496,6 @@
     </div>
   </div>
 </section>
-
-<!-- LØYPEBANNER -->
-<div style="position:relative;overflow:hidden;height:280px;background:var(--dark);">
-  <img src="img/banner.jpg" alt="Sanderittet folkemasse" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(0.65);">
-  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,24,36,0.7) 0%,transparent 50%,rgba(13,24,36,0.5) 100%);display:flex;align-items:center;padding:0 2.5rem;">
-    <div>
-      <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.5rem;">Lersbrygga · Sande i Vestfold</div>
-      <div style="font-family:'Bebas Neue',cursive;font-size:clamp(2rem,5vw,3.8rem);color:#fff;letter-spacing:0.04em;line-height:1;">Teknisk terreng.<br><span style="color:var(--red);">Norsk mesterskap.</span></div>
-    </div>
-  </div>
-</div>
 
 <!-- TIDSSKJEMA -->
 <section style="background:var(--off-white);padding:6rem 2.5rem;" id="tidsskjema">
