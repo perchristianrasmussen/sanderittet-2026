@@ -380,6 +380,8 @@
     .map-legend { bottom:0.8rem; left:0.8rem; padding:0.8rem 1rem; min-width:170px; }
     .map-footer { padding:0.6rem 1.2rem; flex-wrap:wrap; gap:0.5rem; }
     .map-grid { grid-template-columns:1fr !important; }
+    .finn-frem-grid { grid-template-columns:1fr !important; }
+    .finn-frem-grid > div:last-child { padding-top:0 !important; }
     footer { padding:2rem 1.5rem; flex-direction:column; align-items:flex-start; }
   }
 </style>
@@ -701,6 +703,42 @@
     <p style="font-size:0.78rem;color:var(--muted);font-style:italic;margin-top:1rem;">
       📌 Kart for NM 2026 publiseres her når de er godkjent.
     </p>
+  </div>
+</section>
+
+<!-- FINN FREM -->
+<section style="background:var(--dark);padding:6rem 2.5rem;" id="finn-frem">
+  <div class="max-w">
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:3rem;align-items:start;" class="finn-frem-grid">
+      <div>
+        <div class="section-tag tag-red">📍 Finn frem</div>
+        <h2 style="color:var(--white);">Lersbrygga <span style="color:var(--red)">Sykkel­arena</span></h2>
+        <div class="nm-accent-bar"><span></span><span></span><span></span></div>
+        <p style="font-size:1rem;line-height:1.8;color:rgba(255,255,255,0.5);margin-bottom:2rem;">Interaktivt kart over arenaområdet med løypetraséer, parkering og fasiliteter. Bruk lagvelgeren i kartet for å skru av og på de ulike løypene og punktene.</p>
+
+        <div style="border-radius:6px;overflow:hidden;border:1.5px solid rgba(255,255,255,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+          <iframe src="https://www.google.com/maps/d/embed?mid=1datrdzmdxW2jajR8Jm-aCLSSoBuVZIQ&ll=59.56487205617529%2C10.255352623532689&z=16" width="100%" height="480" style="border:none;display:block;" loading="lazy" title="Lersbrygga sykkelarena – interaktivt kart"></iframe>
+        </div>
+        <p style="font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:0.6rem;font-family:'DM Mono',monospace;letter-spacing:0.05em;">
+          <a href="https://www.google.com/maps/d/viewer?mid=1datrdzmdxW2jajR8Jm-aCLSSoBuVZIQ&ll=59.56487205617529%2C10.255352623532689&z=17" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none;">Åpne i Google Maps ↗</a>
+        </p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:1.2rem;padding-top:5rem;">
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1.4rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">Adresse</div>
+          <div style="font-size:0.92rem;color:var(--white);font-weight:500;line-height:1.5;">Lersbrygga Idrettsanlegg<br>Lersbryggveien<br>3070 Sande i Vestfold</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1.4rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">Parkering</div>
+          <div style="font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.6;">Parkering ved idrettsanlegget. Se kartet for detaljer.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1.4rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">I kartet finner du</div>
+          <div style="font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.6;">Løypetraséer (XCO &amp; XCC), arena, parkering, fasiliteter og mer. Klikk på lag-ikonet for å velge hva som vises.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
