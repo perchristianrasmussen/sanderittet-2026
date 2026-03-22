@@ -313,6 +313,32 @@
   .footer-links a { color:rgba(255,255,255,0.3); text-decoration:none; transition:color 0.2s; }
   .footer-links a:hover { color:var(--red); }
 
+  /* Map cards */
+  .map-card { background:var(--white); border-radius:6px; overflow:hidden; border:1.5px solid rgba(22,57,122,0.12); box-shadow:0 4px 24px rgba(13,24,36,0.06); }
+  .map-header { background:var(--dark); padding:1.2rem 1.8rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:3px solid var(--red); }
+  .map-header-left { display:flex; align-items:center; gap:1rem; }
+  .map-discipline { font-family:'Bebas Neue',cursive; font-size:2.2rem; color:var(--red); letter-spacing:0.06em; line-height:1; }
+  .map-title-group { display:flex; flex-direction:column; gap:0.1rem; }
+  .map-title { font-family:'Bebas Neue',cursive; font-size:1.35rem; color:var(--white); letter-spacing:0.05em; line-height:1.1; }
+  .map-subtitle-text { font-family:'DM Mono',monospace; font-size:0.62rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.12em; }
+  .map-badge { font-family:'DM Mono',monospace; font-size:0.6rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; border:1px solid rgba(255,255,255,0.15); padding:0.3rem 0.7rem; border-radius:2px; white-space:nowrap; }
+  .map-image-wrap { position:relative; background:#1a2820; }
+  .map-image-wrap img { width:100%; display:block; height:auto; }
+  .map-legend { position:absolute; bottom:1.2rem; left:1.2rem; background:rgba(13,24,36,0.92); backdrop-filter:blur(10px); border-radius:5px; padding:1rem 1.3rem; border:1px solid rgba(255,255,255,0.1); min-width:200px; }
+  .legend-title { font-family:'Bebas Neue',cursive; font-size:1.1rem; color:var(--white); letter-spacing:0.06em; margin-bottom:0.7rem; line-height:1; }
+  .legend-items { display:flex; flex-direction:column; gap:0.45rem; }
+  .legend-item { display:flex; align-items:center; gap:0.65rem; }
+  .legend-line { width:26px; height:3.5px; border-radius:2px; flex-shrink:0; }
+  .legend-line.dashed { background:repeating-linear-gradient(90deg,var(--line-color) 0px,var(--line-color) 5px,transparent 5px,transparent 8px); height:3px; }
+  .legend-label { font-family:'DM Sans',sans-serif; font-size:0.72rem; color:rgba(255,255,255,0.8); font-weight:500; letter-spacing:0.02em; }
+  .legend-label-sub { font-size:0.72rem; color:rgba(255,255,255,0.45); font-weight:400; }
+  .legend-logo-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .map-footer { padding:0.8rem 1.8rem; display:flex; align-items:center; justify-content:space-between; background:var(--off-white); border-top:1px solid rgba(22,57,122,0.08); }
+  .map-footer-left { display:flex; align-items:center; gap:1.2rem; }
+  .footer-tag { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--blue-mid); text-transform:uppercase; letter-spacing:0.1em; background:var(--blue-pale); padding:0.2rem 0.55rem; border-radius:2px; font-weight:500; }
+  .map-footer-brand { font-family:'Bebas Neue',cursive; font-size:0.95rem; color:var(--muted); letter-spacing:0.06em; opacity:0.5; }
+  .map-footer-brand span { color:var(--red); }
+
   /* FIX 5: Fallback background for image containers */
   .img-fallback {
     background: var(--blue-pale);
@@ -347,6 +373,13 @@
     .training-cards { grid-template-columns:1fr; }
     .kontakt-grid { grid-template-columns:1fr; }
     .countdown-bar { justify-content:center; }
+    .map-header { padding:1rem 1.2rem; }
+    .map-discipline { font-size:1.8rem; }
+    .map-title { font-size:1.1rem; }
+    .map-badge { display:none; }
+    .map-legend { bottom:0.8rem; left:0.8rem; padding:0.8rem 1rem; min-width:170px; }
+    .map-footer { padding:0.6rem 1.2rem; flex-wrap:wrap; gap:0.5rem; }
+    .map-grid { grid-template-columns:1fr !important; }
     footer { padding:2rem 1.5rem; flex-direction:column; align-items:flex-start; }
   }
 </style>
@@ -566,26 +599,107 @@
     </div>
 
     <h3 style="font-family:'Bebas Neue',cursive;font-size:2rem;color:var(--dark);letter-spacing:0.04em;margin-bottom:0.4rem;">Kart – Lersbrygga</h3>
-    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:2rem;">Kartene nedenfor viser løyper og arena fra Sanderittet 2025. Oppdaterte NM-kart publiseres her nærmere arrangementet.</p>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:2rem;">Løypekartene for NM 2026 på Lersbrygga.</p>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;" class="reveal">
-      <div style="border-radius:4px;overflow:hidden;border:1.5px solid rgba(22,57,122,0.15);background:var(--blue-pale);">
-        <div style="background:var(--blue);padding:0.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-family:'Bebas Neue',cursive;font-size:1.3rem;color:var(--white);letter-spacing:0.06em;">Løypekart 2025</span>
-          <a href="https://sites.google.com/view/sanderittet/l%C3%B8ypekart" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(255,255,255,0.6);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Åpne ↗</a>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;" class="reveal map-grid">
+      <div class="map-card">
+        <div class="map-header">
+          <div class="map-header-left">
+            <div class="map-discipline">XCO</div>
+            <div class="map-title-group">
+              <div class="map-title">NM Rundbane</div>
+              <div class="map-subtitle-text">Cross Country Olympic</div>
+            </div>
+          </div>
+          <div class="map-badge">NM 2026</div>
         </div>
-        <iframe src="https://sites.google.com/view/sanderittet/l%C3%B8ypekart" width="100%" height="500" style="border:none;display:block;" loading="lazy" title="Løypekart Sanderittet 2025"></iframe>
-      </div>
-      <div style="border-radius:4px;overflow:hidden;border:1.5px solid rgba(22,57,122,0.15);background:var(--blue-pale);">
-        <div style="background:var(--blue);padding:0.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-family:'Bebas Neue',cursive;font-size:1.3rem;color:var(--white);letter-spacing:0.06em;">Arenakart 2025</span>
-          <a href="https://sites.google.com/view/sanderittet/arenakart" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(255,255,255,0.6);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Åpne ↗</a>
+        <div class="map-image-wrap">
+          <img src="img/XCO-løypekart.png" alt="XCO løypekart – Rundbane, Lersbrygga">
+          <div class="map-legend">
+            <div class="legend-logo-row">
+              <div class="legend-title">Rundbane (XCO)</div>
+              <img src="img/Sandelogo_nobg.png" alt="SSK" style="width:28px;height:28px;object-fit:contain;">
+            </div>
+            <div class="legend-items">
+              <div class="legend-item">
+                <div class="legend-line" style="background:#e6c120;"></div>
+                <span class="legend-label">Startloop</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-line" style="background:#1a9e5c;"></div>
+                <span class="legend-label">XCO 6–9 år</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-line" style="background:#3a9eff;"></div>
+                <span class="legend-label">XCO 10–12 år</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-line" style="background:#C8241A;"></div>
+                <span class="legend-label">XCO 13+ <span class="legend-label-sub">(shortcut 13–14)</span></span>
+              </div>
+            </div>
+          </div>
         </div>
-        <iframe src="https://sites.google.com/view/sanderittet/arenakart" width="100%" height="500" style="border:none;display:block;" loading="lazy" title="Arenakart Sanderittet 2025"></iframe>
+        <div class="map-footer">
+          <div class="map-footer-left">
+            <span class="footer-tag">Løypekart</span>
+            <span style="font-size:0.72rem;color:var(--muted);">Lersbrygga · Sande</span>
+          </div>
+          <div class="map-footer-brand">Sande<span>rittet</span> 2026</div>
+        </div>
       </div>
+
+      <!-- XCC Kart -->
+      <div class="map-card">
+        <div class="map-header">
+          <div class="map-header-left">
+            <div class="map-discipline">XCC</div>
+            <div class="map-title-group">
+              <div class="map-title">NM Kortbane</div>
+              <div class="map-subtitle-text">Cross Country Short</div>
+            </div>
+          </div>
+          <div class="map-badge">NM 2026</div>
+        </div>
+        <div class="map-image-wrap">
+          <img src="img/xcc-løypekart.png" alt="XCC løypekart – Kortbane, Lersbrygga">
+          <div class="map-legend">
+            <div class="legend-logo-row">
+              <div class="legend-title">Kortbane (XCC)</div>
+              <img src="img/Sandelogo_nobg.png" alt="SSK" style="width:28px;height:28px;object-fit:contain;">
+            </div>
+            <div class="legend-items">
+              <div class="legend-item">
+                <div class="legend-line" style="background:#e6c120;"></div>
+                <span class="legend-label">Startloop</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-line" style="background:#1a9e5c;"></div>
+                <span class="legend-label">XCC 6–10 år</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-line dashed" style="--line-color:#d4a840;"></div>
+                <span class="legend-label">Shortcut XCC 11–14 år</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-line" style="background:#e87820;"></div>
+                <span class="legend-label">XCC fra 15 år</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="map-footer">
+          <div class="map-footer-left">
+            <span class="footer-tag">Løypekart</span>
+            <span style="font-size:0.72rem;color:var(--muted);">Lersbrygga · Sande</span>
+          </div>
+          <div class="map-footer-brand">Sande<span>rittet</span> 2026</div>
+        </div>
+      </div>
+
     </div>
     <p style="font-size:0.78rem;color:var(--muted);font-style:italic;margin-top:1rem;">
-      📌 Kart for NM 2026 publiseres her når de er godkjent. Kartene over er fra Sanderittet 2025.
+      📌 Kart for NM 2026 publiseres her når de er godkjent.
     </p>
   </div>
 </section>
@@ -747,7 +861,7 @@
             <div class="kontakt-icon">✉️</div>
             <!-- FIX 2: Replaced Cloudflare obfuscated email with real mailto link -->
             <!-- VIKTIG: Oppdater e-postadressen nedenfor med riktig adresse -->
-            <div><h4>Leder sykkelgruppa</h4><a href="mailto:sykkel@sandesk.no">sykkel@sandesk.no</a></div>
+            <div><h4>Leder sykkelgruppa</h4><a href="/cdn-cgi/l/email-protection#7b080210101e173b081a151f1e0810551514"><span class="__cf_email__" data-cfemail="33404a5858565f7340525d575640581d5d5c">[email&#160;protected]</span></a></div>
           </div>
           <div class="kontakt-item">
             <div class="kontakt-icon">🌐</div>
@@ -765,7 +879,7 @@
           <div style="width:40px;height:3px;background:var(--red);margin-bottom:1.2rem;border-radius:2px;"></div>
           <p style="color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:1.5rem;">Et NM krever mange frivillige! Funksjonær, løypevakt, sekretariat – alle bidrag settes enormt pris på.</p>
           <!-- FIX 2: Replaced Cloudflare obfuscated email with real mailto link -->
-          <a href="mailto:sykkel@sandesk.no" class="btn btn-red" style="width:100%;text-align:center;justify-content:center;">Send oss en e-post</a>
+          <a href="/cdn-cgi/l/email-protection#83f0fae8e8e6efc3f0e2ede7e6f0e8adedec" class="btn btn-red" style="width:100%;text-align:center;justify-content:center;">Send oss en e-post</a>
         </div>
       </div>
     </div>
@@ -790,7 +904,7 @@
 </footer>
 
 <!-- FIX 1: Complete, working JavaScript -->
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Countdown timer
   function tick() {
     const diff = new Date('2026-05-30T08:00:00') - new Date();
@@ -816,16 +930,4 @@
   // Scroll reveal observer for .reveal elements
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-
-  document.querySelectorAll('.reveal').forEach(el => {
-    revealObserver.observe(el);
-  });
-</script>
-</body>
-</html>
+      if (ent
