@@ -205,6 +205,38 @@
   .divider.blue { background:var(--blue); }
 
   .reveal { opacity:0; transform:translateY(22px); transition:opacity 0.65s ease, transform 0.65s ease; }
+
+  .sponsor-track {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    width: max-content;
+    animation: sponsor-scroll 28s linear infinite;
+    padding: 0.5rem 0;
+  }
+  .sponsor-track:hover { animation-play-state: paused; }
+  .sponsor-item {
+    width: 160px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sponsor-item img {
+    max-width: 160px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(20%);
+    transition: filter 0.2s;
+  }
+  .sponsor-item img:hover { filter: grayscale(0%); }
+  @keyframes sponsor-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
   .reveal.visible { opacity:1; transform:none; }
   .delay-1 { transition-delay:0.1s; }
   .delay-2 { transition-delay:0.2s; }
@@ -955,34 +987,34 @@
 </section>
 
 <!-- SPONSORER -->
-<section style="background:var(--white);padding:5rem 2.5rem;text-align:center;">
-  <div class="max-w">
+<section style="background:var(--white);padding:5rem 0;text-align:center;">
+  <div class="max-w" style="padding:0 2.5rem;">
     <div class="section-tag tag-light" style="margin:0 auto 1rem;">❤️ Sponsorer</div>
     <h2>Våre <span style="color:var(--red)">sponsorer</span></h2>
     <p style="color:var(--muted);margin:0.5rem auto 3rem;max-width:480px;font-size:0.95rem;">Stor takk til alle som støtter Sanderittet og muliggjør NM 2026.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:2rem;align-items:center;justify-items:center;" class="reveal">
-      <div style="width:160px;height:80px;display:flex;align-items:center;justify-content:center;">
-        <img src="img/sponsor-gastromat.png" alt="Gastromat" style="max-width:160px;max-height:80px;width:auto;height:auto;object-fit:contain;filter:grayscale(15%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(15%)'">
-      </div>
-      <div style="width:160px;height:80px;display:flex;align-items:center;justify-content:center;">
-        <img src="img/sponsor-bd-samferdsel.jpg" alt="BD Samferdsel" style="max-width:160px;max-height:80px;width:auto;height:auto;object-fit:contain;filter:grayscale(15%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(15%)'">
-      </div>
-      <div style="width:160px;height:80px;display:flex;align-items:center;justify-content:center;">
-        <img src="img/sponsor-berghansen.png" alt="Berghansen" style="max-width:160px;max-height:80px;width:auto;height:auto;object-fit:contain;filter:grayscale(15%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(15%)'">
-      </div>
-      <div style="width:160px;height:80px;display:flex;align-items:center;justify-content:center;">
-        <img src="img/sponsor-sande-dyreklinikk.png" alt="Sande Dyreklinikk" style="max-width:160px;max-height:80px;width:auto;height:auto;object-fit:contain;filter:grayscale(15%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(15%)'">
-      </div>
-      <div style="width:160px;height:80px;display:flex;align-items:center;justify-content:center;">
-        <img src="img/sponsor-gk.png" alt="GK" style="max-width:160px;max-height:80px;width:auto;height:auto;object-fit:contain;filter:grayscale(15%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(15%)'">
-      </div>
-      <div style="width:160px;height:80px;display:flex;align-items:center;justify-content:center;">
-        <img src="img/sponsor-rolls-sykkel.png" alt="Rolls Sykkel" style="max-width:160px;max-height:80px;width:auto;height:auto;object-fit:contain;filter:grayscale(15%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(15%)'">
-      </div>
-      <div style="width:160px;height:80px;display:flex;align-items:center;justify-content:center;">
-        <img src="img/sponsor-onemed.jpg" alt="OneMed" style="max-width:160px;max-height:80px;width:auto;height:auto;object-fit:contain;filter:grayscale(15%);transition:filter 0.2s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(15%)'">
-      </div>
+  </div>
+  <div style="overflow:hidden;position:relative;">
+    <div style="position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(to right,var(--white),transparent);z-index:2;pointer-events:none;"></div>
+    <div style="position:absolute;right:0;top:0;bottom:0;width:80px;background:linear-gradient(to left,var(--white),transparent);z-index:2;pointer-events:none;"></div>
+    <div class="sponsor-track">
+      <div class="sponsor-item"><img src="img/sponsor-gastromat.png" alt="Gastromat"></div>
+      <div class="sponsor-item"><img src="img/sponsor-bd-samferdsel.jpg" alt="BD Samferdsel"></div>
+      <div class="sponsor-item"><img src="img/sponsor-berghansen.png" alt="Berghansen"></div>
+      <div class="sponsor-item"><img src="img/sponsor-sande-dyreklinikk.png" alt="Sande Dyreklinikk"></div>
+      <div class="sponsor-item"><img src="img/sponsor-gk.png" alt="GK"></div>
+      <div class="sponsor-item"><img src="img/sponsor-rolls-sykkel.png" alt="Rolls Sykkel"></div>
+      <div class="sponsor-item"><img src="img/sponsor-onemed.jpg" alt="OneMed"></div>
+      <!-- Duplikat for sømløs loop -->
+      <div class="sponsor-item"><img src="img/sponsor-gastromat.png" alt="Gastromat"></div>
+      <div class="sponsor-item"><img src="img/sponsor-bd-samferdsel.jpg" alt="BD Samferdsel"></div>
+      <div class="sponsor-item"><img src="img/sponsor-berghansen.png" alt="Berghansen"></div>
+      <div class="sponsor-item"><img src="img/sponsor-sande-dyreklinikk.png" alt="Sande Dyreklinikk"></div>
+      <div class="sponsor-item"><img src="img/sponsor-gk.png" alt="GK"></div>
+      <div class="sponsor-item"><img src="img/sponsor-rolls-sykkel.png" alt="Rolls Sykkel"></div>
+      <div class="sponsor-item"><img src="img/sponsor-onemed.jpg" alt="OneMed"></div>
     </div>
+  </div>
+  <div style="padding:0 2.5rem;">
     <p style="margin-top:2.5rem;font-size:0.82rem;color:var(--muted);">Interessert i å sponse NM 2026? <a href="#kontakt" style="color:var(--red);font-weight:600;">Ta kontakt med oss.</a></p>
   </div>
 </section>
