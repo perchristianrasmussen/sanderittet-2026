@@ -415,6 +415,11 @@
     .finn-frem-grid { grid-template-columns:1fr !important; }
     .finn-frem-grid > div:last-child { padding-top:0 !important; }
     footer { padding:2rem 1.5rem; flex-direction:column; align-items:flex-start; }
+
+    .schedule-grid { grid-template-columns:1fr !important; }
+    .schedule-table td { padding:0.6rem 0.5rem; font-size:0.82rem; }
+    .schedule-table td:first-child { width:72px; font-size:0.75rem; }
+    .schedule-table td:last-child { display:none; }
   }
 
   /* Lightbox */
@@ -617,7 +622,7 @@
       <h3 style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:var(--blue);letter-spacing:0.04em;margin-bottom:0.5rem;">NM 2026 – program</h3>
       <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;">Basert på offisiell invitasjon (versjon 1, 03.04.2026). Endringer kan forekomme og vil bli kunngjort på lagledermøtet.</p>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div class="schedule-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
         <div>
           <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
             <div class="day-badge">Lørdag</div>
