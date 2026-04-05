@@ -371,6 +371,19 @@
   .map-footer-brand { font-family:'Bebas Neue',cursive; font-size:0.95rem; color:var(--muted); letter-spacing:0.06em; opacity:0.5; }
   .map-footer-brand span { color:var(--red); }
 
+  /* Photo gallery */
+  .photo-gallery { display:flex; flex-direction:column; gap:4px; border-radius:6px; overflow:hidden; }
+  .gallery-main { display:grid; grid-template-columns:1fr 1fr; gap:4px; height:320px; }
+  .gallery-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; height:220px; }
+  .photo-gallery img { width:100%; height:100%; object-fit:cover; filter:brightness(0.88); transition:transform 0.35s, filter 0.25s; cursor:zoom-in; display:block; }
+  .photo-gallery img:hover { filter:brightness(1); transform:scale(1.03); }
+  @media (max-width:768px) {
+    .gallery-main { height:220px; }
+    .gallery-row { grid-template-columns:1fr 1fr; height:auto; }
+    .gallery-row img { height:140px; }
+    .gallery-row img:last-child { grid-column:span 2; }
+  }
+
   /* FIX 5: Fallback background for image containers */
   .img-fallback {
     background: var(--blue-pale);
@@ -601,10 +614,16 @@
 
     <!-- Bildegalleri fra ritthelgen -->
     <div style="margin-top:3.5rem;" class="reveal">
-      <div class="img-fallback-dark" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;height:300px;border-radius:6px;overflow:hidden;">
-        <img src="img/nm1.jpg" alt="Startfelt Sanderittet på Lersbrygga" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.85);transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-        <img src="img/nm2.jpg" alt="Rytter i løypen på Lersbrygga" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.85);transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-        <img src="img/nm3.jpg" alt="Norgescup-start" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.85);transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      <div class="photo-gallery">
+        <div class="gallery-main">
+          <img src="img/Screenshot_20260404_113725_Photos.jpg" alt="To ryttere på teknisk parti – Lersbrygga" onclick="openLightbox(this.src, this.alt)">
+          <img src="img/IMG20240514175436.jpg" alt="Rekruttklassen klare i startfeltet" onclick="openLightbox(this.src, this.alt)">
+        </div>
+        <div class="gallery-row">
+          <img src="img/IMG20250824101222.jpg" alt="Premieutdeling på Lersbrygga" onclick="openLightbox(this.src, this.alt)">
+          <img src="img/IMG20250823121024_01.jpg" alt="Rytter over rotvelt i løypa" onclick="openLightbox(this.src, this.alt)">
+          <img src="img/IMG20250824085510.jpg" alt="Sande SK-ryttere klare til start" onclick="openLightbox(this.src, this.alt)">
+        </div>
       </div>
     </div>
   </div>
