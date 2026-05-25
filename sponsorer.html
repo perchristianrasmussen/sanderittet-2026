@@ -136,7 +136,7 @@
   .sponsor-link:hover { border-color: var(--blue); }
 
   /* STØTTESPILLERE */
-  .supporter-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+  .supporter-cards { display: flex; flex-direction: column; gap: 1.5rem; }
 
   .supporter-card {
     background: var(--white);
@@ -154,7 +154,9 @@
   }
   .supporter-header-text { font-family: 'Bebas Neue', cursive; font-size: 1.2rem; color: var(--white); letter-spacing: 0.05em; }
 
-  .supporter-body { padding: 1.4rem 1.8rem; }
+  .supporter-body { padding: 1.6rem 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .supporter-body-left { display: flex; flex-direction: column; gap: 1rem; }
+  .supporter-body-right { display: flex; flex-direction: column; justify-content: space-between; }
   .supporter-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1rem; }
 
   .supporter-offer {
@@ -234,6 +236,7 @@
     .sponsor-card { grid-template-columns: 1fr; }
     .sponsor-logo-wrap { border-right: none; border-bottom: 1.5px solid rgba(0,0,0,0.06); min-height: 100px; }
     .sponsor-info { padding: 1.2rem 1.4rem; }
+    .supporter-body { grid-template-columns: 1fr; }
     footer { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
   }
 
@@ -308,6 +311,52 @@
   <h1>Våre <span>sponsorer</span></h1>
   <p>Tusen takk til alle som gjør NM 2026 på Lersbrygga mulig.</p>
 </div>
+
+<!-- STØTTESPILLERE -->
+<section style="background: var(--white); padding: 4rem 0;">
+  <div class="container">
+    <div class="section-label">NM-helgen 2026</div>
+    <h2 class="section-title">Støtte<span>spillere</span></h2>
+    <div class="section-divider"></div>
+
+    <div class="supporter-cards">
+
+      <div class="supporter-card" onclick="openPdfModal()" style="cursor:pointer;" title="Klikk for å se tilbudsflyer">
+        <div class="supporter-header">
+          <div class="supporter-header-text">Nordre Jarlsberg Badstue</div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:rgba(255,255,255,0.55);letter-spacing:0.08em;">Se flyer ↗</span>
+        </div>
+        <div class="supporter-body">
+          <div class="supporter-body-left">
+            <p class="supporter-desc">Rett ved brygga i Sande finner du Nordre Jarlsberg Badstue – en unik opplevelse med nydelig utsikt over fjorden. Under NM-helgen tilbyr de alle deltakere og besøkende 50 % rabatt på drop-in som en perfekt restitusjon etter konkurranse og trening.</p>
+
+            <div class="supporter-offer">
+              <div class="supporter-offer-label">Tilbud NM-helgen 29.–31. mai</div>
+              <div class="supporter-offer-text">50 % rabatt på drop-in for alle NM-deltakere og besøkende</div>
+            </div>
+
+            <div class="supporter-code">
+              <span class="supporter-code-label">Rabattkode</span>
+              <span class="supporter-code-value">SykkelNM26</span>
+            </div>
+          </div>
+          <div class="supporter-body-right">
+            <ul class="supporter-features">
+              <li>Utedusj og kaldkulper</li>
+              <li>Ferdig oppvarmet når du kommer</li>
+              <li>Nydelig utsikt ved Nordre Jarlsberg Brygge</li>
+              <li>Aufguss annenhver tirsdag</li>
+              <li>Gratis parkering ved salgshuset</li>
+            </ul>
+
+            <a href="https://www.nordrejarlsbergbadstue.no" target="_blank" class="supporter-link" onclick="event.stopPropagation()">Book time på nordrejarlsbergbadstue.no →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <!-- SPONSORER -->
 <section>
@@ -398,47 +447,6 @@
     </div>
   </div>
 </section>
-
-<!-- STØTTESPILLERE -->
-<section style="background: var(--white); padding: 4rem 0;">
-  <div class="container">
-    <div class="section-label">NM-helgen 2026</div>
-    <h2 class="section-title">Støtte<span>spillere</span></h2>
-    <div class="section-divider"></div>
-
-    <div class="supporter-cards">
-
-      <div class="supporter-card" onclick="openPdfModal()" style="cursor:pointer;" title="Klikk for å se tilbudsflyer">
-        <div class="supporter-header">
-          <div class="supporter-header-text">Nordre Jarlsberg Badstue</div>
-          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:rgba(255,255,255,0.55);letter-spacing:0.08em;">Se flyer ↗</span>
-        </div>
-        <div class="supporter-body">
-          <p class="supporter-desc">Rett ved brygga i Sande finner du Nordre Jarlsberg Badstue – en unik opplevelse med nydelig utsikt over fjorden. Under NM-helgen tilbyr de alle deltakere og besøkende 50 % rabatt på drop-in som en perfekt restitusjon etter konkurranse og trening.</p>
-
-          <div class="supporter-offer">
-            <div class="supporter-offer-label">Tilbud NM-helgen 29.–31. mai</div>
-            <div class="supporter-offer-text">50 % rabatt på drop-in for alle NM-deltakere og besøkende</div>
-          </div>
-
-          <div class="supporter-code">
-            <span class="supporter-code-label">Rabattkode</span>
-            <span class="supporter-code-value">SykkelNM26</span>
-          </div>
-
-          <ul class="supporter-features">
-            <li>Utedusj og kaldkulper</li>
-            <li>Ferdig oppvarmet når du kommer</li>
-            <li>Nydelig utsikt ved Nordre Jarlsberg Brygge</li>
-            <li>Aufguss annenhver tirsdag</li>
-            <li>Gratis parkering ved salgshuset</li>
-          </ul>
-
-          <a href="https://www.nordrejarlsbergbadstue.no" target="_blank" class="supporter-link">Book time på nordrejarlsbergbadstue.no →</a>
-        </div>
-      </div>
-
-    </div>
 
     <div class="cta-box">
       <h3>Vil du bli sponsor?</h3>
