@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sponsorer – Sanderittet 2026</title>
+<link rel="icon" type="image/png" href="img/Sandelogo_nobg.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:        #C8241A;
+    --red-dark:   #9e1a12;
+    --red-light:  #e8342a;
+    --blue:       #16397A;
+    --blue-mid:   #1e4ea6;
+    --blue-light: #2a64cc;
+    --blue-pale:  #e8eef8;
+    --white:      #ffffff;
+    --off-white:  #f6f7f9;
+    --dark:       #0d1824;
+    --text:       #1a2030;
+    --muted:      #5a6580;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: var(--text); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--dark);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 2.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  }
+  .nav-logo-wrap { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+  .nav-logo-text { font-family: 'Bebas Neue', cursive; font-size: 1.5rem; color: var(--white); letter-spacing: 0.06em; line-height: 1; }
+  .nav-logo-text span { color: var(--red); }
+  .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
+  .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--white); }
+  .nav-cta { background: var(--red) !important; color: var(--white) !important; padding: 0.45rem 1.1rem; border-radius: 2px; font-weight: 700 !important; }
+  .nav-cta:hover { background: var(--red-light) !important; }
+  .nav-hamburger {
+    display: none; flex-direction: column; justify-content: space-between;
+    width: 26px; height: 18px; cursor: pointer; background: none; border: none; padding: 0;
+  }
+  .nav-hamburger span { display: block; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+  .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+  /* PAGE HEADER */
+  .page-header {
+    background: var(--dark);
+    padding: 4rem 2.5rem 3.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 60% 0%, rgba(200,36,26,0.18) 0%, transparent 65%);
+  }
+  .page-header-tag {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 500;
+    color: var(--red); text-transform: uppercase; letter-spacing: 0.18em;
+    margin-bottom: 0.8rem; position: relative;
+  }
+  .page-header h1 {
+    font-family: 'Bebas Neue', cursive; font-size: clamp(2.8rem, 6vw, 4.5rem);
+    color: var(--white); letter-spacing: 0.04em; line-height: 1;
+    position: relative;
+  }
+  .page-header h1 span { color: var(--red); }
+  .page-header p {
+    color: rgba(255,255,255,0.55); font-size: 0.92rem; margin-top: 0.8rem;
+    position: relative;
+  }
+
+  /* MAIN CONTENT */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+
+  section { padding: 4rem 0; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: 0.62rem; font-weight: 500;
+    color: var(--red); text-transform: uppercase; letter-spacing: 0.18em;
+    margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', cursive; font-size: 2.2rem; color: var(--dark);
+    letter-spacing: 0.04em; margin-bottom: 0.5rem;
+  }
+  .section-title span { color: var(--red); }
+  .section-divider { width: 40px; height: 3px; background: var(--red); border-radius: 2px; margin-bottom: 2.5rem; }
+
+  /* SPONSOR CARDS */
+  .sponsor-cards { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .sponsor-card {
+    background: var(--white);
+    border-radius: 4px;
+    border: 1.5px solid rgba(0,0,0,0.06);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .sponsor-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-color: rgba(22,57,122,0.2); }
+
+  .sponsor-logo-wrap {
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem 1.5rem;
+    border-right: 1.5px solid rgba(0,0,0,0.06);
+    min-height: 130px;
+  }
+  .sponsor-logo-wrap img { max-width: 140px; max-height: 80px; object-fit: contain; }
+
+  .sponsor-info { padding: 1.6rem 2rem; }
+  .sponsor-name {
+    font-family: 'Bebas Neue', cursive; font-size: 1.35rem; color: var(--dark);
+    letter-spacing: 0.05em; margin-bottom: 0.3rem;
+  }
+  .sponsor-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+  .sponsor-link {
+    display: inline-block; margin-top: 0.8rem;
+    font-family: 'DM Mono', monospace; font-size: 0.68rem; font-weight: 500;
+    color: var(--blue); text-decoration: none; letter-spacing: 0.03em;
+    border-bottom: 1px solid rgba(22,57,122,0.25); transition: border-color 0.2s;
+  }
+  .sponsor-link:hover { border-color: var(--blue); }
+
+  /* STØTTESPILLERE */
+  .supporter-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+  .supporter-card {
+    background: var(--white);
+    border-radius: 4px;
+    border: 1.5px solid rgba(0,0,0,0.06);
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .supporter-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-color: rgba(22,57,122,0.2); }
+
+  .supporter-header {
+    background: var(--blue);
+    padding: 1.4rem 1.8rem;
+    display: flex; align-items: center; gap: 0.9rem;
+  }
+  .supporter-header-text { font-family: 'Bebas Neue', cursive; font-size: 1.2rem; color: var(--white); letter-spacing: 0.05em; }
+
+  .supporter-body { padding: 1.4rem 1.8rem; }
+  .supporter-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1rem; }
+
+  .supporter-offer {
+    background: var(--blue-pale);
+    border-radius: 3px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--blue);
+  }
+  .supporter-offer-label {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 500;
+    color: var(--blue); text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 0.3rem;
+  }
+  .supporter-offer-text { font-size: 0.9rem; color: var(--dark); font-weight: 500; line-height: 1.5; }
+
+  .supporter-code {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: var(--dark);
+    border-radius: 3px; padding: 0.6rem 1rem;
+    margin-bottom: 1rem;
+  }
+  .supporter-code-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+  .supporter-code-value { font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--red); letter-spacing: 0.05em; }
+
+  .supporter-features { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1.2rem; }
+  .supporter-features li { font-size: 0.84rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+  .supporter-features li::before { content: '→'; color: var(--blue); font-size: 0.75rem; flex-shrink: 0; }
+
+  .supporter-link {
+    display: inline-block;
+    font-family: 'DM Mono', monospace; font-size: 0.68rem; font-weight: 500;
+    color: var(--blue); text-decoration: none; letter-spacing: 0.03em;
+    border-bottom: 1px solid rgba(22,57,122,0.25); transition: border-color 0.2s;
+  }
+  .supporter-link:hover { border-color: var(--blue); }
+
+  /* CTA BOX */
+  .cta-box {
+    background: var(--blue); border-radius: 4px; padding: 2.5rem;
+    text-align: center; margin-top: 3.5rem;
+  }
+  .cta-box h3 { font-family: 'Bebas Neue', cursive; font-size: 1.8rem; color: var(--white); letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .cta-box p { color: rgba(255,255,255,0.65); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .btn-red {
+    display: inline-block; background: var(--red); color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700;
+    padding: 0.7rem 1.8rem; border-radius: 2px; text-decoration: none;
+    letter-spacing: 0.04em; transition: background 0.2s;
+  }
+  .btn-red:hover { background: var(--red-light); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: rgba(255,255,255,0.5);
+    font-size: 0.78rem; padding: 2rem 2.5rem;
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    align-items: center; justify-content: space-between;
+  }
+  .footer-logo { font-family: 'Bebas Neue', cursive; font-size: 1.45rem; color: var(--white); letter-spacing: 0.06em; }
+  .footer-logo span { color: var(--red); }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a { color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--white); }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) {
+    nav { padding: 0.9rem 1.2rem; }
+    .nav-hamburger { display: flex; }
+    .nav-links {
+      display: none; position: absolute; top: 100%; left: 0; right: 0;
+      background: var(--dark); flex-direction: column; align-items: flex-start;
+      padding: 1rem 1.5rem 1.5rem; gap: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .nav-links.open { display: flex; }
+    .page-header { padding: 3rem 1.5rem 2.5rem; }
+    .sponsor-card { grid-template-columns: 1fr; }
+    .sponsor-logo-wrap { border-right: none; border-bottom: 1.5px solid rgba(0,0,0,0.06); min-height: 100px; }
+    .sponsor-info { padding: 1.2rem 1.4rem; }
+    footer { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo-wrap" href="sanderittet-2026.html">
+    <img src="img/Sandelogo_nobg.png" alt="Sande Sportsklubb logo" style="width:44px;height:44px;object-fit:contain;">
+    <div class="nav-logo-text">Sande<span>rittet</span></div>
+  </a>
+  <button class="nav-hamburger" aria-label="Åpne meny" onclick="document.querySelector('.nav-links').classList.toggle('open');this.classList.toggle('active');">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="sanderittet-2026.html#nm">NM 2026</a></li>
+    <li><a href="sanderittet-2026.html#tidsskjema">Tidsskjema</a></li>
+    <li><a href="sanderittet-2026.html#loype">Løyper</a></li>
+    <li><a href="sanderittet-2026.html#om-klubben">Om klubben</a></li>
+    <li><a href="sanderittet-2026.html#trening">Trening</a></li>
+    <li><a href="sponsorer.html" class="active">Sponsorer</a></li>
+    <li><a href="sanderittet-2026.html#kontakt">Kontakt</a></li>
+    <li><a href="sanderittet-2026.html#pamelding" class="nav-cta">Meld deg på</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-tag">Sanderittet 2026 · NM Terrengsykling</div>
+  <h1>Våre <span>sponsorer</span></h1>
+  <p>Tusen takk til alle som gjør NM 2026 på Lersbrygga mulig.</p>
+</div>
+
+<!-- SPONSORER -->
+<section>
+  <div class="container">
+    <div class="section-label">Hovedsponsorer</div>
+    <h2 class="section-title">Sponsorer <span>2026</span></h2>
+    <div class="section-divider"></div>
+
+    <div class="sponsor-cards">
+
+      <div class="sponsor-card">
+        <div class="sponsor-logo-wrap">
+          <img src="img/sponsor-gastromat.png" alt="Gastromat">
+        </div>
+        <div class="sponsor-info">
+          <div class="sponsor-name">Gastromat</div>
+          <p class="sponsor-desc">Gastromat AS er en stolt Sande-bedrift med røtter tilbake til 1966. De er kjent for sitt ikoniske allkrydder – en norsk kjøkkenfavoritt i generasjoner. Som lokalt forankret sponsor støtter Gastromat idretten i hjembyen og er en naturlig partner for Sanderittet.</p>
+          <a href="https://gastromat.no" target="_blank" class="sponsor-link">gastromat.no →</a>
+        </div>
+      </div>
+
+      <div class="sponsor-card">
+        <div class="sponsor-logo-wrap">
+          <img src="img/sponsor-bd-samferdsel.jpg" alt="BD Samferdsel">
+        </div>
+        <div class="sponsor-info">
+          <div class="sponsor-name">BD Samferdsel</div>
+          <p class="sponsor-desc">BD Samferdsel er en regional aktør innen veginfrastruktur og samferdselsprodukter med base i Holmestrand. De leverer alt langs veikanten – fra trafikkskilt og master til rekkverkssystemer – og har kontrakter med blant andre Vestfold og Telemark fylkeskommune.</p>
+          <a href="https://www.bdsamferdsel.no" target="_blank" class="sponsor-link">bdsamferdsel.no →</a>
+        </div>
+      </div>
+
+      <div class="sponsor-card">
+        <div class="sponsor-logo-wrap">
+          <img src="img/sponsor-berghansen.png" alt="Berg-Hansen">
+        </div>
+        <div class="sponsor-info">
+          <div class="sponsor-name">Berg-Hansen</div>
+          <p class="sponsor-desc">Berg-Hansen er Norges eldste og største reisebyrå, med over 100 års erfaring. De spesialiserer seg på forretningsreiser, gruppeturist og humanitær sektor, og er ISO-sertifisert innen både kvalitet og miljø. Med 24-timers support og landsdekkende tilstedeværelse er de en trygg reisepartner.</p>
+          <a href="https://www.berg-hansen.no" target="_blank" class="sponsor-link">berg-hansen.no →</a>
+        </div>
+      </div>
+
+      <div class="sponsor-card">
+        <div class="sponsor-logo-wrap">
+          <img src="img/sponsor-sande-dyreklinikk.png" alt="Sande Dyreklinikk">
+        </div>
+        <div class="sponsor-info">
+          <div class="sponsor-name">Sande Dyreklinikk</div>
+          <p class="sponsor-desc">Sande Dyreklinikk er en moderne og veltrigget klinikk på Revåveien i Sande. Fire veterinærer og tre dyrepleiere tilbyr alt fra rutinebesøk og vaksinasjoner til avansert kirurgi, digital røntgen og ultralydsundersøkelser. Et lokalt helsehus for kjæledyra i regionen.</p>
+          <a href="https://www.sandedyreklinikk.no" target="_blank" class="sponsor-link">sandedyreklinikk.no →</a>
+        </div>
+      </div>
+
+      <div class="sponsor-card">
+        <div class="sponsor-logo-wrap">
+          <img src="img/sponsor-gk.png" alt="GK">
+        </div>
+        <div class="sponsor-info">
+          <div class="sponsor-name">GK</div>
+          <p class="sponsor-desc">GK er Skandinavias ledende tekniske totalentreprenør og servicepartner. Fra starten som lite ventilasjonsselskap i 1964 har GK vokst til nesten 3 000 ansatte og en omsetning på 6,1 milliarder kroner. De leverer smarte og bærekraftige løsninger innen ventilasjon, kjøling, byggautomasjon, elektro og rør.</p>
+          <a href="https://www.gk.no" target="_blank" class="sponsor-link">gk.no →</a>
+        </div>
+      </div>
+
+      <div class="sponsor-card">
+        <div class="sponsor-logo-wrap">
+          <img src="img/sponsor-rolls-sykkel.png" alt="Rolls Sykkel">
+        </div>
+        <div class="sponsor-info">
+          <div class="sponsor-name">Rolls Sykkel</div>
+          <p class="sponsor-desc">Rolls Sykkel er den lokale sykkelbutikken og verkstedet i Sande – en stolt forhandler av Merida og Control. Her får du personlig og faglig service for alle sykkeltyper, med og uten motor. Perfekt plassert i sykkelhovedstaden Sande og naturlig støttespiller for terrengsykling på hjemmebane.</p>
+          <a href="https://www.rolls-sykkelservice.no" target="_blank" class="sponsor-link">rolls-sykkelservice.no →</a>
+        </div>
+      </div>
+
+      <div class="sponsor-card">
+        <div class="sponsor-logo-wrap">
+          <img src="img/sponsor-onemed.jpg" alt="OneMed">
+        </div>
+        <div class="sponsor-info">
+          <div class="sponsor-name">OneMed</div>
+          <p class="sponsor-desc">OneMed er Norges største leverandør av medisinsk forbruksmateriell, og del av Asker Healthcare Group – Nord-Europas største distributør av medisinske produkter med 15 milliarder i omsetning og 4 000 ansatte i 17 land. Fra sårpleie og hygiene til operasjonssaler – OneMed holder helsetjenesten i gang.</p>
+          <a href="https://www.onemed.com/no" target="_blank" class="sponsor-link">onemed.com →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STØTTESPILLERE -->
+<section style="background: var(--white); padding: 4rem 0;">
+  <div class="container">
+    <div class="section-label">NM-helgen 2026</div>
+    <h2 class="section-title">Støtte<span>spillere</span></h2>
+    <div class="section-divider"></div>
+
+    <div class="supporter-cards">
+
+      <div class="supporter-card">
+        <div class="supporter-header">
+          <div class="supporter-header-text">Nordre Jarlsberg Badstue</div>
+        </div>
+        <div class="supporter-body">
+          <p class="supporter-desc">Rett ved brygga i Sande finner du Nordre Jarlsberg Badstue – en unik opplevelse med nydelig utsikt over fjorden. Under NM-helgen tilbyr de alle deltakere og besøkende 50 % rabatt på drop-in som en perfekt restitusjon etter konkurranse og trening.</p>
+
+          <div class="supporter-offer">
+            <div class="supporter-offer-label">Tilbud NM-helgen 29.–31. mai</div>
+            <div class="supporter-offer-text">50 % rabatt på drop-in for alle NM-deltakere og besøkende</div>
+          </div>
+
+          <div class="supporter-code">
+            <span class="supporter-code-label">Rabattkode</span>
+            <span class="supporter-code-value">SykkelNM26</span>
+          </div>
+
+          <ul class="supporter-features">
+            <li>Utedusj og kaldkulper</li>
+            <li>Ferdig oppvarmet når du kommer</li>
+            <li>Nydelig utsikt ved Nordre Jarlsberg Brygge</li>
+            <li>Aufguss annenhver tirsdag</li>
+            <li>Gratis parkering ved salgshuset</li>
+          </ul>
+
+          <a href="https://www.nordrejarlsbergbadstue.no" target="_blank" class="supporter-link">Book time på nordrejarlsbergbadstue.no →</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cta-box">
+      <h3>Vil du bli sponsor?</h3>
+      <p>Interessert i å støtte NM 2026 og synliggjøre deg for sykkelfolk fra hele landet? Ta kontakt med oss.</p>
+      <a href="mailto:leder.sykkel@sandesk.no" class="btn-red">Send oss en e-post</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Sande<span>rittet</span> 2026</div>
+    <div style="margin-top:0.4rem;">Sande Sykkelklubb · Lersbrygga · 3070 Sande i Vestfold</div>
+  </div>
+  <div class="footer-links">
+    <a href="sanderittet-2026.html#nm">NM 2026</a>
+    <a href="sanderittet-2026.html#tidsskjema">Tidsskjema</a>
+    <a href="sanderittet-2026.html#loype">Løyper</a>
+    <a href="sanderittet-2026.html#trening">Trening</a>
+    <a href="sponsorer.html">Sponsorer</a>
+    <a href="sanderittet-2026.html#kontakt">Kontakt</a>
+  </div>
+  <div>© 2026 Sande Sportsklubb · Sykkelgruppa</div>
+</footer>
+
+</body>
+</html>
