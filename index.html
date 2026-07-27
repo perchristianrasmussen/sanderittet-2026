@@ -2,8 +2,551 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=sanderittet-2026.html">
-<link rel="canonical" href="sanderittet-2026.html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanderittet – Sande Sykkelklubb</title>
+<link rel="icon" type="image/png" href="img/Sandelogo_nobg.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:        #C8241A;
+    --red-dark:   #9e1a12;
+    --red-light:  #e8342a;
+    --blue:       #16397A;
+    --blue-mid:   #1e4ea6;
+    --blue-light: #2a64cc;
+    --blue-pale:  #e8eef8;
+    --white:      #ffffff;
+    --off-white:  #f6f7f9;
+    --dark:       #0d1824;
+    --text:       #1a2030;
+    --muted:      #5a6580;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 2.5rem;
+    background: rgba(13, 24, 36, 0.95);
+    backdrop-filter: blur(14px);
+    border-bottom: 2px solid var(--red);
+  }
+
+  .nav-logo-wrap { display: flex; align-items: center; gap: 0.9rem; text-decoration: none; }
+  .nav-logo-svg { width: 44px; height: 34px; flex-shrink: 0; }
+  .nav-logo-text { font-family: 'Bebas Neue', cursive; font-size: 1.5rem; color: var(--white); letter-spacing: 0.06em; line-height: 1; }
+  .nav-logo-text span { color: var(--red); }
+
+  .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
+  .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta { background: var(--red) !important; color: var(--white) !important; padding: 0.45rem 1.1rem; border-radius: 2px; font-weight: 700 !important; }
+  .nav-cta:hover { background: var(--red-light) !important; }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+  .nav-hamburger span {
+    width: 24px; height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+  .hero {
+    min-height: 100vh;
+    background: var(--dark);
+    position: relative;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 2.5rem 6rem;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 55% 50% at 72% 38%, rgba(22,57,122,0.55) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 55% at 15% 78%, rgba(200,36,26,0.2) 0%, transparent 60%),
+      linear-gradient(170deg, rgba(13,24,36,0.88) 0%, rgba(17,30,53,0.82) 55%, rgba(10,16,24,0.92) 100%);
+    z-index: 1;
+  }
+  .hero-photo {
+    position: absolute; inset: 0;
+    background: var(--dark) url('img/hero.jpg') center 35%/cover no-repeat;
+    z-index: 0;
+  }
+  .hero-stripe, .terrain-lines, .hero-watermark, .hero-badge, .hero h1, .hero-sub, .hero-actions, .hero-stats {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-stripe {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--red) 0%, var(--red) 33%, var(--white) 33%, var(--white) 66%, var(--blue) 66%);
+  }
+  .terrain-lines { position: absolute; bottom: 0; left: 0; right: 0; height: 50%; overflow: hidden; pointer-events: none; }
+  .terrain-lines svg { width: 100%; height: 100%; opacity: 0.12; }
+  .hero-watermark { position: absolute; right: -0.05em; bottom: -0.15em; font-family: 'Bebas Neue', cursive; font-size: 32vw; line-height: 1; color: rgba(255,255,255,0.025); pointer-events: none; user-select: none; }
+
+  .hero h1 { position:relative; font-family:'Bebas Neue',cursive; font-size:clamp(4rem,12vw,10rem); line-height:0.88; color:var(--white); letter-spacing:0.02em; margin-bottom:0.5rem; animation:fadeUp 0.9s 0.1s ease both; }
+  .hero h1 .accent { color:var(--red); }
+  .hero-sub { position:relative; font-size:clamp(0.95rem,2vw,1.3rem); color:rgba(255,255,255,0.55); font-weight:300; margin-bottom:2.5rem; animation:fadeUp 0.9s 0.2s ease both; }
+  .hero-sub strong { color:var(--white); font-weight:600; }
+  .hero-actions { position:relative; display:flex; gap:1rem; flex-wrap:wrap; animation:fadeUp 0.9s 0.3s ease both; }
+
+  .btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 2rem; font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; text-decoration:none; border-radius:2px; transition:all 0.2s; cursor:pointer; border:none; }
+  .btn-red { background:var(--red); color:var(--white); }
+  .btn-red:hover { background:var(--red-light); transform:translateY(-2px); }
+  .btn-outline { background:transparent; color:var(--white); border:1.5px solid rgba(255,255,255,0.3); }
+  .btn-outline:hover { border-color:var(--white); }
+
+  .hero-stats { position:absolute; right:2.5rem; bottom:6rem; display:flex; flex-direction:column; gap:2.2rem; animation:fadeUp 1s 0.4s ease both; text-align:right; }
+  .stat-num { font-family:'Bebas Neue',cursive; font-size:3rem; line-height:1; color:var(--red); letter-spacing:0.06em; }
+  .stat-label { font-family:'DM Mono',monospace; font-size:0.62rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.1em; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(28px);} to{opacity:1;transform:none;} }
+
+  .max-w { max-width:1200px; margin:0 auto; }
+  section { padding:6rem 2.5rem; }
+
+  .section-tag { font-family:'DM Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.15em; padding:0.28rem 0.7rem; display:inline-block; margin-bottom:1rem; border-radius:1px; }
+  .tag-red { background:var(--red); color:var(--white); }
+  .tag-blue { background:var(--blue); color:var(--white); }
+  .tag-light { background:rgba(22,57,122,0.1); color:var(--blue); }
+
+  h2 { font-family:'Bebas Neue',cursive; font-size:clamp(2.5rem,6vw,4.2rem); line-height:0.93; letter-spacing:0.02em; color:var(--dark); margin-bottom:0.8rem; }
+  .lead { font-size:1.05rem; line-height:1.75; color:var(--muted); max-width:600px; margin-bottom:3rem; font-weight:300; }
+
+  .divider { width:50px; height:3px; background:var(--red); margin:1.2rem 0 2.5rem; border-radius:2px; }
+  .divider.blue { background:var(--blue); }
+
+  .reveal { opacity:0; transform:translateY(22px); transition:opacity 0.65s ease, transform 0.65s ease; }
+  .reveal.visible { opacity:1; transform:none; }
+  .delay-1 { transition-delay:0.1s; }
+  .delay-2 { transition-delay:0.2s; }
+  .delay-3 { transition-delay:0.3s; }
+
+  .sponsor-track {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    width: max-content;
+    animation: sponsor-scroll 28s linear infinite;
+    padding: 0.5rem 0;
+  }
+  .sponsor-track:hover { animation-play-state: paused; }
+  .sponsor-item {
+    width: 160px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sponsor-item img {
+    max-width: 160px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(20%);
+    transition: filter 0.2s;
+  }
+  .sponsor-item img:hover { filter: grayscale(0%); }
+  @keyframes sponsor-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* About */
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+  .logo-panel { background:var(--blue); border-radius:4px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:3.5rem 2.5rem; gap:2rem; position:relative; overflow:hidden; min-height:380px; }
+  .logo-panel::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 60%); }
+  .logo-panel-svg { position:relative; width:200px; filter:drop-shadow(0 8px 32px rgba(0,0,0,0.4)); }
+  .logo-panel-facts { position:relative; display:flex; gap:2.5rem; justify-content:center; flex-wrap:wrap; }
+  .logo-fact { text-align:center; }
+  .logo-fact-num { font-family:'Bebas Neue',cursive; font-size:2.8rem; color:var(--white); line-height:1; }
+  .logo-fact-label { font-family:'DM Mono',monospace; font-size:0.62rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; }
+
+  .inline-link { color:var(--blue-mid); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+  .inline-link:hover { color:var(--red); }
+
+  /* Training */
+  .training-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3rem; }
+  .training-card { border:1.5px solid rgba(0,0,0,0.1); border-radius:4px; padding:2rem; transition:all 0.25s; background:var(--white); }
+  .training-card:hover { border-color:var(--blue-mid); transform:translateY(-3px); box-shadow:0 12px 40px rgba(22,57,122,0.12); }
+  .training-day { font-family:'Bebas Neue',cursive; font-size:2.4rem; color:var(--blue); line-height:1; margin-bottom:0.2rem; }
+  .training-info { font-family:'DM Mono',monospace; font-size:0.73rem; color:var(--muted); margin-bottom:1rem; }
+  .training-card h4 { font-weight:700; font-size:0.98rem; margin-bottom:0.5rem; color:var(--dark); }
+  .training-card p { font-size:0.84rem; color:var(--muted); line-height:1.6; }
+  .training-badge { display:inline-block; background:rgba(22,57,122,0.1); color:var(--blue); font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.2rem 0.6rem; border-radius:2px; margin-top:1rem; }
+
+  /* Contact */
+  .kontakt-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
+  .kontakt-info { display:flex; flex-direction:column; gap:1.5rem; }
+  .kontakt-item { display:flex; gap:1rem; align-items:flex-start; }
+  .kontakt-icon { width:40px; height:40px; background:var(--blue-pale); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+  .kontakt-item h4 { font-size:0.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.2rem; }
+  .kontakt-item a { color:var(--blue); text-decoration:none; font-weight:500; }
+  .kontakt-item a:hover { color:var(--red); }
+
+  footer { background:var(--dark); color:rgba(255,255,255,0.4); padding:2.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:2rem; font-size:0.78rem; font-family:'DM Mono',monospace; border-top:3px solid var(--red); }
+  .footer-logo { font-family:'Bebas Neue',cursive; font-size:1.45rem; color:var(--white); letter-spacing:0.06em; }
+  .footer-logo span { color:var(--red); }
+  .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .footer-links a { color:rgba(255,255,255,0.3); text-decoration:none; transition:color 0.2s; }
+  .footer-links a:hover { color:var(--red); }
+
+  /* NM promo banner */
+  .nm-promo { background:var(--dark); color:var(--white); padding:4rem 2.5rem; position:relative; overflow:hidden; border-top:4px solid var(--red); border-bottom:4px solid var(--blue); }
+  .nm-promo-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+  .nm-promo h3 { font-family:'Bebas Neue',cursive; font-size:clamp(2rem,4vw,3rem); letter-spacing:0.03em; line-height:1; }
+  .nm-promo p { color:rgba(255,255,255,0.55); font-size:0.95rem; margin-top:0.6rem; max-width:520px; }
+
+  .img-fallback { background: var(--blue-pale); }
+
+  .nm-accent-bar { display:flex; height:5px; width:120px; margin:1.2rem 0 2.5rem; border-radius:2px; overflow:hidden; }
+  .nm-accent-bar span { flex:1; }
+  .nm-accent-bar span:nth-child(1) { background:var(--red); }
+  .nm-accent-bar span:nth-child(2) { background:var(--white); }
+  .nm-accent-bar span:nth-child(3) { background:var(--blue); }
+
+  @media (max-width:768px) {
+    nav { padding:0.9rem 1.2rem; }
+    .nav-hamburger { display: flex; }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      flex-direction: column;
+      background: rgba(13, 24, 36, 0.98);
+      padding: 1.5rem;
+      gap: 1rem;
+      border-bottom: 2px solid var(--red);
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { font-size: 0.95rem; }
+    section { padding:4rem 1.5rem; }
+    .hero { padding:0 1.5rem 4rem; }
+    .hero h1 { font-size:3.8rem; }
+    .hero-stats { display:none; }
+    .about-grid { grid-template-columns:1fr; }
+    .training-cards { grid-template-columns:1fr; }
+    .kontakt-grid { grid-template-columns:1fr; }
+    footer { padding:2rem 1.5rem; flex-direction:column; align-items:flex-start; }
+    .nm-promo { padding:3rem 1.5rem; }
+    .finn-frem-grid { grid-template-columns:1fr !important; }
+    .finn-frem-grid > div:last-child { padding-top:0 !important; }
+  }
+</style>
 </head>
-<body></body>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo-wrap" href="#topp">
+    <img src="img/Sandelogo_nobg.png" alt="Sande Sportsklubb logo" class="nav-logo-svg" style="width:44px;height:44px;object-fit:contain;">
+    <div class="nav-logo-text">Sande <span>SK</span></div>
+  </a>
+  <button class="nav-hamburger" aria-label="Åpne meny" onclick="document.querySelector('.nav-links').classList.toggle('open');this.classList.toggle('active');">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="#om-klubben">Om klubben</a></li>
+    <li><a href="#trening">Trening</a></li>
+    <li><a href="#finn-frem">Finn frem</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+    <li><a href="sponsorer.html">Sponsorer</a></li>
+    <li><a href="nm2026.html" class="nav-cta">NM 2026 ↗</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="topp">
+  <div class="hero-photo"></div>
+  <div class="hero-stripe"></div>
+  <div class="hero-bg"></div>
+  <div class="terrain-lines">
+    <svg viewBox="0 0 1440 500" preserveAspectRatio="none" fill="none">
+      <polyline stroke="#163978" stroke-width="2" points="0,420 120,340 260,390 400,290 540,330 680,220 820,270 960,190 1100,230 1240,150 1380,200 1440,170"/>
+      <polyline stroke="#163978" stroke-width="1" points="0,480 160,440 320,465 480,390 640,420 800,350 960,375 1120,310 1280,345 1440,295"/>
+      <polyline stroke="#C8241A" stroke-width="1.2" points="0,500 120,468 240,480 380,425 520,448 660,385 800,408 940,350 1080,372 1220,315 1440,340"/>
+    </svg>
+  </div>
+  <div class="hero-watermark">SSK</div>
+  <h1>Sande<br><span class="accent">Sykkel­klubb</span></h1>
+  <p class="hero-sub">
+    <strong>Lersbrygga, Sande i Vestfold</strong> · Faste treninger for alle aldre fra påske til høstferie
+  </p>
+  <div class="hero-actions">
+    <a href="#trening" class="btn btn-red">Bli med på trening ↓</a>
+    <a href="nm2026.html" class="btn btn-outline">Se NM 2026 →</a>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-num">2024</div><div class="stat-label">Norgescup</div></div>
+    <div><div class="stat-num">2025</div><div class="stat-label">Norgescup</div></div>
+    <div><div class="stat-num">2026</div><div class="stat-label">🏆 Vertskap NM</div></div>
+  </div>
+</div>
+
+<!-- NM PROMO -->
+<div class="nm-promo">
+  <div class="nm-promo-inner">
+    <div>
+      <h3>Vi arrangerte <span style="color:var(--red)">NM 2026</span></h3>
+      <p>Sande Sportsklubb var stolt vertskap for Norgesmesterskapet i terrengsykling 30.–31. mai 2026 på Lersbrygga. Se program, løypekart og bilder fra ritthelgen.</p>
+    </div>
+    <a href="nm2026.html" class="btn btn-red">Om NM 2026 →</a>
+  </div>
+</div>
+
+<!-- OM KLUBBEN -->
+<section style="background:var(--blue-pale);" id="om-klubben">
+  <div class="max-w">
+    <div class="about-grid">
+      <div>
+        <div class="section-tag tag-blue">🚴 Om oss</div>
+        <h2>Sande <span style="color:var(--red)">Sykkel­klubb</span></h2>
+        <div class="divider"></div>
+        <p style="font-size:1rem;line-height:1.8;color:var(--muted);margin-bottom:1.5rem;">
+          Sykkelgruppa i Sande Sportsklubb er en aktiv gruppe med faste treninger for alle aldre fra påske til høstferie. Vi holder til på <strong style="color:var(--dark)">Lersbrygga Idrettsanlegg</strong> og arrangerer et av regionens mest populære MTB-ritt – Sanderittet.
+        </p>
+        <p style="font-size:1rem;line-height:1.8;color:var(--muted);margin-bottom:1.5rem;">
+          Vi er en del av <a class="inline-link" href="https://sandesk.no/grupper/sykkel/" target="_blank">Sande Sportsklubb</a> med motto <em>«Klart vi kan det!»</em> Etter Norgescupper i 2024 og 2025 var vi vertskap for NM i 2026.
+        </p>
+
+        <div class="img-fallback" style="border-radius:6px;overflow:hidden;height:200px;margin-bottom:1.8rem;position:relative;" class="reveal">
+          <img src="img/om_klubben.jpg" alt="Sande SK på treningstur" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(0.82);">
+        </div>
+
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <a href="https://sandesk.no/grupper/sykkel/" target="_blank" class="btn btn-outline" style="border-color:var(--blue);color:var(--blue);">SSK Klubbside →</a>
+          <a href="https://group.spond.com/OXGYJ" target="_blank" class="btn btn-red">Bli med på Spond</a>
+        </div>
+      </div>
+
+      <div class="logo-panel reveal">
+        <img src="img/Sandelogo_nobg.png" alt="Sande Sportsklubb logo" class="logo-panel-svg" style="width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 8px 32px rgba(0,0,0,0.4));">
+
+        <div class="logo-panel-facts">
+          <div class="logo-fact">
+            <div class="logo-fact-num" style="color:var(--red);">2024</div>
+            <div class="logo-fact-label">Norgescup</div>
+          </div>
+          <div class="logo-fact">
+            <div class="logo-fact-num" style="color:rgba(255,255,255,0.6);">2025</div>
+            <div class="logo-fact-label">Norgescup</div>
+          </div>
+          <div class="logo-fact">
+            <div class="logo-fact-num">2026</div>
+            <div class="logo-fact-label">🏆 NM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRENING -->
+<section style="background:var(--white);" id="trening">
+  <div class="max-w">
+    <div class="section-tag tag-light">🏋️ Trening</div>
+    <h2>Faste <span style="color:var(--red)">treninger</span></h2>
+    <div class="divider"></div>
+    <p class="lead">Vi trener på Lersbrygga mellom påske og høstferie. Alle aldre og ferdighetsnivåer er velkomne!</p>
+
+    <div class="img-fallback" style="border-radius:6px;overflow:hidden;margin-bottom:2.5rem;position:relative;height:260px;" class="reveal">
+      <img src="img/trening.jpg" alt="Sande SK trening" style="width:100%;height:100%;object-fit:cover;object-position:center 55%;filter:brightness(0.75);">
+      <div style="position:absolute;bottom:1.2rem;left:1.5rem;">
+        <div style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#fff;letter-spacing:0.05em;line-height:1.1;">Treninger for <span style="color:var(--red)">alle aldre</span></div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.12em;margin-top:0.3rem;">Lersbrygga · Mandag &amp; Torsdag</div>
+      </div>
+    </div>
+
+    <div class="training-cards">
+      <div class="training-card reveal">
+        <div class="training-day">Man</div>
+        <div class="training-info">Mandager · Vår–Høst</div>
+        <h4>Trening for alle aldre</h4>
+        <p>Opp til 10 år: kl. 18:00–19:00. Over 10 år: kl. 18:00–19:30. Teknikk og moro i terrenget – foreldre er velkomne!</p>
+        <div class="training-badge">Alle aldre</div>
+      </div>
+      <div class="training-card reveal delay-1">
+        <div class="training-day">Tor</div>
+        <div class="training-info">Torsdager · Vår–Høst</div>
+        <h4>Trening 11 år og eldre</h4>
+        <p>Kl. 18:00–19:30. Krevende trening med fokus på teknikk og utholdenhet. Alle ferdighetsnivåer velkomne.</p>
+        <div class="training-badge">11 år +</div>
+      </div>
+      <div class="training-card reveal delay-2">
+        <div class="training-day">📍</div>
+        <div class="training-info">Lersbrygga · Sande i Vestfold</div>
+        <h4>Vi bruker Spond</h4>
+        <p>Treningspåmelding og informasjon deles via Spond. Enkelt for hele familien!</p>
+        <a href="https://group.spond.com/OXGYJ" target="_blank" class="training-badge" style="text-decoration:none;display:inline-block;">Åpne Spond →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINN FREM -->
+<section style="background:var(--dark);padding:6rem 2.5rem;" id="finn-frem">
+  <div class="max-w">
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:3rem;align-items:start;" class="finn-frem-grid">
+      <div>
+        <div class="section-tag tag-red">📍 Finn frem</div>
+        <h2 style="color:var(--white);">Lersbrygga <span style="color:var(--red)">Sykkel­arena</span></h2>
+        <div class="nm-accent-bar"><span></span><span></span><span></span></div>
+        <p style="font-size:1rem;line-height:1.8;color:rgba(255,255,255,0.5);margin-bottom:2rem;">Interaktivt kart over arenaområdet med løypetraséer, parkering og fasiliteter. Bruk lagvelgeren i kartet for å skru av og på de ulike løypene og punktene.</p>
+
+        <div style="border-radius:6px;overflow:hidden;border:1.5px solid rgba(255,255,255,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+          <iframe src="https://www.google.com/maps/d/embed?mid=1datrdzmdxW2jajR8Jm-aCLSSoBuVZIQ&ll=59.56487205617529%2C10.255352623532689&z=16" width="100%" height="480" style="border:none;display:block;" loading="lazy" title="Lersbrygga sykkelarena – interaktivt kart"></iframe>
+        </div>
+        <p style="font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:0.6rem;font-family:'DM Mono',monospace;letter-spacing:0.05em;">
+          <a href="https://www.google.com/maps/d/viewer?mid=1datrdzmdxW2jajR8Jm-aCLSSoBuVZIQ&ll=59.56487205617529%2C10.255352623532689&z=17" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none;">Åpne i Google Maps ↗</a>
+        </p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:1.2rem;padding-top:5rem;">
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1.4rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">Adresse</div>
+          <div style="font-size:0.92rem;color:var(--white);font-weight:500;line-height:1.5;">Lersbrygga Idrettsanlegg<br>Lersbryggveien<br>3070 Sande i Vestfold</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1.4rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">Parkering</div>
+          <div style="font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.6;">Parkering ved idrettsanlegget. Se kartet for detaljer.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1.4rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">I kartet finner du</div>
+          <div style="font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.6;">Løypetraséer (XCO &amp; XCC), arena, parkering, fasiliteter og mer. Klikk på lag-ikonet for å velge hva som vises.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPONSORER -->
+<section style="background:var(--off-white);padding:5rem 0;text-align:center;">
+  <div class="max-w" style="padding:0 2.5rem;">
+    <div class="section-tag tag-light" style="margin:0 auto 1rem;">❤️ Sponsorer</div>
+    <h2>Våre <span style="color:var(--red)">sponsorer</span></h2>
+    <p style="color:var(--muted);margin:0.5rem auto 3rem;max-width:480px;font-size:0.95rem;">Stor takk til alle som støtter Sande Sykkelklubb.</p>
+  </div>
+  <div style="overflow:hidden;position:relative;">
+    <div style="position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(to right,var(--off-white),transparent);z-index:2;pointer-events:none;"></div>
+    <div style="position:absolute;right:0;top:0;bottom:0;width:80px;background:linear-gradient(to left,var(--off-white),transparent);z-index:2;pointer-events:none;"></div>
+    <div class="sponsor-track">
+      <div class="sponsor-item"><img src="img/sponsor-gastromat.png" alt="Gastromat"></div>
+      <div class="sponsor-item"><img src="img/sponsor-bd-samferdsel.jpg" alt="BD Samferdsel"></div>
+      <div class="sponsor-item"><img src="img/sponsor-berghansen.png" alt="Berghansen"></div>
+      <div class="sponsor-item"><img src="img/sponsor-sande-dyreklinikk.png" alt="Sande Dyreklinikk"></div>
+      <div class="sponsor-item"><img src="img/sponsor-gk.png" alt="GK"></div>
+      <div class="sponsor-item"><img src="img/sponsor-rolls-sykkel.png" alt="Rolls Sykkel"></div>
+      <div class="sponsor-item"><img src="img/sponsor-onemed.jpg" alt="OneMed"></div>
+      <!-- Duplikat for sømløs loop -->
+      <div class="sponsor-item"><img src="img/sponsor-gastromat.png" alt="Gastromat"></div>
+      <div class="sponsor-item"><img src="img/sponsor-bd-samferdsel.jpg" alt="BD Samferdsel"></div>
+      <div class="sponsor-item"><img src="img/sponsor-berghansen.png" alt="Berghansen"></div>
+      <div class="sponsor-item"><img src="img/sponsor-sande-dyreklinikk.png" alt="Sande Dyreklinikk"></div>
+      <div class="sponsor-item"><img src="img/sponsor-gk.png" alt="GK"></div>
+      <div class="sponsor-item"><img src="img/sponsor-rolls-sykkel.png" alt="Rolls Sykkel"></div>
+      <div class="sponsor-item"><img src="img/sponsor-onemed.jpg" alt="OneMed"></div>
+    </div>
+  </div>
+  <div style="padding:0 2.5rem;">
+    <p style="margin-top:2.5rem;font-size:0.82rem;color:var(--muted);">Interessert i å sponse oss? <a href="#kontakt" style="color:var(--red);font-weight:600;">Ta kontakt med oss.</a></p>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section style="background:var(--white);" id="kontakt">
+  <div class="max-w">
+    <div class="section-tag tag-blue">📬 Kontakt</div>
+    <h2>Kom i <span style="color:var(--red)">kontakt</span></h2>
+    <div class="divider blue"></div>
+    <div class="kontakt-grid">
+      <div>
+        <p style="font-size:1rem;line-height:1.8;color:var(--muted);margin-bottom:2rem;">Spørsmål om treninger, frivilligarbeid, sponsormuligheter eller NM 2026? Vi hører gjerne fra deg!</p>
+        <div class="kontakt-info">
+          <div class="kontakt-item">
+            <div class="kontakt-icon">📍</div>
+            <div><h4>Treningssted og arena</h4><p>Lersbrygga Idrettsanlegg<br>3070 Sande i Vestfold</p></div>
+          </div>
+          <div class="kontakt-item">
+            <div class="kontakt-icon">✉️</div>
+            <div><h4>Leder sykkelgruppa</h4><a href="mailto:leder.sykkel@sandesk.no" style="color:var(--blue);">leder.sykkel@sandesk.no</a></div>
+          </div>
+          <div class="kontakt-item">
+            <div class="kontakt-icon">🌐</div>
+            <div><h4>SSK Sykkel</h4><a href="https://sandesk.no/grupper/sykkel/" target="_blank">sandesk.no/grupper/sykkel</a></div>
+          </div>
+          <div class="kontakt-item">
+            <div class="kontakt-icon">📱</div>
+            <div><h4>Treningspåmeldinger via Spond</h4><a href="https://group.spond.com/OXGYJ" target="_blank">Bli med i vår Spond-gruppe</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div style="background:var(--blue);border-radius:4px;padding:2.5rem;color:white;">
+          <h3 style="font-family:'Bebas Neue',cursive;font-size:2rem;color:var(--white);margin-bottom:0.5rem;letter-spacing:0.05em;">Vil du bli med?</h3>
+          <div style="width:40px;height:3px;background:var(--red);margin-bottom:1.2rem;border-radius:2px;"></div>
+          <p style="color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:1.5rem;">Nye medlemmer er alltid velkomne på trening – ta kontakt, så hjelper vi deg i gang.</p>
+          <a href="mailto:leder.sykkel@sandesk.no" class="btn btn-red" style="width:100%;text-align:center;justify-content:center;">Send oss en e-post</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Sande <span>SK</span></div>
+    <div style="margin-top:0.4rem;">Sande Sykkelklubb · Lersbrygga · 3070 Sande i Vestfold</div>
+  </div>
+  <div class="footer-links">
+    <a href="#om-klubben">Om klubben</a>
+    <a href="#trening">Trening</a>
+    <a href="#finn-frem">Finn frem</a>
+    <a href="sponsorer.html">Sponsorer</a>
+    <a href="#kontakt">Kontakt</a>
+    <a href="nm2026.html">NM 2026</a>
+  </div>
+  <div>© 2026 Sande Sportsklubb · Sykkelgruppa</div>
+</footer>
+
+<script>
+  // Scroll reveal observer for .reveal elements
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
+</body>
 </html>
