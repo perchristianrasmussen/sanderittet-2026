@@ -54,7 +54,8 @@ Klubben som har sine egne løyper og sin egen arena på Lersbrygga, som arranger
 - **Kåringer-siden** forblir skjult og utenfor menyen, med samme skjema.
 - **Gamle adresser** fra sanderittet.no (`nm2026.html`, `loyper.html`, `sponsorer.html`, `sanderittet-2026.html`, `sanderittet-20261.html`) skal fortsette å virke via videresending.
 - **Språk:** norsk (bokmål).
-- **Uavklart:** innhold på `/sanderittet` utenom sesong, og om det kommer nyheter eller en arrangementskalender.
+- **`/sanderittet` utenom sesong** viser status («Neste ritt · Dato kommer her»), om rittet, løypene og tidligere ritt. Neste ritt legges inn i `src/data/sanderittet.ts`.
+- **Uavklart:** om det kommer nyheter eller en arrangementskalender.
 
 ## Brand Commitments
 
