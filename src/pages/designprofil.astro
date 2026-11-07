@@ -77,6 +77,7 @@ const progressX = w * 0.58;
           <NesteTreningBanner />
           <Button href="https://group.spond.com/OXGYJ" external class="hero-cta">Bli med i Spond</Button>
         </div>
+        <p class="label hero-note">Påmelding og beskjeder skjer i appen Spond.</p>
       </div>
 
       <div class="hero-stats">
@@ -86,37 +87,40 @@ const progressX = w * 0.58;
       </div>
     </section>
 
-    <section class="section on-light">
-      <div class="container">
-        <h2 class="headline">Designprofil <span class="hl">v2</span></h2>
-        <AccentBar />
-        <p class="lead">Dagens arenastil fra sanderittet.no, videreført med TV-grafikken fra løypepresentasjonen. Denne siden viser byggeklossene; fasit er DESIGN.md.</p>
-      </div>
-    </section>
+    <!-- Innledning og farger deler én lys flate, så lyst og mørkt veksler nedover siden -->
+    <div class="on-light">
+      <section class="section" aria-labelledby="profil">
+        <div class="container">
+          <h2 id="profil" class="headline">Designprofil <span class="hl">v2</span></h2>
+          <AccentBar />
+          <p class="lead">Dagens arenastil fra sanderittet.no, videreført med TV-grafikken fra løypepresentasjonen. Denne siden viser byggeklossene; fasit er DESIGN.md.</p>
+        </div>
+      </section>
 
-    <section class="section" aria-labelledby="farger">
-      <div class="container">
-        <h2 id="farger" class="headline">Far<span class="hl">ger</span></h2>
-        <AccentBar />
-        {colorGroups.map((g) => (
-          <div class="swatch-group">
-            <h3 class="label">{g.name}</h3>
-            <ul class="swatches">
-              {g.items.map((c) => (
-                <li>
-                  <span class="chip" style={`background:${c.hex}`}></span>
-                  <strong>{c.name}</strong>
-                  <span class="num meta">--{c.token} · {c.hex}</span>
-                  {c.role && <span class="meta">{c.role}</span>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </section>
+      <section class="section section-joined" aria-labelledby="farger">
+        <div class="container">
+          <h2 id="farger" class="headline">Far<span class="hl">ger</span></h2>
+          <AccentBar />
+          {colorGroups.map((g) => (
+            <div class="swatch-group">
+              <h3 class="label">{g.name}</h3>
+              <ul class="swatches">
+                {g.items.map((c) => (
+                  <li>
+                    <span class="chip" style={`background:${c.hex}`}></span>
+                    <strong>{c.name}</strong>
+                    <span class="num meta">--{c.token} · {c.hex}</span>
+                    {c.role && <span class="meta">{c.role}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
 
-    <section class="section on-light" aria-labelledby="typografi">
+    <section class="section on-dark" aria-labelledby="typografi">
       <div class="container">
         <h2 id="typografi" class="headline">Typo<span class="hl">grafi</span></h2>
         <AccentBar />
@@ -147,7 +151,7 @@ const progressX = w * 0.58;
           </div>
           <div class="type-row">
             <span class="label">Lead · Barlow 400</span>
-            <p class="lead">Sykkelgruppa i Sande Sportsklubb har faste treninger for alle aldre fra påske til høstferie.</p>
+            <p class="lead">Sande Sykkelklubb har faste treninger for alle aldre fra påske til høstferie.</p>
           </div>
           <div class="type-row">
             <span class="label">Body · Barlow 400</span>
@@ -175,9 +179,9 @@ const progressX = w * 0.58;
         </div>
 
         <div class="demo-row stats-row">
-          <StatPanel label="Mandag" value="18:00" unit="≤10 år" tone="light" />
-          <StatPanel label="Mandag" value="18:00" unit="10 år +" tone="light" />
-          <StatPanel label="Torsdag" value="18:00" unit="11 år +" tone="light" />
+          <StatPanel label="Man · opptil 10 år" value="18:00" unit="–19:00" tone="light" />
+          <StatPanel label="Man · over 10 år" value="18:00" unit="–19:30" tone="light" />
+          <StatPanel label="Tor · 11 år og eldre" value="18:00" unit="–19:30" tone="light" />
         </div>
 
         <div class="demo-grid">
@@ -257,8 +261,8 @@ const progressX = w * 0.58;
             <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
               <defs>
                 <linearGradient id="prog" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#e8342a" stop-opacity="0.85" />
-                  <stop offset="1" stop-color="#e8342a" stop-opacity="0.12" />
+                  <stop offset="0" style="stop-color: var(--red-light); stop-opacity: 0.85" />
+                  <stop offset="1" style="stop-color: var(--red-light); stop-opacity: 0.12" />
                 </linearGradient>
                 <clipPath id="done"><rect x="0" y="0" width={progressX} height={h} /></clipPath>
               </defs>
@@ -266,7 +270,7 @@ const progressX = w * 0.58;
               <polyline points={line} fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" vector-effect="non-scaling-stroke" />
               <g clip-path="url(#done)">
                 <polygon points={area} fill="url(#prog)" />
-                <polyline points={line} fill="none" stroke="#e8342a" stroke-width="3" vector-effect="non-scaling-stroke" />
+                <polyline points={line} fill="none" style="stroke: var(--red-light)" stroke-width="3" vector-effect="non-scaling-stroke" />
               </g>
             </svg>
           </div>
@@ -301,7 +305,7 @@ const progressX = w * 0.58;
   <footer class="footer on-dark">
     <div class="container footer-inner">
       <div>
-        <p class="footer-brand">Sande <b>Sykkel</b></p>
+        <p class="footer-brand">Sande <b>Sykkel</b>klubb</p>
         <p class="label">Lersbrygga · 3070 Sande i Vestfold</p>
       </div>
       <p class="label">En del av <a href="https://sandesk.no/grupper/sykkel/">Sande Sportsklubb</a></p>
@@ -377,10 +381,14 @@ const progressX = w * 0.58;
 
   .hero-sub {
     margin-top: 0.75rem;
-    font-size: clamp(1.0625rem, 1.6vw, 1.3rem);
-    color: rgba(255, 255, 255, 0.82);
+    font-size: var(--fs-sub);
+    color: var(--soft-on-dark);
     max-width: 42ch;
     text-wrap: pretty;
+  }
+
+  .hero-note {
+    margin-top: 0.75rem;
   }
 
   .hero-action {
@@ -472,6 +480,11 @@ const progressX = w * 0.58;
     }
   }
 
+  /* Fortsetter flaten over; luften kommer fra seksjonen før */
+  .section-joined {
+    padding-top: 0;
+  }
+
   /* Farger */
   .swatch-group + .swatch-group {
     margin-top: 2.5rem;
@@ -501,7 +514,7 @@ const progressX = w * 0.58;
   }
 
   .meta {
-    font-size: 0.875rem;
+    font-size: var(--fs-meta);
     color: var(--muted);
   }
 
@@ -517,11 +530,11 @@ const progressX = w * 0.58;
     align-items: baseline;
     gap: 1.5rem;
     padding-bottom: 1.75rem;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--line-on-dark);
   }
 
   .type-display {
-    font-size: clamp(3.5rem, 9vw, 6rem);
+    font-size: var(--fs-display-sm);
   }
 
   .type-stat {
@@ -532,7 +545,7 @@ const progressX = w * 0.58;
 
   .type-stat small {
     font-size: 0.42em;
-    color: var(--muted);
+    color: var(--muted-on-dark);
     font-weight: 600;
   }
 
@@ -547,6 +560,7 @@ const progressX = w * 0.58;
 
   .body-sample {
     max-width: 65ch;
+    color: var(--soft-on-dark);
   }
 
   /* Demo */
@@ -581,7 +595,6 @@ const progressX = w * 0.58;
   }
 
   .card-day {
-    font-size: 2.4rem;
     color: var(--blue);
   }
 
@@ -634,7 +647,7 @@ const progressX = w * 0.58;
   }
 
   .panel-blue p {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--soft-on-dark);
     margin-bottom: 1.5rem;
   }
 
@@ -697,8 +710,8 @@ const progressX = w * 0.58;
     min-height: 26rem;
     border-radius: var(--r-lg);
     background:
-      radial-gradient(ellipse 60% 70% at 40% 60%, #2c3a2e 0%, transparent 70%),
-      linear-gradient(160deg, #1a2620, #0f1512 70%);
+      radial-gradient(ellipse 60% 70% at 40% 60%, var(--map-ph-glade) 0%, transparent 70%),
+      linear-gradient(160deg, var(--map-ph-forest), var(--map-ph-floor) 70%);
     box-shadow: var(--shadow-embed);
     display: flex;
     flex-direction: column;
@@ -746,7 +759,7 @@ const progressX = w * 0.58;
     min-width: 44px;
     min-height: 44px;
     font-family: var(--font-cond);
-    font-size: 0.875rem;
+    font-size: var(--fs-meta);
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -815,7 +828,7 @@ const progressX = w * 0.58;
 
   .info-card p {
     margin-top: 0.4rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--soft-on-dark);
   }
 
   /* Ikoner */
@@ -854,7 +867,7 @@ const progressX = w * 0.58;
 
   .footer-brand {
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: var(--fs-brand);
     letter-spacing: 0.04em;
   }
 
@@ -883,7 +896,7 @@ const progressX = w * 0.58;
     }
 
     .hero h1 {
-      font-size: clamp(3rem, 16vw, 5rem);
+      font-size: var(--fs-display-sm);
     }
 
     .hero-action {
@@ -920,6 +933,11 @@ const progressX = w * 0.58;
     .type-row {
       grid-template-columns: 1fr;
       gap: 0.4rem;
+    }
+
+    /* Treningspanelene stables i full bredde i stedet for ujevne bredder */
+    .stats-row :global(.stat) {
+      flex: 1 1 100%;
     }
 
     .demo-grid,

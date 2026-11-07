@@ -15,6 +15,8 @@
   --text: #1a2030;
   --muted: #5a6580;
   --muted-on-dark: rgba(255, 255, 255, 0.62);
+  /* Løpende tekst på mørkt og blått: lysere enn muted-on-dark */
+  --soft-on-dark: rgba(255, 255, 255, 0.8);
   --line-on-dark: rgba(255, 255, 255, 0.14);
   --line: rgba(13, 24, 36, 0.1);
   /* Kanter på komponenter (input, kontroller): minst 3:1 mot flaten */
@@ -30,17 +32,33 @@
   --route-orange: #e87820;
   --route-shortcut: #d4a840;
 
+  /* Terreng i kartplassholderen – kun der ekte kart ikke er lastet */
+  --map-ph-glade: #2c3a2e;
+  --map-ph-forest: #1a2620;
+  --map-ph-floor: #0f1512;
+
   /* Skrift */
   --font-display: 'Bebas Neue', Impact, sans-serif;
   --font-cond: 'Barlow Condensed', 'Arial Narrow', sans-serif;
   --font-body: 'Barlow', system-ui, sans-serif;
 
   --fs-display: clamp(4rem, 12vw, 10rem);
+  /* Display under 760px og i stilprøver */
+  --fs-display-sm: clamp(3rem, 16vw, 5rem);
   --fs-headline: clamp(2.5rem, 6vw, 4.2rem);
   --fs-title: clamp(1.6rem, 3vw, 2.2rem);
   --fs-stat: 2.75rem;
   --fs-stat-sm: 1.75rem;
   --fs-banner: 1.875rem;
+  --fs-banner-value: 1.5rem;
+  /* Bannerets nøkkel under 760px */
+  --fs-banner-sm: 1.375rem;
+  /* Undertekst under hero-H1 */
+  --fs-sub: clamp(1.0625rem, 1.6vw, 1.3rem);
+  /* Ordmerket «Sande Sykkelklubb» i nav og footer */
+  --fs-brand: 1.6rem;
+  /* Rader i mobilmenyen */
+  --fs-menu: 1.375rem;
   --fs-tag: 0.9375rem;
   --fs-label: 0.8125rem;
   --fs-nav: 1rem;
@@ -48,6 +66,8 @@
   --fs-lead: 1.125rem;
   --fs-body: 1.0625rem;
   --fs-body-sm: 0.9375rem;
+  /* Liten metadata (fargekoder) og HUD-kontroller */
+  --fs-meta: 0.875rem;
 
   --track-tag: 0.16em;
 

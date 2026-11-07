@@ -11,6 +11,7 @@ html {
   scroll-behavior: smooth;
   color-scheme: light;
   accent-color: var(--red);
+  caret-color: var(--red);
   scrollbar-color: var(--muted) var(--off-white);
 }
 
@@ -49,7 +50,15 @@ video {
 
 a {
   color: var(--blue-mid);
+  /* Gjelder der vanlig understrek brukes i stedet for streken under */
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
   transition: color var(--t-fast);
+}
+
+/* Klokkeslett og datoer står alltid med tabulære sifre */
+time {
+  font-variant-numeric: tabular-nums;
 }
 
 a:hover {

@@ -16,6 +16,8 @@ colors:
   text: "#1a2030"
   muted: "#5a6580"
   muted-on-dark: "rgba(255,255,255,0.62)"
+  soft-on-dark: "rgba(255,255,255,0.8)"
+  line: "rgba(13,24,36,0.1)"
   line-on-dark: "rgba(255,255,255,0.14)"
   line-strong: "#7a8499"
   line-on-dark-strong: "rgba(255,255,255,0.45)"
@@ -25,10 +27,19 @@ colors:
   route-blue: "#3a9eff"
   route-orange: "#e87820"
   route-shortcut: "#d4a840"
+  map-ph-glade: "#2c3a2e"
+  map-ph-forest: "#1a2620"
+  map-ph-floor: "#0f1512"
 typography:
   display:
     fontFamily: "'Bebas Neue', Impact, sans-serif"
     fontSize: "clamp(4rem, 12vw, 10rem)"
+    fontWeight: 400
+    lineHeight: 0.88
+    letterSpacing: "0.02em"
+  display-sm:
+    fontFamily: "'Bebas Neue', Impact, sans-serif"
+    fontSize: "clamp(3rem, 16vw, 5rem)"
     fontWeight: 400
     lineHeight: 0.88
     letterSpacing: "0.02em"
@@ -62,6 +73,30 @@ typography:
     fontWeight: 800
     lineHeight: 1
     letterSpacing: "0.04em"
+  banner-sm:
+    fontFamily: "'Barlow Condensed', 'Arial Narrow', sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 800
+    lineHeight: 1
+    letterSpacing: "0.04em"
+  banner-value:
+    fontFamily: "'Barlow Condensed', 'Arial Narrow', sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "0.1em"
+    fontFeature: "'tnum'"
+  brand:
+    fontFamily: "'Bebas Neue', Impact, sans-serif"
+    fontSize: "1.6rem"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "0.04em"
+  menu:
+    fontFamily: "'Barlow Condensed', 'Arial Narrow', sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 600
+    letterSpacing: "0.1em"
   tag:
     fontFamily: "'Barlow Condensed', 'Arial Narrow', sans-serif"
     fontSize: "0.9375rem"
@@ -85,6 +120,11 @@ typography:
     fontWeight: 700
     lineHeight: 1
     letterSpacing: "0.08em"
+  sub:
+    fontFamily: "'Barlow', system-ui, sans-serif"
+    fontSize: "clamp(1.0625rem, 1.6vw, 1.3rem)"
+    fontWeight: 400
+    lineHeight: 1.65
   lead:
     fontFamily: "'Barlow', system-ui, sans-serif"
     fontSize: "1.125rem"
@@ -100,6 +140,11 @@ typography:
     fontSize: "0.9375rem"
     fontWeight: 400
     lineHeight: 1.6
+  meta:
+    fontFamily: "'Barlow', system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.5
 rounded:
   none: "0px"
   sm: "2px"
@@ -165,6 +210,7 @@ components:
   banner-value:
     backgroundColor: "{colors.panel}"
     textColor: "{colors.white}"
+    typography: "{typography.banner-value}"
     rounded: "{rounded.none}"
     padding: "12px 20px"
   nav:
@@ -243,11 +289,14 @@ Klubbfargene rødt og blått mot en dyp arenablå og kjølige lyse nøytraler, m
 - **Arenamørk** (`dark`): nav, hero, arenaseksjoner og footer. Også overskriftsfarge på lyse flater.
 - **Natt** (`night`) og **panelglass** (`panel`): bakgrunn for kart og 3D-presentasjoner, og glasset bak tallpaneler og bannere oppå bilde eller kart.
 - **Blekk** (`text`), **grus** (`muted`), **hvit** og **off-white**: tekst og lyse flater.
-- **Tekst og linjer på mørkt** (`muted-on-dark`, `line-on-dark`): sekundærtekst og kantlinjer på mørke flater.
+- **Tekst og linjer på mørkt** (`muted-on-dark`, `line-on-dark`): sekundærtekst og kantlinjer på mørke flater. **Myk hvit** (`soft-on-dark`) er løpende tekst på mørke og blå flater (hero-undertekst, infokort, blått panel), lysere enn `muted-on-dark`. **Hårstrek** (`line`) er skillelinjer og kortkanter på lyse flater.
 - **Komponentkanter** (`line-strong` på lyst, `line-on-dark-strong` på mørkt): kanten på input, outline-knapper og HUD-kontroller. Begge holder minst 3:1 mot flaten; de svake linjene (`line`, `line-on-dark`) er bare for skillelinjer og kort.
 
 ### Løypefarger (kun i kart)
 `route-start`, `route-green`, `route-blue`, `red` (XCO 13+), `route-orange` og `route-shortcut` (stiplet). De er kartspråk og knyttet til aldersklasser.
+
+### Terreng i kartplassholder (kun kartplassholder)
+`map-ph-glade`, `map-ph-forest` og `map-ph-floor` er en dempet skoggrønn flate bak HUD-en der det ekte kartet ikke er lastet (stilsiden, statisk reserve). De brukes ikke til noe annet.
 
 ### Named Rules
 **Regelen om rødt som signal.** Rødt markerer handling, ett fremhevet ord og grafikkens nøkkel (etikett, topplinje, banner). Det blir aldri store bakgrunnsflater og aldri brødtekst.
@@ -267,14 +316,16 @@ Klubbfargene rødt og blått mot en dyp arenablå og kjølige lyse nøytraler, m
 Fontene serveres fra prosjektet med `@font-face` og lastes ikke fra Google Fonts.
 
 ### Hierarchy
-- **Display**: hero-H1, én per side.
+- **Display**: hero-H1, én per side. **Display-sm** er samme stil under 760px og i stilprøver.
+- **Sub**: undertekst rett under hero-H1.
 - **Headline**: H2 på seksjoner.
 - **Title**: korttitler, sideheadere på smale sider og karttitler.
 - **Stat / Stat-sm**: tall i tallpaneler (lengde, høydemeter, årstall, tider), alltid med tabulære sifre og enhet i liten, dempet vekt.
-- **Banner**: nøkkelen i bannere, som kan settes i kursiv 800.
+- **Banner / Banner-sm / Banner-value**: nøkkelen i bannere i kursiv 800 (Banner-sm under 760px), og verdien i 600 med tabulære sifre. Verdien er mindre enn nøkkelen på desktop og blir `body`-størrelse under 760px.
 - **Tag / Label**: etikettfelt, seksjonsetiketter, metadata som tider og steder, og skjemalabels. Alltid versaler med sperring 0.16em.
-- **Nav / Button**: versaler i Barlow Condensed.
-- **Lead / Body / Body-sm**: Barlow, maks ~65 tegn per linje i løpende tekst.
+- **Nav / Menu / Button**: versaler i Barlow Condensed. Menu er radene i mobilmenyen.
+- **Brand**: ordmerket i nav og footer.
+- **Lead / Body / Body-sm / Meta**: Barlow, maks ~65 tegn per linje i løpende tekst. Meta er liten metadata som fargekoder; samme størrelse brukes i HUD-kontroller.
 
 ### Named Rules
 **Regelen om ett rødt ord.** Bebas-titler har ett ord eller én frase i `red`. Aldri mer.
@@ -287,7 +338,7 @@ Fontene serveres fra prosjektet med `@font-face` og lastes ikke fra Google Fonts
 - **Seksjonsrytme:** 6rem vertikalt på desktop og 4rem på mobil. Det er mer luft over en overskrift enn under.
 - **Lys/mørk-veksling:** seksjonene bytter mellom mørk (`dark`) og lys (white / off-white / blue-pale). To like flater skal ikke ligge etter hverandre.
 - **Seksjonsstart:** Bebas-H2 med rødt ord → skråstilt aksentstrek → ingress. Ingen dekorativ etikett over titler.
-- **Hero:** fullhøyde, foto fra klubben under arenagradient, trefargestripe øverst og innholdet nederst til venstre. Tallpaneler (Norgescup 2024, Norgescup 2025, NM 2026) står som TV-grafikk øverst til høyre på desktop. På mobil er rekkefølgen H1, undertekst, banner, Spond-knappen i full bredde og så tallpanelene som én kompakt rad nederst, slik at knappen alltid er i første skjermbilde.
+- **Hero:** fullhøyde, foto fra klubben under arenagradient, trefargestripe øverst og innholdet nederst til venstre. Tallpaneler (Norgescup 2024, Norgescup 2025, NM 2026) står som TV-grafikk øverst til høyre på desktop. Under handlingen står én linje i `label`: «Påmelding og beskjeder skjer i appen Spond.» På mobil er rekkefølgen H1, undertekst, banner, Spond-knappen i full bredde, Spond-linjen og så tallpanelene som én kompakt rad nederst, slik at knappen alltid er i første skjermbilde.
 - **Kart og presentasjon:** kartmoduler kan gå i full bredde. Grafikk (tittel, tallpaneler, høydeprofil) ligger som HUD over kartet.
 - **Breakpoint:** 760px. Under det stables gridder til én kolonne, tallpaneler brytes til en rad som kan rulles sideveis eller krympes, og navigasjonen blir en hamburgermeny.
 
@@ -321,7 +372,7 @@ Systemet er flatt. Dybde lages med tone (mørke mot lyse flater) og med panelgla
 To felt kant i kant: nøkkel i `red` med hvit tekst og verdi i hvitt med `night`-tekst, begge i `tag`-typografi og versaler. Eksempler: `XCO | 4,2 KM`, `TRENING | I DAG`, `NM | 2026`. Feltet bærer alltid informasjon: disiplin, status, dato eller kategori. Det brukes i kartheadere, på løype- og arrangementskort og i HUD-er, og **aldri som pynt over en tittel**. På lyse flater kan verdifeltet bli `dark` med hvit tekst.
 
 ### Tallpanel (stat-panel)
-`panel` (på mørkt eller over bilde) eller `white` (på lyst), med 3px `red` topplinje og 0 radius. Nøkkelen står i `label` i versaler og dempet farge, tallet i `stat` med enhet i liten 600-vekt. Panelene står på rad med 6px mellomrom. Brukes til løypetall, årstall, treningstider og neste trening.
+`panel` (på mørkt eller over bilde) eller `white` (på lyst), med 3px `red` topplinje og 0 radius. Nøkkelen står i `label` i versaler og dempet farge, tallet i `stat` med enhet i liten 600-vekt. Panelene står på rad med 6px mellomrom. Brukes til løypetall, årstall, treningstider og neste trening. Treningstider skrives med dag og aldersgruppe i nøkkelen («Man · opptil 10 år», «Man · over 10 år», «Tor · 11 år og eldre») og starttid som tall med sluttid som dempet enhet («18:00 –19:30»), så gruppene aldri overlapper.
 
 ### Banner
 Nøkkel i `red` (kursiv 800) og verdi i `panel`, kant i kant. Brukes til hendelser og kunngjøringer, som «Trening i dag · 18:00» eller «Sesongen starter i påsken». Feltene viskes inn fra venstre (se Bevegelse).
@@ -343,10 +394,10 @@ Et panel i `panel` med 3px rød topplinje, likt tallpanelene, og etiketten «HØ
 `off-white`-bakgrunn, 1.5px `line-strong`-kant, 2px radius og Barlow. Labels står i `label`. Fokus gir `blue-mid`-kant, hvit bakgrunn og fokusringen. Feil gir `red`-kant og en feilboks i `error-bg` med 1px rød kant, et ikon og en tekst som sier hva som er galt og hvordan det rettes.
 
 ### Navigation
-Mørk (`dark`), 2px rød bunnlinje og fast plassering med glass på forsiden. Logo pluss «Sande **Sykkel**» i Bebas. Lenkene står i `nav`-typografi, 70 % hvit, og blir hvite ved hover. Siste lenke er en rød CTA til trening («Bli med»). Lenker og CTA har minst 44px treffflate, og siden man står på får `aria-current` og rød understrek. Navigasjonen ligger i `<header>` (komponenten `Nav.astro`). Under 760px blir den en hamburgerknapp («Meny» / «Lukk meny», `aria-expanded`) som åpner et mørkt panel i full bredde med store rader (≥48px) og den røde CTA-en; Escape lukker og gir fokus tilbake til knappen. Uten JS står lenkene synlige under logoen.
+Mørk (`dark`), 2px rød bunnlinje og fast plassering med glass på forsiden. Logo pluss ordmerket «Sande **Sykkel**klubb» i `brand` (Bebas), der «Sykkel» er det ene røde ordet. Lenkene står i `nav`-typografi, 70 % hvit, og blir hvite ved hover. Siste lenke er en rød CTA til trening («Bli med»). Lenker og CTA har minst 44px treffflate, og siden man står på får `aria-current` og rød understrek. Navigasjonen ligger i `<header>` (komponenten `Nav.astro`). Under 760px blir den en hamburgerknapp («Meny» / «Lukk meny», `aria-expanded`) som åpner et mørkt panel i full bredde med store rader (≥48px) og den røde CTA-en; Escape lukker og gir fokus tilbake til knappen. Uten JS står lenkene synlige under logoen.
 
 ### Fokus og tilgjengelighet
-Alt som kan fokuseres får en 2px fokusring med `:focus-visible`: `blue-mid` på lyse flater og hvit på mørke og blå flater. `outline: none` brukes ikke. Første fokuserbare element er «Hopp til innhold», skjult til det får fokus, og hero med H1 ligger inne i `<main>`.
+Alt som kan fokuseres får en 2px fokusring med `:focus-visible`: `blue-mid` på lyse flater og hvit på mørke og blå flater. `outline: none` brukes ikke. Nettleserens egne flater følger paletten: markert tekst er hvit på `red`, markøren i felt er `red`, rullefeltet er `muted` på `off-white`, avkrysninger bruker `red` (`accent-color`), og klokkeslett (`<time>`) står med tabulære sifre. Første fokuserbare element er «Hopp til innhold», skjult til det får fokus, og hero med H1 ligger inne i `<main>`.
 
 ### Ikoner
 Et konsekvent linjeikonsett med 1.75px strek i `currentColor`, servert som inline SVG. Emojier brukes ikke som ikoner.
@@ -355,7 +406,10 @@ Et konsekvent linjeikonsett med 1.75px strek i `currentColor`, servert som inlin
 MapLibre over `night`, med flyfoto eller Kartverket topo og 3D-terreng. HUD-en ligger oppå: etikettfelt og Bebas-tittel øverst til venstre, tallpaneler øverst til høyre, høydeprofil nederst og HUD-kontroller over profilen. Løypa tegnes med mørk kant, en hvit stiplet «spøkelseslinje» for gjenstående og rød fremdrift med glød. Startpinner er hvite etiketter på en tynn stang.
 
 ### Footer
-`dark` med 3px rød topplinje. Lenker og metadata står i `label` i dempet hvit, og blir røde ved hover. Lenke til Sande Sportsklubb er alltid med.
+`dark` med 3px rød topplinje. Samme ordmerke som i navigasjonen. Lenker og metadata står i `label` i dempet hvit, og blir røde ved hover. Lenke til Sande Sportsklubb er alltid med.
+
+### Navn
+**Regelen om ett klubbnavn.** Klubben heter «Sande Sykkelklubb» overalt i grensesnittet: tittel, H1, ordmerket i nav og footer, og løpende tekst. Ordmerket forkortes aldri til «Sande Sykkel». «Sande Sportsklubb» brukes bare om moderklubben («En del av Sande Sportsklubb»), og «sykkelgruppa» bare når teksten forklarer tilknytningen.
 
 ### Bevegelse
 Én komponert entré, tydelig respons på handlinger og ingenting som avsløres ved scrolling. Kurven er eksponentiell utbremsing (`--ease-out-expo`, `cubic-bezier(0.16, 1, 0.3, 1)`); utgang er raskere enn inngang og akselererer (`--ease-in`).

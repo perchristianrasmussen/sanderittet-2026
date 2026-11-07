@@ -46,7 +46,7 @@ const { label, value, datetime, state, ...attrs } = Astro.props;
     background: var(--panel);
     backdrop-filter: blur(6px);
     padding: 12px 20px;
-    font-size: 1.5rem;
+    font-size: var(--fs-banner-value);
     font-weight: 600;
     letter-spacing: 0.1em;
     line-height: 1;
@@ -56,11 +56,11 @@ const { label, value, datetime, state, ...attrs } = Astro.props;
 
   @media (max-width: 760px) {
     .bk {
-      font-size: 1.375rem;
+      font-size: var(--fs-banner-sm);
     }
 
     .bv {
-      font-size: 1.0625rem;
+      font-size: var(--fs-body);
     }
   }
 </style>
