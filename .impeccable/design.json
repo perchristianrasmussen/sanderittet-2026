@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-07T12:00:00Z",
+  "title": "Design System: Sande SK – Sykkel",
+  "extensions": {
+    "colorMeta": {
+      "red":        { "role": "primary",   "displayName": "Rittrød",          "tonalRamp": ["#3d0b07", "#6b130d", "#9e1a12", "#C8241A", "#e8342a", "#f07a72", "#f7b9b4", "#fcebea"] },
+      "red-dark":   { "role": "primary",   "displayName": "Dyp rittrød" },
+      "red-light":  { "role": "primary",   "displayName": "Lys rittrød" },
+      "blue":       { "role": "secondary", "displayName": "Klubbblå",         "tonalRamp": ["#0a1a38", "#16397A", "#1e4ea6", "#2a64cc", "#5c8ae0", "#9bb7ec", "#cfdcf5", "#e8eef8"] },
+      "blue-mid":   { "role": "secondary", "displayName": "Mellomblå" },
+      "blue-light": { "role": "secondary", "displayName": "Lys klubbblå" },
+      "blue-pale":  { "role": "secondary", "displayName": "Blekblå" },
+      "dark":       { "role": "neutral",   "displayName": "Arenamørk",        "tonalRamp": ["#05090e", "#0d1824", "#1a2030", "#2c3548", "#5a6580", "#8d96ab", "#c9ced9", "#f6f7f9"] },
+      "text":       { "role": "neutral",   "displayName": "Blekk" },
+      "muted":      { "role": "neutral",   "displayName": "Grus" },
+      "white":      { "role": "neutral",   "displayName": "Hvit" },
+      "off-white":  { "role": "neutral",   "displayName": "Off-white" },
+      "error-bg":   { "role": "neutral",   "displayName": "Feilrosa" },
+      "route-start":    { "role": "tertiary", "displayName": "Løype: startloop" },
+      "route-green":    { "role": "tertiary", "displayName": "Løype: grønn" },
+      "route-blue":     { "role": "tertiary", "displayName": "Løype: blå" },
+      "route-orange":   { "role": "tertiary", "displayName": "Løype: oransje (XCC 15+)" },
+      "route-shortcut": { "role": "tertiary", "displayName": "Løype: snarvei (stiplet)" }
+    },
+    "typographyMeta": {
+      "display":  { "displayName": "Display",   "purpose": "Hero-H1, én per side." },
+      "headline": { "displayName": "Headline",  "purpose": "Seksjons-H2 på brede sider, med ett rødt ord." },
+      "title":    { "displayName": "Title",     "purpose": "Seksjonstitler på smale undersider." },
+      "title-sm": { "displayName": "Title S",   "purpose": "Korttitler, sponsornavn, karttitler." },
+      "stat":     { "displayName": "Stat",      "purpose": "Årstall og nøkkeltall." },
+      "lead":     { "displayName": "Lead",      "purpose": "Ingress under H2, maks ~600px." },
+      "body":     { "displayName": "Body",      "purpose": "Løpende tekst." },
+      "body-sm":  { "displayName": "Body S",    "purpose": "Korttekst og beskrivelser." },
+      "button":   { "displayName": "Button",    "purpose": "Knapper, alltid versaler." },
+      "nav":      { "displayName": "Nav",       "purpose": "Navigasjonslenker, versaler." },
+      "label":    { "displayName": "Label",     "purpose": "Seksjonsetiketter, versaler, DM Mono." },
+      "label-sm": { "displayName": "Label S",   "purpose": "Metadata, skjemalabels, statistikketiketter." }
+    },
+    "shadows": [
+      { "name": "hover-lift",   "value": "0 12px 40px rgba(22,57,122,0.12)", "purpose": "Hover på klikkbare kort, sammen med translateY(-3px)." },
+      { "name": "hover-soft",   "value": "0 4px 20px rgba(0,0,0,0.08)",      "purpose": "Hover på sponsorkort." },
+      { "name": "map-rest",     "value": "0 4px 24px rgba(13,24,36,0.06)",   "purpose": "Kartkort i ro – eneste kort med skygge i ro." },
+      { "name": "embed-dark",   "value": "0 8px 32px rgba(0,0,0,0.3)",       "purpose": "Innebygd kart på mørk flate." },
+      { "name": "nav-sticky",   "value": "0 2px 12px rgba(0,0,0,0.18)",      "purpose": "Sticky nav på undersider." },
+      { "name": "lightbox",     "value": "0 20px 80px rgba(0,0,0,0.6)",      "purpose": "Lightbox for kart og bilder." }
+    ],
+    "motion": [
+      { "name": "fade-up",      "value": "fadeUp 0.9s ease both (translateY 28px → 0)", "purpose": "Hero-innhold, forsinkelser 0.1s steg." },
+      { "name": "reveal",       "value": "opacity/transform 0.65s ease (translateY 22px → 0)", "purpose": "Scroll-reveal via IntersectionObserver." },
+      { "name": "hover",        "value": "all 0.2s", "purpose": "Farge- og løft-overganger på knapper og lenker." },
+      { "name": "marquee",      "value": "sponsor-scroll 28s linear infinite", "purpose": "Sponsorstripe, pauser ved hover." }
+    ],
+    "breakpoints": [
+      { "name": "mobile-forms", "value": "680px" },
+      { "name": "mobile",       "value": "768px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primærknapp (rød)",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Hovedhandling. Én i fokus per visning.",
+      "html": "<a class=\"ds-btn ds-btn-red\" href=\"#\">Bli med på trening ↓</a>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 2rem; font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; text-decoration:none; border-radius:2px; transition:all 0.2s; cursor:pointer; border:none; } .ds-btn-red { background:#C8241A; color:#fff; } .ds-btn-red:hover { background:#e8342a; transform:translateY(-2px); } .ds-btn-red:focus-visible { outline:2px solid #1e4ea6; outline-offset:3px; }"
+    },
+    {
+      "name": "Outline-knapp (mørk flate)",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Sekundær handling på mørke seksjoner.",
+      "html": "<div class=\"ds-dark\"><a class=\"ds-btn-outline\" href=\"#\">Se NM 2026 →</a></div>",
+      "css": ".ds-dark { background:#0d1824; padding:1.5rem; } .ds-btn-outline { display:inline-flex; padding:0.85rem 2rem; font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; text-decoration:none; border-radius:2px; background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.3); transition:all 0.2s; } .ds-btn-outline:hover { border-color:#fff; } .ds-btn-outline:focus-visible { outline:2px solid #fff; outline-offset:3px; }"
+    },
+    {
+      "name": "Seksjonsetikett",
+      "kind": "chip",
+      "refersTo": "section-tag-blue",
+      "description": "Starter hver seksjon. Varianter: rød, blå, lys.",
+      "html": "<div><span class=\"ds-tag ds-tag-blue\">🚴 Om oss</span> <span class=\"ds-tag ds-tag-red\">📍 Finn frem</span> <span class=\"ds-tag ds-tag-light\">🏋️ Trening</span></div>",
+      "css": ".ds-tag { font-family:'DM Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.15em; padding:0.28rem 0.7rem; display:inline-block; border-radius:1px; } .ds-tag-red { background:#C8241A; color:#fff; } .ds-tag-blue { background:#16397A; color:#fff; } .ds-tag-light { background:rgba(22,57,122,0.1); color:#16397A; }"
+    },
+    {
+      "name": "Treningskort",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Lyst, flatt kort med hover-løft. Dag i Bebas, metadata i mono.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-day\">Man</div><div class=\"ds-card-info\">Mandager · Vår–Høst</div><h4>Trening for alle aldre</h4><p>Teknikk og moro i terrenget – foreldre er velkomne!</p><span class=\"ds-badge\">Alle aldre</span></div>",
+      "css": ".ds-card { border:1.5px solid rgba(0,0,0,0.1); border-radius:4px; padding:2rem; background:#fff; transition:all 0.25s; max-width:320px; font-family:'DM Sans',sans-serif; } .ds-card:hover { border-color:#1e4ea6; transform:translateY(-3px); box-shadow:0 12px 40px rgba(22,57,122,0.12); } .ds-card-day { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; color:#16397A; line-height:1; margin-bottom:0.2rem; } .ds-card-info { font-family:'DM Mono',monospace; font-size:0.73rem; color:#5a6580; margin-bottom:1rem; } .ds-card h4 { font-weight:700; font-size:0.98rem; margin:0 0 0.5rem; color:#0d1824; } .ds-card p { font-size:0.84rem; color:#5a6580; line-height:1.6; margin:0; } .ds-badge { display:inline-block; background:rgba(22,57,122,0.1); color:#16397A; font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.2rem 0.6rem; border-radius:2px; margin-top:1rem; }"
+    },
+    {
+      "name": "Tekstfelt",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Skjemafelt med mono-label. Fokus: blå kant, hvit bakgrunn.",
+      "html": "<label class=\"ds-label\">Kandidat</label><input class=\"ds-input\" type=\"text\" placeholder=\"Navn\">",
+      "css": ".ds-label { display:block; font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:500; color:#5a6580; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.35rem; } .ds-input { width:100%; max-width:360px; font-family:'DM Sans',sans-serif; font-size:0.95rem; color:#1a2030; background:#f6f7f9; border:1.5px solid rgba(0,0,0,0.08); border-radius:3px; padding:0.65rem 0.8rem; transition:border-color 0.2s, background 0.2s; } .ds-input:focus, .ds-input:focus-visible { outline:none; border-color:#1e4ea6; background:#fff; }"
+    },
+    {
+      "name": "Navigasjon",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Mørk nav med rød bunnlinje, logo-tekst og rød CTA sist.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nav-logo\">Sande <span>SK</span></div><ul><li><a href=\"#\">Om klubben</a></li><li><a href=\"#\">Trening</a></li><li><a href=\"#\">Løyper</a></li><li><a href=\"#\" class=\"ds-nav-cta\">NM 2026 ↗</a></li></ul></nav>",
+      "css": ".ds-nav { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 2.5rem; background:rgba(13,24,36,0.95); border-bottom:2px solid #C8241A; } .ds-nav-logo { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; color:#fff; letter-spacing:0.06em; line-height:1; } .ds-nav-logo span { color:#C8241A; } .ds-nav ul { display:flex; gap:1.8rem; list-style:none; align-items:center; margin:0; padding:0; } .ds-nav a { color:rgba(255,255,255,0.7); text-decoration:none; font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:500; letter-spacing:0.05em; text-transform:uppercase; transition:color 0.2s; } .ds-nav a:hover, .ds-nav a:focus-visible { color:#fff; } .ds-nav a.ds-nav-cta { background:#C8241A; color:#fff; padding:0.45rem 1.1rem; border-radius:2px; font-weight:700; } .ds-nav a.ds-nav-cta:hover { background:#e8342a; }"
+    },
+    {
+      "name": "Blått CTA-panel",
+      "kind": "card",
+      "refersTo": "panel-blue",
+      "description": "Oppfordring på lys flate: Bebas-tittel, rød strek, rød knapp.",
+      "html": "<div class=\"ds-panel\"><h3>Vil du bli med?</h3><div class=\"ds-panel-bar\"></div><p>Nye medlemmer er alltid velkomne på trening.</p><a class=\"ds-panel-btn\" href=\"#\">Send oss en e-post</a></div>",
+      "css": ".ds-panel { background:#16397A; border-radius:4px; padding:2.5rem; color:#fff; max-width:380px; font-family:'DM Sans',sans-serif; } .ds-panel h3 { font-family:'Bebas Neue',sans-serif; font-size:2rem; margin:0 0 0.5rem; letter-spacing:0.05em; font-weight:400; } .ds-panel-bar { width:40px; height:3px; background:#C8241A; margin-bottom:1.2rem; border-radius:2px; } .ds-panel p { color:rgba(255,255,255,0.7); line-height:1.7; margin:0 0 1.5rem; } .ds-panel-btn { display:flex; justify-content:center; padding:0.85rem 2rem; background:#C8241A; color:#fff; font-size:0.88rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; text-decoration:none; border-radius:2px; transition:all 0.2s; } .ds-panel-btn:hover { background:#e8342a; transform:translateY(-2px); }"
+    },
+    {
+      "name": "Kartheader",
+      "kind": "custom",
+      "refersTo": "map-card",
+      "description": "Signaturkomponent: mørk header på løypekart med disiplin i rød Bebas.",
+      "html": "<div class=\"ds-map\"><div class=\"ds-map-head\"><div class=\"ds-map-left\"><div class=\"ds-map-disc\">XCO</div><div><div class=\"ds-map-title\">Rundbane</div><div class=\"ds-map-sub\">Cross Country Olympic</div></div></div><div class=\"ds-map-badge\">NM 2026</div></div><div class=\"ds-map-foot\"><span class=\"ds-map-tag\">Løypekart</span><span class=\"ds-map-brand\">Sande <span>SK</span></span></div></div>",
+      "css": ".ds-map { background:#fff; border-radius:6px; overflow:hidden; border:1.5px solid rgba(22,57,122,0.12); box-shadow:0 4px 24px rgba(13,24,36,0.06); max-width:520px; } .ds-map-head { background:#0d1824; padding:1.2rem 1.8rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:3px solid #C8241A; } .ds-map-left { display:flex; align-items:center; gap:1rem; } .ds-map-disc { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; color:#C8241A; letter-spacing:0.06em; line-height:1; } .ds-map-title { font-family:'Bebas Neue',sans-serif; font-size:1.35rem; color:#fff; letter-spacing:0.05em; line-height:1.1; } .ds-map-sub { font-family:'DM Mono',monospace; font-size:0.62rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.12em; } .ds-map-badge { font-family:'DM Mono',monospace; font-size:0.6rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; border:1px solid rgba(255,255,255,0.15); padding:0.3rem 0.7rem; border-radius:2px; } .ds-map-foot { padding:0.8rem 1.8rem; display:flex; align-items:center; justify-content:space-between; background:#f6f7f9; border-top:1px solid rgba(22,57,122,0.08); } .ds-map-tag { font-family:'DM Mono',monospace; font-size:0.6rem; color:#1e4ea6; text-transform:uppercase; letter-spacing:0.1em; background:#e8eef8; padding:0.2rem 0.55rem; border-radius:2px; font-weight:500; } .ds-map-brand { font-family:'Bebas Neue',sans-serif; font-size:0.95rem; color:#5a6580; letter-spacing:0.06em; opacity:0.5; } .ds-map-brand span { color:#C8241A; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Rittdagen på Lersbrygga",
+    "overview": "Nettsiden ser ut som en rittdag: en mørk arena i flomlys, en tynn rød–hvit–blå stripe langs toppen, kondenserte versaler som på et startnummer og små mono-etiketter som på en resultatliste. De mørke flatene (dark) bærer det stolte og seriøse: NM-vertskap, Norgescup, løypekart. Mellom dem ligger lyse seksjoner i hvitt og blekblått, der klubben er lokal og varm: treningstider, Spond og «foreldre er velkomne». Siden veksler mellom de to stemmene, og den vekslingen er selve rytmen.\n\nUttrykket er sporty og litt rått: høy kontrast, store titler med tett linjeavstand, skarpe hjørner og rødt brukt som et signal, ikke som dekor. Varmen kommer fra innholdet, fra ekte bilder fra trening og ritt og fra et rolig, luftig brødtekstsnitt (DM Sans Light i ingresser). Det blir aldri søtt eller rundt.",
+    "keyCharacteristics": [
+      "Mørke «arena»-seksjoner vekslet med lyse klubbseksjoner (hvit / off-white / blue-pale).",
+      "Bebas Neue i versaler for alt som er tittel eller tall, der ett ord er rødt.",
+      "DM Mono i små versaler med vid sperring for metadata, etiketter og tidspunkter.",
+      "Rødt for handling og fremheving, blått for struktur og informasjon.",
+      "Skarpe hjørner (1–6px), tynne kantlinjer, flatt i ro.",
+      "Tykke røde kantlinjer (2–4px) markerer overgangen mellom mørke og lyse flater."
+    ],
+    "rules": [
+      { "name": "Regelen om rødt som signal", "body": "Rødt markerer handling og ett fremhevet ord, aldri store flater. Hver visning har høyst én rød primærknapp i fokus. Rød brødtekst finnes ikke.", "section": "colors" },
+      { "name": "Trefargeregelen", "body": "Rød–hvit–blå-stripen er et tynt strukturelement: 4px langs toppen av hero, en 120×5px aksentstrek under titler i NM-sammenheng, og 4px rød/blå kantlinjer rundt NM-banneret. Den blir aldri bakgrunn, mønster eller flagg.", "section": "colors" },
+      { "name": "Løyperegelen", "body": "Løypefargene finnes bare i kart. De brukes aldri som UI- eller dekorfarger.", "section": "colors" },
+      { "name": "Regelen om ett rødt ord", "body": "Overskrifter i Bebas har ett ord eller én frase i red via <span>: «Faste treninger», «Kom i kontakt», «Sande SK». Aldri mer enn én rød del per overskrift.", "section": "typography" },
+      { "name": "Mono-regelen", "body": "DM Mono betyr metadata: tider, steder, kategorier og etiketter. Den brukes aldri til brødtekst eller overskrifter.", "section": "typography" },
+      { "name": "Regelen om flatt til noe skjer", "body": "Kort er flate med en 1–1.5px kantlinje i ro. Skygge og løft kommer bare ved hover eller når noe svever over innhold (nav, legende, lightbox).", "section": "elevation" },
+      { "name": "Regelen om skarpe kanter", "body": "Ingenting er pilleformet og ingenting er rundere enn 6px. Interaktive elementer holder 2px.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do hent farger fra var(--red), var(--blue), var(--dark) osv., og legg samme :root-blokk på nye sider.",
+      "Do veksle mellom mørke og lyse seksjoner, og skill dem med en rød eller blå kantlinje der overgangen skal markeres.",
+      "Do bygg hver seksjonsstart som etikett → Bebas-H2 med ett rødt ord → rød skillestrek → ingress i muted.",
+      "Do bruk DM Mono i versaler for tider, steder og kategorier («Lersbrygga · Mandag & Torsdag»).",
+      "Do bruk ekte bilder fra trening og ritt, gjerne dempet med brightness(0.75–0.82) når det ligger tekst over.",
+      "Do hold kort flate i ro, og gi bare klikkbare kort hover-løft.",
+      "Do gi nye undersider samme skall: sticky mørk nav med rød CTA til slutt, mørk sideheader og mørk footer med rød topplinje.",
+      "Do respekter prefers-reduced-motion når du legger til ny bevegelse (dagens fadeUp, .reveal og marquee mangler dette)."
+    ],
+    "donts": [
+      "Don't innfør nye skrifttyper, en tredje merkefarge eller nye grå utenfor tokenene.",
+      "Don't bruk radius over 6px, pilleformede knapper eller myke, runde kort.",
+      "Don't bruk rødt til brødtekst, store bakgrunnsflater eller mer enn ett ord per overskrift.",
+      "Don't gjør trefargestripen til bakgrunn, mønster eller flagg.",
+      "Don't bruk løypefargene utenfor kart og legender.",
+      "Don't legg skygger på kort i ro, med kartkortet som eneste unntak.",
+      "Don't sett Bebas Neue på brødtekst eller lange setninger. Den er for titler og tall.",
+      "Don't bruk mer enn én display-overskrift per side."
+    ]
+  }
+}

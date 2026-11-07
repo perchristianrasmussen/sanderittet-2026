@@ -1,0 +1,47 @@
+---
+// Delt etikettfelt fra TV-grafikken. Skal alltid bære informasjon.
+interface Props {
+  label: string;
+  value?: string;
+  tone?: 'light' | 'dark';
+}
+
+const { label, value, tone = 'light' } = Astro.props;
+---
+
+<span class:list={['tag', `tag-${tone}`]}>
+  <b>{label}</b>{value && <span>{value}</span>}
+</span>
+
+<style>
+  .tag {
+    display: inline-flex;
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    letter-spacing: var(--track-tag);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .tag b,
+  .tag span {
+    padding: 6px 12px;
+    font-weight: 700;
+  }
+
+  .tag b {
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .tag-light span {
+    background: var(--white);
+    color: var(--night);
+  }
+
+  .tag-dark span {
+    background: var(--dark);
+    color: var(--white);
+  }
+</style>

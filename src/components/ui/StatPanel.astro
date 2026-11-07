@@ -1,0 +1,74 @@
+---
+interface Props {
+  label: string;
+  value: string;
+  unit?: string;
+  tone?: 'glass' | 'light';
+  size?: 'md' | 'sm';
+}
+
+const { label, value, unit, tone = 'glass', size = 'md' } = Astro.props;
+---
+
+<div class:list={['stat', `stat-${tone}`, `stat-${size}`]}>
+  <div class="k">{label}</div>
+  <div class="v">{value}{unit && <small>{unit}</small>}</div>
+</div>
+
+<style>
+  .stat {
+    border-top: 3px solid var(--red);
+    padding: 9px 16px 11px;
+    min-width: 8.5rem;
+  }
+
+  .stat-glass {
+    background: var(--panel);
+    color: var(--white);
+    backdrop-filter: blur(6px);
+  }
+
+  .stat-light {
+    background: var(--white);
+    color: var(--dark);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .k {
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: var(--track-tag);
+    text-transform: uppercase;
+    color: var(--muted-on-dark);
+  }
+
+  .stat-light .k {
+    color: var(--muted);
+  }
+
+  .v {
+    margin-top: 4px;
+    font-family: var(--font-cond);
+    font-size: var(--fs-stat);
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-sm .v {
+    font-size: var(--fs-stat-sm);
+  }
+
+  small {
+    margin-left: 4px;
+    font-size: 0.42em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--muted-on-dark);
+  }
+
+  .stat-light small {
+    color: var(--muted);
+  }
+</style>

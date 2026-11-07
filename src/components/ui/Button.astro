@@ -1,0 +1,78 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+
+interface Props {
+  href: string;
+  variant?: 'primary' | 'outline' | 'outline-light';
+  icon?: IconName;
+  external?: boolean;
+  class?: string;
+}
+
+const { href, variant = 'primary', icon, external = false, class: className } = Astro.props;
+const trailing = icon ?? (external ? 'external-link' : undefined);
+---
+
+<a
+  href={href}
+  class:list={['btn', `btn-${variant}`, className]}
+  {...external ? { target: '_blank', rel: 'noopener' } : {}}
+>
+  <slot />
+  {trailing && <Icon name={trailing} size={18} />}
+</a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 48px;
+    padding: 0.9rem 1.75rem;
+    font-family: var(--font-cond);
+    font-size: var(--fs-button);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: var(--r-sm);
+    border: 1.5px solid transparent;
+    transition:
+      background-color var(--t-fast),
+      border-color var(--t-fast),
+      transform var(--t-fast) var(--ease-out);
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .btn-primary:hover {
+    background: var(--red-light);
+    color: var(--white);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-outline:hover {
+    color: var(--white);
+    border-color: var(--white);
+  }
+
+  .btn-outline-light {
+    color: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .btn-outline-light:hover {
+    color: var(--white);
+    background: var(--blue);
+  }
+</style>

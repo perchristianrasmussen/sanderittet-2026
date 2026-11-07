@@ -1,0 +1,874 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import Tag from '../components/ui/Tag.astro';
+import StatPanel from '../components/ui/StatPanel.astro';
+import Banner from '../components/ui/Banner.astro';
+import AccentBar from '../components/ui/AccentBar.astro';
+import Icon, { type IconName } from '../components/ui/Icon.astro';
+import heroPhoto from '../assets/img/rytter-sti.jpg';
+import logo from '../assets/img/sandelogo.png';
+
+const colorGroups = [
+  {
+    name: 'Klubbfarger',
+    items: [
+      { token: 'red', hex: '#C8241A', name: 'Rittrød', role: 'Handling, ett rødt ord, grafikkens nøkkel' },
+      { token: 'red-light', hex: '#E8342A', name: 'Lys rittrød', role: 'Hover, løypelinjer på mørkt' },
+      { token: 'blue', hex: '#16397A', name: 'Klubbblå', role: 'Informasjon og CTA-paneler' },
+      { token: 'blue-mid', hex: '#1E4EA6', name: 'Mellomblå', role: 'Lenker og fokus' },
+      { token: 'blue-pale', hex: '#E8EEF8', name: 'Blekblå', role: 'Lyse klubbseksjoner' },
+    ],
+  },
+  {
+    name: 'Arena og flater',
+    items: [
+      { token: 'dark', hex: '#0D1824', name: 'Arenamørk', role: 'Nav, hero, arenaseksjoner' },
+      { token: 'night', hex: '#07090D', name: 'Natt', role: 'Kart og 3D' },
+      { token: 'text', hex: '#1A2030', name: 'Blekk', role: 'Brødtekst' },
+      { token: 'muted', hex: '#5A6580', name: 'Grus', role: 'Sekundærtekst' },
+      { token: 'off-white', hex: '#F6F7F9', name: 'Off-white', role: 'Sidebakgrunn' },
+    ],
+  },
+  {
+    name: 'Løypefarger (kun i kart)',
+    items: [
+      { token: 'route-start', hex: '#E6C120', name: 'Startloop', role: '' },
+      { token: 'route-green', hex: '#1A9E5C', name: 'Grønn', role: 'Yngste klasser' },
+      { token: 'route-blue', hex: '#3A9EFF', name: 'Blå', role: '10–12 år' },
+      { token: 'route-red', hex: '#C8241A', name: 'Rød', role: 'XCO 13+' },
+      { token: 'route-orange', hex: '#E87820', name: 'Oransje', role: 'XCC fra 15 år' },
+    ],
+  },
+];
+
+const iconNames: IconName[] = ['arrow-right', 'arrow-down', 'external-link', 'map-pin', 'calendar', 'clock', 'download', 'mail', 'bike', 'mountain', 'play', 'alert-circle'];
+
+// Eksempeldata for høydeprofilen – ikke ekte løypetall.
+const profile = [24, 26, 31, 35, 33, 38, 44, 49, 46, 41, 43, 50, 57, 61, 58, 52, 47, 44, 40, 36, 33, 30, 27, 25];
+const w = 1000;
+const h = 120;
+const max = Math.max(...profile);
+const min = Math.min(...profile);
+const pts = profile.map((v, i) => [(i / (profile.length - 1)) * w, h - ((v - min) / (max - min)) * (h - 20) - 10]);
+const line = pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+const area = `0,${h} ${line} ${w},${h}`;
+const progressX = w * 0.58;
+---
+
+<Base title="Designprofil – Sande Sykkelklubb">
+  <!-- Forsidens første skjerm, slik den er tenkt -->
+  <section class="hero on-dark" aria-labelledby="hero-title">
+    <Image src={heroPhoto} alt="Ung rytter i Sande-drakt på vei ned en steinete sti i skogen" class="hero-photo" widths={[800, 1400, 2000, 2600]} sizes="100vw" loading="eager" fetchpriority="high" />
+    <div class="hero-shade"></div>
+    <div class="hero-stripe" aria-hidden="true"></div>
+
+    <nav class="nav" aria-label="Hovedmeny (eksempel)">
+      <a href="/designprofil" class="nav-brand">
+        <Image src={logo} alt="" width={40} height={40} />
+        <span>Sande <b>Sykkel</b></span>
+      </a>
+      <ul>
+        <li><a href="#">Trening</a></li>
+        <li><a href="#">Løyper</a></li>
+        <li><a href="#">Sanderittet</a></li>
+        <li><a href="#">Historikk</a></li>
+        <li><a href="#" class="nav-cta">Bli med</a></li>
+      </ul>
+    </nav>
+
+    <div class="hero-stats">
+      <StatPanel label="Norgescup" value="2024" size="sm" />
+      <StatPanel label="Norgescup" value="2025" size="sm" />
+      <StatPanel label="NM terreng" value="2026" size="sm" />
+    </div>
+
+    <div class="hero-body">
+      <h1 id="hero-title" class="display">Sande <span class="hl">Sykkel</span>&shy;klubb</h1>
+      <p class="hero-sub">Trening for alle aldre på Lersbrygga, fra påske til høstferie.</p>
+      <div class="hero-action">
+        <Banner label="Neste trening" value="Man 18:00" />
+        <Button href="https://group.spond.com/OXGYJ" external>Bli med i Spond</Button>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="section on-light">
+      <div class="container">
+        <h2 class="headline">Designprofil <span class="hl">v2</span></h2>
+        <AccentBar />
+        <p class="lead">Dagens arenastil fra sanderittet.no, videreført med TV-grafikken fra løypepresentasjonen. Denne siden viser byggeklossene; fasit er DESIGN.md.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="farger">
+      <div class="container">
+        <h2 id="farger" class="headline">Far<span class="hl">ger</span></h2>
+        <AccentBar />
+        {colorGroups.map((g) => (
+          <div class="swatch-group">
+            <h3 class="label">{g.name}</h3>
+            <ul class="swatches">
+              {g.items.map((c) => (
+                <li>
+                  <span class="chip" style={`background:${c.hex}`}></span>
+                  <strong>{c.name}</strong>
+                  <span class="num meta">--{c.token} · {c.hex}</span>
+                  {c.role && <span class="meta">{c.role}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="section on-light" aria-labelledby="typografi">
+      <div class="container">
+        <h2 id="typografi" class="headline">Typo<span class="hl">grafi</span></h2>
+        <AccentBar />
+        <div class="type-grid">
+          <div class="type-row">
+            <span class="label">Display · Bebas Neue</span>
+            <p class="display type-display">Lersbrygga</p>
+          </div>
+          <div class="type-row">
+            <span class="label">Headline · Bebas Neue</span>
+            <p class="headline">Faste <span class="hl">treninger</span></p>
+          </div>
+          <div class="type-row">
+            <span class="label">Title · Bebas Neue</span>
+            <p class="title">Rundbane XCO</p>
+          </div>
+          <div class="type-row">
+            <span class="label">Stat · Barlow Condensed 700</span>
+            <p class="num type-stat">18:00 <small>MAN</small></p>
+          </div>
+          <div class="type-row">
+            <span class="label">Banner · Barlow Condensed 800 kursiv</span>
+            <p class="type-banner">Trening i dag</p>
+          </div>
+          <div class="type-row">
+            <span class="label">Label · Barlow Condensed 600</span>
+            <p class="label">Lersbrygga · Mandag &amp; torsdag</p>
+          </div>
+          <div class="type-row">
+            <span class="label">Lead · Barlow 400</span>
+            <p class="lead">Sykkelgruppa i Sande Sportsklubb har faste treninger for alle aldre fra påske til høstferie.</p>
+          </div>
+          <div class="type-row">
+            <span class="label">Body · Barlow 400</span>
+            <p class="body-sample">Opp til 10 år trener mandager kl. 18:00–19:00, over 10 år kl. 18:00–19:30. Teknikk og moro i terrenget – foreldre er velkomne til å bli med. Påmelding og informasjon deles i Spond.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section on-pale" aria-labelledby="lyst">
+      <div class="container">
+        <h2 id="lyst" class="headline">På lyse <span class="hl">flater</span></h2>
+        <AccentBar />
+
+        <div class="demo-row">
+          <Button href="#">Bli med på trening</Button>
+          <Button href="#" variant="outline-light" icon="arrow-right">Se løypene</Button>
+          <a href="#" class="inline-link">Inline-lenke til Sande Sportsklubb</a>
+        </div>
+
+        <div class="demo-row">
+          <Tag label="Trening" value="I dag" tone="dark" />
+          <Tag label="XCC" value="Kortbane" tone="dark" />
+          <Tag label="NM" value="2026" tone="dark" />
+        </div>
+
+        <div class="demo-row stats-row">
+          <StatPanel label="Mandag" value="18:00" unit="≤10 år" tone="light" />
+          <StatPanel label="Mandag" value="18:00" unit="10 år +" tone="light" />
+          <StatPanel label="Torsdag" value="18:00" unit="11 år +" tone="light" />
+        </div>
+
+        <div class="demo-grid">
+          <article class="card">
+            <div class="card-day title">Man</div>
+            <p class="label">Mandager · påske–høstferie</p>
+            <h3 class="card-h">Trening for alle aldre</h3>
+            <p class="card-p">Opp til 10 år kl. 18:00–19:00. Over 10 år kl. 18:00–19:30.</p>
+          </article>
+
+          <div class="panel-blue">
+            <h3 class="title">Vil du bli med?</h3>
+            <AccentBar />
+            <p>Nye medlemmer er alltid velkomne – ta kontakt, så hjelper vi deg i gang.</p>
+            <Button href="mailto:leder.sykkel@sandesk.no" icon="mail">Send oss en e-post</Button>
+          </div>
+
+          <form class="form-demo" onsubmit="return false">
+            <label for="navn" class="label">Navn</label>
+            <input id="navn" type="text" placeholder="Fornavn og etternavn" />
+            <label for="kategori" class="label">Kategori</label>
+            <input id="kategori" type="text" class="invalid" aria-invalid="true" aria-describedby="feil" value="" />
+            <p id="feil" class="error"><Icon name="alert-circle" size={18} /> Fyll inn en kategori før du sender inn.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section on-dark" aria-labelledby="morkt">
+      <div class="container">
+        <h2 id="morkt" class="headline">På mørke <span class="hl">flater</span></h2>
+        <AccentBar />
+
+        <div class="demo-row">
+          <Button href="#">Om NM 2026</Button>
+          <Button href="#" variant="outline" icon="arrow-right">Se historikken</Button>
+        </div>
+
+        <div class="demo-row">
+          <Tag label="XCO" value="Rundbane" />
+          <Tag label="Status" value="Avholdt" />
+          <Banner label="Sesongen starter" value="I påsken" />
+        </div>
+
+        <div class="hud">
+          <p class="label hud-note">Eksempeldata – ikke ekte løypetall</p>
+          <div class="hud-top">
+            <div>
+              <Tag label="XCO" value="Løypepresentasjon" />
+              <p class="title hud-title">Rundbane</p>
+            </div>
+            <div class="hud-stats">
+              <StatPanel label="Distanse" value="2,40" unit="KM" />
+              <StatPanel label="Høyde" value="38" unit="MOH" />
+              <StatPanel label="Stigning" value="+6" unit="%" />
+            </div>
+          </div>
+          <div class="hud-controls">
+            <button type="button"><Icon name="play" size={16} /> Spill av</button>
+            <button type="button">1×</button>
+            <button type="button">Topo</button>
+          </div>
+          <div class="profile">
+            <span class="label profile-label">Høydeprofil</span>
+            <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="prog" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#e8342a" stop-opacity="0.85" />
+                  <stop offset="1" stop-color="#e8342a" stop-opacity="0.12" />
+                </linearGradient>
+                <clipPath id="done"><rect x="0" y="0" width={progressX} height={h} /></clipPath>
+              </defs>
+              <polygon points={area} fill="rgba(255,255,255,0.09)" />
+              <polyline points={line} fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" vector-effect="non-scaling-stroke" />
+              <g clip-path="url(#done)">
+                <polygon points={area} fill="url(#prog)" />
+                <polyline points={line} fill="none" stroke="#e8342a" stroke-width="3" vector-effect="non-scaling-stroke" />
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <span class="label">Adresse</span>
+            <p>Lersbrygga Idrettsanlegg<br />3070 Sande i Vestfold</p>
+          </div>
+          <div class="info-card">
+            <span class="label">Påmelding</span>
+            <p>All påmelding og informasjon skjer i Spond.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section on-light" aria-labelledby="ikoner">
+      <div class="container">
+        <h2 id="ikoner" class="headline">Iko<span class="hl">ner</span></h2>
+        <AccentBar />
+        <ul class="icons">
+          {iconNames.map((n) => (
+            <li><Icon name={n} size={28} /><span class="label">{n}</span></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer on-dark">
+    <div class="container footer-inner">
+      <div>
+        <p class="footer-brand">Sande <b>Sykkel</b></p>
+        <p class="label">Lersbrygga · 3070 Sande i Vestfold</p>
+      </div>
+      <p class="label">En del av <a href="https://sandesk.no/grupper/sykkel/">Sande Sportsklubb</a></p>
+    </div>
+  </footer>
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: min(100svh, 920px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 var(--gutter) clamp(2.5rem, 7vh, 5rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero :global(.hero-photo) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 35% 45%;
+    z-index: -2;
+  }
+
+  .hero-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(13, 24, 36, 0.7) 0%, rgba(13, 24, 36, 0.15) 30%, rgba(13, 24, 36, 0.35) 55%, rgba(13, 24, 36, 0.92) 100%),
+      radial-gradient(ellipse 60% 55% at 85% 20%, rgba(22, 57, 122, 0.45), transparent 70%);
+  }
+
+  .hero-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red) 0 33.3%, var(--white) 33.3% 66.6%, var(--blue) 66.6%);
+  }
+
+  .nav {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem var(--gutter);
+    border-bottom: 2px solid var(--red);
+    background: rgba(13, 24, 36, 0.55);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--white);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .nav-brand b {
+    font-weight: 400;
+    color: var(--red);
+  }
+
+  .nav ul {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav ul a {
+    font-family: var(--font-cond);
+    font-size: var(--fs-nav);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.75);
+    transition: color var(--t-fast);
+  }
+
+  .nav ul a:hover {
+    color: var(--white);
+  }
+
+  .nav ul .nav-cta {
+    background: var(--red);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: var(--r-sm);
+    font-weight: 700;
+  }
+
+  .nav ul .nav-cta:hover {
+    background: var(--red-light);
+  }
+
+  .hero-stats {
+    position: absolute;
+    top: 6.5rem;
+    right: var(--gutter);
+    display: flex;
+    gap: 6px;
+    animation: slide-down 0.8s 0.5s var(--ease-out) both;
+  }
+
+  .hero-body {
+    max-width: 62rem;
+  }
+
+  .hero h1 {
+    text-shadow: 0 6px 40px rgba(0, 0, 0, 0.6);
+    animation: rise 0.9s 0.1s var(--ease-out) both;
+  }
+
+  .hero-sub {
+    margin-top: 0.75rem;
+    font-size: clamp(1.0625rem, 1.6vw, 1.3rem);
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 42ch;
+    animation: rise 0.9s 0.2s var(--ease-out) both;
+  }
+
+  .hero-action {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+    animation: rise 0.9s 0.3s var(--ease-out) both;
+  }
+
+  /* Starter synlig: bare posisjonen beveger seg, så innholdet aldri skjules. */
+  @keyframes rise {
+    from {
+      transform: translateY(26px);
+    }
+  }
+
+  @keyframes slide-down {
+    from {
+      transform: translateY(-24px);
+    }
+  }
+
+  /* Farger */
+  .swatch-group + .swatch-group {
+    margin-top: 2.5rem;
+  }
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 0.85rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .swatches li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: var(--fs-body-sm);
+  }
+
+  .chip {
+    height: 72px;
+    margin-bottom: 0.5rem;
+    border-radius: var(--r-md);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .meta {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Typografi */
+  .type-grid {
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  .type-row {
+    display: grid;
+    grid-template-columns: 15rem 1fr;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .type-display {
+    font-size: clamp(3.5rem, 9vw, 6rem);
+  }
+
+  .type-stat {
+    font-size: var(--fs-stat);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .type-stat small {
+    font-size: 0.42em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .type-banner {
+    font-family: var(--font-cond);
+    font-size: var(--fs-banner);
+    font-style: italic;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  .body-sample {
+    max-width: 65ch;
+  }
+
+  /* Demo */
+  .demo-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .stats-row {
+    gap: 6px;
+  }
+
+  .inline-link {
+    font-weight: 600;
+  }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 2rem;
+    transition:
+      border-color var(--t-fast),
+      transform 0.25s var(--ease-out),
+      box-shadow 0.25s var(--ease-out);
+  }
+
+  .card:hover {
+    border-color: var(--blue-mid);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .card-day {
+    font-size: 2.4rem;
+    color: var(--blue);
+  }
+
+  .card-h {
+    margin-top: 0.9rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .card-p {
+    margin-top: 0.35rem;
+    font-size: var(--fs-body-sm);
+    color: var(--muted);
+  }
+
+  .panel-blue {
+    background: var(--blue);
+    color: var(--white);
+    border-radius: var(--r-md);
+    padding: 2.5rem;
+  }
+
+  .panel-blue p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1.5rem;
+  }
+
+  .form-demo {
+    display: grid;
+    gap: 0.4rem;
+    background: var(--white);
+    border-radius: var(--r-md);
+    padding: 2rem;
+  }
+
+  .form-demo .label + input {
+    margin-bottom: 0.9rem;
+  }
+
+  .form-demo input {
+    width: 100%;
+    font: inherit;
+    color: var(--text);
+    background: var(--off-white);
+    border: 1.5px solid var(--line);
+    border-radius: var(--r-sm);
+    padding: 0.7rem 0.85rem;
+    transition:
+      border-color var(--t-fast),
+      background-color var(--t-fast);
+  }
+
+  .form-demo input::placeholder {
+    color: var(--muted);
+  }
+
+  .form-demo input:focus {
+    outline: none;
+    border-color: var(--blue-mid);
+    background: var(--white);
+  }
+
+  .form-demo .invalid {
+    border-color: var(--red);
+  }
+
+  .error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--error-bg);
+    color: var(--red-dark);
+    border: 1px solid var(--red);
+    border-radius: var(--r-sm);
+    padding: 0.7rem 0.9rem;
+    font-size: var(--fs-body-sm);
+  }
+
+  /* HUD */
+  .hud {
+    position: relative;
+    margin-top: 1rem;
+    padding: 1.75rem;
+    min-height: 26rem;
+    border-radius: var(--r-lg);
+    background:
+      radial-gradient(ellipse 60% 70% at 40% 60%, #2c3a2e 0%, transparent 70%),
+      linear-gradient(160deg, #1a2620, #0f1512 70%);
+    box-shadow: var(--shadow-embed);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: hidden;
+  }
+
+  .hud-note {
+    position: absolute;
+    left: 1.75rem;
+    bottom: 10.5rem;
+  }
+
+  .hud-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hud-title {
+    margin-top: 0.6rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    text-shadow: 0 6px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .hud-stats {
+    display: flex;
+    gap: 6px;
+  }
+
+  .hud-controls {
+    margin-top: auto;
+    align-self: flex-end;
+    display: flex;
+    gap: 6px;
+  }
+
+  .hud-controls button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 40px;
+    font-family: var(--font-cond);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--panel);
+    border: 1px solid var(--line-on-dark);
+    padding: 8px 12px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: border-color var(--t-fast);
+  }
+
+  .hud-controls button:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .profile {
+    position: relative;
+    height: 124px;
+    background: var(--panel);
+    border-top: 3px solid var(--red);
+    padding: 30px 14px 10px;
+  }
+
+  .profile-label {
+    position: absolute;
+    left: 14px;
+    top: 9px;
+  }
+
+  .profile svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .info-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 22rem));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .info-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line-on-dark);
+    border-radius: var(--r-md);
+    padding: 1.5rem;
+  }
+
+  .info-card p {
+    margin-top: 0.4rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Ikoner */
+  .icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 1rem;
+    padding: 0;
+    list-style: none;
+    color: var(--dark);
+  }
+
+  .icons li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 3px solid var(--red);
+    padding-block: 2.5rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+  }
+
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-brand b {
+    font-weight: 400;
+    color: var(--red);
+  }
+
+  .footer a {
+    color: var(--white);
+  }
+
+  .footer a:hover {
+    color: var(--red-light);
+  }
+
+  @media (max-width: 760px) {
+    .nav ul li:not(:last-child) {
+      display: none;
+    }
+
+    .hero {
+      padding-top: 7rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 16vw, 5rem);
+    }
+
+    .hero-stats {
+      position: static;
+      order: -1;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-stats :global(.stat) {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .type-row {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+
+    .demo-grid,
+    .info-cards {
+      grid-template-columns: 1fr;
+    }
+
+    .hud-stats {
+      width: 100%;
+    }
+
+    .hud-stats :global(.stat) {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hud-note {
+      position: static;
+    }
+  }
+</style>

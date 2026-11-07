@@ -1,0 +1,60 @@
+---
+interface Props {
+  label: string;
+  value?: string;
+}
+
+const { label, value } = Astro.props;
+---
+
+<div class="banner">
+  <span class="bk">{label}</span>{value && <span class="bv">{value}</span>}
+  <slot />
+</div>
+
+<style>
+  .banner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    font-family: var(--font-cond);
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .bk {
+    display: flex;
+    align-items: center;
+    background: var(--red);
+    padding: 8px 20px;
+    font-size: var(--fs-banner);
+    font-style: italic;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .bv {
+    display: flex;
+    align-items: center;
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    padding: 12px 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .bk {
+      font-size: 1.375rem;
+    }
+
+    .bv {
+      font-size: 1.0625rem;
+    }
+  }
+</style>

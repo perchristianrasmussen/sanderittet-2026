@@ -21,3 +21,8 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# Impeccable-arbeidsfiler (skjermbilder og forkastede skisser)
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/build/

@@ -1,0 +1,33 @@
+{
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
+  },
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/**"
+        ],
+        "createdAt": "2026-11-07T10:14:56.261Z",
+        "reason": "Agent: beslutningsskisser for ny visuell retning; DESIGN.md beskriver den gamle stilen som skal erstattes"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/**"
+        ],
+        "createdAt": "2026-11-07T10:25:11.811Z",
+        "reason": "Agent: forkastede beslutningsskisser (brukeren avviste retningene), ikke del av siden"
+      }
+    ]
+  }
+}

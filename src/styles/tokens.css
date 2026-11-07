@@ -1,0 +1,82 @@
+/* Design-tokens for sandesykkel.no. Fasit: DESIGN.md (frontmatter). */
+:root {
+  /* Farger */
+  --red: #c8241a;
+  --red-dark: #9e1a12;
+  --red-light: #e8342a;
+  --blue: #16397a;
+  --blue-mid: #1e4ea6;
+  --blue-pale: #e8eef8;
+  --white: #ffffff;
+  --off-white: #f6f7f9;
+  --dark: #0d1824;
+  --night: #07090d;
+  --panel: rgba(7, 9, 13, 0.82);
+  --text: #1a2030;
+  --muted: #5a6580;
+  --muted-on-dark: rgba(255, 255, 255, 0.62);
+  --line-on-dark: rgba(255, 255, 255, 0.14);
+  --line: rgba(13, 24, 36, 0.1);
+  --error-bg: #fdecea;
+
+  /* Løypefarger – kun i kart */
+  --route-start: #e6c120;
+  --route-green: #1a9e5c;
+  --route-blue: #3a9eff;
+  --route-red: var(--red);
+  --route-orange: #e87820;
+  --route-shortcut: #d4a840;
+
+  /* Skrift */
+  --font-display: 'Bebas Neue', Impact, sans-serif;
+  --font-cond: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-body: 'Barlow', system-ui, sans-serif;
+
+  --fs-display: clamp(4rem, 12vw, 10rem);
+  --fs-headline: clamp(2.5rem, 6vw, 4.2rem);
+  --fs-title: clamp(1.6rem, 3vw, 2.2rem);
+  --fs-stat: 2.75rem;
+  --fs-stat-sm: 1.75rem;
+  --fs-banner: 1.875rem;
+  --fs-tag: 0.9375rem;
+  --fs-label: 0.8125rem;
+  --fs-nav: 1rem;
+  --fs-button: 1.0625rem;
+  --fs-lead: 1.125rem;
+  --fs-body: 1.0625rem;
+  --fs-body-sm: 0.9375rem;
+
+  --track-tag: 0.16em;
+
+  /* Form */
+  --r-none: 0;
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-lg: 6px;
+
+  /* Avstand */
+  --s-xs: 0.5rem;
+  --s-sm: 1rem;
+  --s-md: 1.5rem;
+  --s-lg: 2.5rem;
+  --s-xl: 4rem;
+  --s-section: 6rem;
+  --gutter: 2.5rem;
+  --container: 1200px;
+  --container-narrow: 760px;
+
+  /* Bevegelse */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-fast: 0.2s;
+
+  /* Dybde */
+  --shadow-lift: 0 12px 40px rgba(22, 57, 122, 0.12);
+  --shadow-embed: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --s-section: 4rem;
+    --gutter: 1rem;
+  }
+}
