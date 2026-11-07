@@ -10,6 +10,7 @@ import Nav from '../components/Nav.astro';
 import AccentBar from '../components/ui/AccentBar.astro';
 import Icon, { type IconName } from '../components/ui/Icon.astro';
 import heroPhoto from '../assets/img/rytter-sti.jpg';
+import treningPhoto from '../assets/img/trening.jpg';
 
 const colorGroups = [
   {
@@ -164,7 +165,7 @@ const progressX = w * 0.58;
         <div class="demo-row">
           <Button href="#">Bli med på trening</Button>
           <Button href="#" variant="outline-light" icon="arrow-right">Se løypene</Button>
-          <a href="#" class="inline-link">Inline-lenke til Sande Sportsklubb</a>
+          <a href="#" class="link inline-link">Inline-lenke til Sande Sportsklubb</a>
         </div>
 
         <div class="demo-row">
@@ -201,6 +202,18 @@ const progressX = w * 0.58;
             <input id="kategori" type="text" class="invalid" aria-invalid="true" aria-describedby="feil" value="" />
             <p id="feil" class="error"><Icon name="alert-circle" size={18} /> Fyll inn en kategori før du sender inn.</p>
           </form>
+        </div>
+
+        <!-- Bevegelse: klikkbart kort løftes, bilde i lenke zoomer i rammen -->
+        <div class="motion-grid">
+          <a href="#" class="card card-link">
+            <div class="card-day title">Løyper</div>
+            <p class="label">Lersbrygga · XCO og XCC</p>
+            <p class="card-h">Se løypene <Icon name="arrow-right" size={18} /></p>
+          </a>
+          <a href="#" class="photo-frame motion-photo">
+            <Image src={treningPhoto} alt="Klubbens ryttere på tur, med utsikt over havet" widths={[600, 900]} sizes="(max-width: 760px) 100vw, 600px" />
+          </a>
         </div>
       </div>
     </section>
@@ -352,7 +365,6 @@ const progressX = w * 0.58;
     right: var(--gutter);
     display: flex;
     gap: 6px;
-    animation: slide-down 0.8s 0.5s var(--ease-out) both;
   }
 
   .hero-body {
@@ -361,7 +373,6 @@ const progressX = w * 0.58;
 
   .hero h1 {
     text-shadow: 0 6px 40px rgba(0, 0, 0, 0.6);
-    animation: rise 0.9s 0.1s var(--ease-out) both;
   }
 
   .hero-sub {
@@ -370,7 +381,6 @@ const progressX = w * 0.58;
     color: rgba(255, 255, 255, 0.82);
     max-width: 42ch;
     text-wrap: pretty;
-    animation: rise 0.9s 0.2s var(--ease-out) both;
   }
 
   .hero-action {
@@ -379,19 +389,86 @@ const progressX = w * 0.58;
     align-items: stretch;
     gap: 0.75rem;
     margin-top: 1.75rem;
-    animation: rise 0.9s 0.3s var(--ease-out) both;
   }
 
-  /* Starter synlig: bare posisjonen beveger seg, så innholdet aldri skjules. */
-  @keyframes rise {
+  /* «På lufta»: én entré på ca. 1 s ved lasting, bare i heroen.
+     Tittel og undertekst er synlige fra start og setter seg; grafikken viskes inn
+     fra venstre (nøkkel, verdi, knapp), og tallpanelene faller ned ett og ett
+     mens den røde topplinjen tegnes. Sluttilstanden er standardstilen, og
+     fill-mode backwards gjør at ingenting blir hengende igjen etterpå. */
+  .hero h1 {
+    animation: settle 700ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-sub {
+    animation: settle-sm 640ms 60ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-action :global(.bk) {
+    animation: wipe-in 400ms 200ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-action :global(.bv) {
+    animation: wipe-in 400ms 300ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-action :global(.hero-cta) {
+    animation: wipe-in 380ms 400ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-stats :global(.stat) {
+    animation: drop-in 450ms 420ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-stats :global(.stat)::before {
+    animation: draw-rule 400ms 500ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-stats :global(.stat:nth-child(2)) {
+    animation-delay: 500ms;
+  }
+
+  .hero-stats :global(.stat:nth-child(2))::before {
+    animation-delay: 580ms;
+  }
+
+  .hero-stats :global(.stat:nth-child(3)) {
+    animation-delay: 580ms;
+  }
+
+  .hero-stats :global(.stat:nth-child(3))::before {
+    animation-delay: 660ms;
+  }
+
+  @keyframes settle {
     from {
-      transform: translateY(26px);
+      transform: translateY(16px);
     }
   }
 
-  @keyframes slide-down {
+  @keyframes settle-sm {
     from {
-      transform: translateY(-24px);
+      transform: translateY(12px);
+    }
+  }
+
+  @keyframes wipe-in {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+  }
+
+  /* Faller 10px; avstanden til knappen over er minst 20px, så ingenting overlapper */
+  @keyframes drop-in {
+    from {
+      transform: translateY(-10px);
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  @keyframes draw-rule {
+    from {
+      transform: scaleX(0);
     }
   }
 
@@ -519,6 +596,30 @@ const progressX = w * 0.58;
     margin-top: 0.35rem;
     font-size: var(--fs-body-sm);
     color: var(--muted);
+  }
+
+  .motion-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .motion-grid .card-h {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--blue-mid);
+  }
+
+  .motion-photo {
+    position: relative;
+    min-height: 13rem;
+  }
+
+  .motion-photo :global(img) {
+    position: absolute;
+    inset: 0;
   }
 
   .panel-blue {
@@ -657,11 +758,18 @@ const progressX = w * 0.58;
     backdrop-filter: blur(6px);
     transition:
       border-color var(--t-fast),
-      background-color var(--t-fast);
+      background-color var(--t-fast),
+      transform var(--t-fast) var(--ease-out-expo);
   }
 
   .hud-controls button:hover {
     border-color: var(--white);
+    background-color: var(--dark);
+  }
+
+  .hud-controls button:active {
+    transform: scale(0.96);
+    transition-duration: var(--t-press);
   }
 
   /* Aktiv bryter: hvit flate med rød bunnlinje */
@@ -798,7 +906,7 @@ const progressX = w * 0.58;
     .hero-stats :global(.stat) {
       min-width: 0;
       flex: 1;
-      padding: 7px 10px 9px;
+      padding: 10px 10px 9px;
     }
 
     .hero-stats :global(.k) {
@@ -815,6 +923,7 @@ const progressX = w * 0.58;
     }
 
     .demo-grid,
+    .motion-grid,
     .info-cards {
       grid-template-columns: 1fr;
     }

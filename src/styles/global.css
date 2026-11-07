@@ -49,12 +49,78 @@ video {
 
 a {
   color: var(--blue-mid);
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
+  transition: color var(--t-fast);
 }
 
 a:hover {
   color: var(--red);
+}
+
+/* Tekstlenker: hårstrek i ro, og en full strek som tegnes fra venstre ved hover.
+   Gjelder lenker uten klasse (brødtekst) og .link. */
+:where(a:not([class]), .link) {
+  text-decoration: none;
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(color-mix(in srgb, currentColor 45%, transparent), color-mix(in srgb, currentColor 45%, transparent));
+  background-repeat: no-repeat;
+  background-position:
+    0 100%,
+    0 100%;
+  background-size:
+    0% 2px,
+    100% 1px;
+  transition:
+    color var(--t-fast),
+    background-size var(--t-lift) var(--ease-out-expo);
+}
+
+:where(a:not([class]), .link):is(:hover, :focus-visible) {
+  background-size:
+    100% 2px,
+    100% 1px;
+}
+
+/* Klikkbare kort: flate i ro, løft og skygge ved hover, trykkes ned ved klikk */
+.card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform var(--t-lift) var(--ease-out-expo),
+    box-shadow var(--t-lift) var(--ease-out-expo),
+    border-color var(--t-fast);
+}
+
+a.card-link:is(:hover, :focus-visible) {
+  color: inherit;
+  border-color: var(--blue-mid);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-3px);
+}
+
+a.card-link:active {
+  transform: translateY(-1px);
+  transition-duration: var(--t-press);
+}
+
+/* Bilder i lenker: rammen holder formen, bildet zoomer litt inn */
+.photo-frame {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--t-zoom) var(--ease-out-expo);
+}
+
+a.photo-frame:is(:hover, :focus-visible) img,
+a:is(:hover, :focus-visible) .photo-frame img {
+  transform: scale(1.03);
 }
 
 :focus-visible {
@@ -200,7 +266,10 @@ a:hover {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    /* Uten forsinkelse blir ikke startstillingen stående mens den venter */
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
   }
 }

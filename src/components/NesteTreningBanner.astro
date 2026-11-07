@@ -14,18 +14,13 @@ const planJson = JSON.stringify(treningsplan).replace(/</g, '\u003c');
 
 <script>
   import { nesteTrening, type Treningsplan } from '../lib/nesteTrening.ts';
+  import { byttBanner } from '../lib/byttBanner.ts';
 
   const data = document.getElementById('treningsplan')?.textContent;
   if (data) {
     const neste = nesteTrening(new Date(), JSON.parse(data) as Treningsplan);
     for (const banner of document.querySelectorAll<HTMLElement>('[data-neste-trening]')) {
-      const label = banner.querySelector('[data-banner-label]');
-      const verdi = banner.querySelector('time[data-banner-value]');
-      if (!label || !verdi) continue;
-      banner.dataset.state = neste.state;
-      label.textContent = neste.label;
-      verdi.textContent = neste.value;
-      verdi.setAttribute('datetime', neste.datetime);
+      byttBanner(banner, neste);
     }
   }
 </script>

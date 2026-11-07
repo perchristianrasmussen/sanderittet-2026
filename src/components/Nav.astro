@@ -149,16 +149,17 @@ const links: { id: Side; href: string; text: string }[] = [
     text-transform: uppercase;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.75);
-    transition: color var(--t-fast);
+    /* Rød strek i bunnen som tegnes fra venstre */
+    background: linear-gradient(var(--red), var(--red)) no-repeat 0 100% / 0% 2px;
+    transition:
+      color var(--t-fast),
+      background-size var(--t-lift) var(--ease-out-expo);
   }
 
   .nav-menu a:hover,
   .nav-menu a[aria-current='page'] {
     color: var(--white);
-  }
-
-  .nav-menu a[aria-current='page'] {
-    box-shadow: inset 0 -2px 0 var(--red);
+    background-size: 100% 2px;
   }
 
   .nav-menu .nav-cta {
@@ -168,11 +169,19 @@ const links: { id: Side; href: string; text: string }[] = [
     color: var(--white);
     border-radius: var(--r-sm);
     font-weight: 700;
-    transition: background-color var(--t-fast);
+    transition:
+      background-color var(--t-fast),
+      transform var(--t-fast) var(--ease-out-expo);
   }
 
   .nav-menu .nav-cta:hover {
     background: var(--red-dark);
+    transform: translateY(-2px);
+  }
+
+  .nav-menu .nav-cta:active {
+    transform: scale(0.98);
+    transition-duration: var(--t-press);
   }
 
   .nav-toggle {
@@ -245,9 +254,15 @@ const links: { id: Side; href: string; text: string }[] = [
       border-bottom: 1px solid var(--line-on-dark);
     }
 
+    /* I panelet markeres siden med strek til venstre; bunnstreken er bare for hover */
     [data-enhanced] .nav-menu a[aria-current='page'] {
       box-shadow: inset 3px 0 0 var(--red);
       padding-left: 0.75rem;
+      background-size: 0% 2px;
+    }
+
+    [data-enhanced] .nav-menu a:hover {
+      background-size: 100% 2px;
     }
 
     [data-enhanced] .nav-cta-item {

@@ -16,10 +16,20 @@ const { label, value, unit, tone = 'glass', size = 'md' } = Astro.props;
 </div>
 
 <style>
+  /* Den røde topplinjen er et eget lag, så den kan tegnes inn i entreen */
   .stat {
-    border-top: 3px solid var(--red);
-    padding: 9px 16px 11px;
+    position: relative;
+    padding: 12px 16px 11px;
     min-width: 8.5rem;
+  }
+
+  .stat::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--red);
+    transform-origin: left;
   }
 
   .stat-glass {

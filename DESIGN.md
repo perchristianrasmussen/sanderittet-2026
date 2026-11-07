@@ -324,13 +324,13 @@ To felt kant i kant: nøkkel i `red` med hvit tekst og verdi i hvitt med `night`
 `panel` (på mørkt eller over bilde) eller `white` (på lyst), med 3px `red` topplinje og 0 radius. Nøkkelen står i `label` i versaler og dempet farge, tallet i `stat` med enhet i liten 600-vekt. Panelene står på rad med 6px mellomrom. Brukes til løypetall, årstall, treningstider og neste trening.
 
 ### Banner
-Nøkkel i `red` (kursiv 800) og verdi i `panel`, kant i kant. Brukes til hendelser og kunngjøringer, som «Trening i dag · 18:00» eller «Sesongen starter i påsken». Det slås inn med en kort glidebevegelse.
+Nøkkel i `red` (kursiv 800) og verdi i `panel`, kant i kant. Brukes til hendelser og kunngjøringer, som «Trening i dag · 18:00» eller «Sesongen starter i påsken». Feltene viskes inn fra venstre (se Bevegelse).
 
 ### Høydeprofil
 Et panel i `panel` med 3px rød topplinje, likt tallpanelene, og etiketten «HØYDEPROFIL». Profilen er en hvit, gjennomsiktig flate, og fremdriften er rød med en gradient, km-merker i `label` og min/maks i meter. Den brukes i løypepresentasjoner og på løypesidene.
 
 ### Buttons
-- **Primary:** `red`, hvit tekst, `button`-typografi i versaler, 2px radius. Hover gir `red-dark` og `translateY(-2px)`; `red-light` brukes ikke bak hvit tekst (4,2:1). Pil-glyf for retning (`→` ny side, `↓` hopp ned, `↗` ekstern). Lenker som åpnes i ny fane har skjult tekst «(åpnes i ny fane)».
+- **Primary:** `red`, hvit tekst, `button`-typografi i versaler, 2px radius. Hover gir `red-dark` og `translateY(-2px)`, klikk `scale(.98)`; `red-light` brukes ikke bak hvit tekst (4,2:1). Pil-glyf for retning (`→` ny side, `↓` hopp ned, `↗` ekstern). Lenker som åpnes i ny fane har skjult tekst «(åpnes i ny fane)».
 - **Outline:** transparent med `1.5px` `line-on-dark-strong`-kant på mørkt, eller `blue` på lyst.
 - **HUD-kontroll:** `panel`-glass, 1px `line-on-dark-strong`, Barlow Condensed versaler, 0 radius og minst 44×44px (spill av, hastighet, kartlag). Brytere har `aria-pressed`; aktiv bryter er hvit med `night`-tekst og 3px rød bunnlinje.
 
@@ -358,10 +358,11 @@ MapLibre over `night`, med flyfoto eller Kartverket topo og 3D-terreng. HUD-en l
 `dark` med 3px rød topplinje. Lenker og metadata står i `label` i dempet hvit, og blir røde ved hover. Lenke til Sande Sportsklubb er alltid med.
 
 ### Bevegelse
-- **Inngang:** innhold glir opp (22–28px, 0.6–0.9s, `cubic-bezier(.2,.8,.2,1)`) i trinn på 0.1s.
-- **Grafikk:** etikettfelt og tallpaneler glir inn fra siden eller ovenfra, og bannere slås inn og ut.
-- **Hover:** 0.2s.
-- **Redusert bevegelse:** all bevegelse slås av, og 3D-presentasjoner vises som et statisk oversiktsbilde med tallene.
+Én komponert entré, tydelig respons på handlinger og ingenting som avsløres ved scrolling. Kurven er eksponentiell utbremsing (`--ease-out-expo`, `cubic-bezier(0.16, 1, 0.3, 1)`); utgang er raskere enn inngang og akselererer (`--ease-in`).
+- **«På lufta» (bare heroen, én gang per lasting, ca. 1,05 s):** H1 setter seg fra 16px (0–700ms) og underteksten fra 12px (60–700ms), begge synlige fra start. Bannerets nøkkel viskes inn fra venstre med `clip-path` (200–600ms), verdien et slag etter (300–700ms) og knappen til slutt (400–780ms). Tallpanelene faller 10px og rulles ut ovenfra ett og ett (420/500/580ms, 450ms hver), og den røde topplinjen tegnes fra venstre 80ms etter hvert panel (`scaleX`, 400ms). Alt bruker `fill-mode: backwards`, så sluttilstanden er standardstilen. Forskyvningene er mindre enn avstandene, så ingenting overlapper på mobil.
+- **Statusbytte i banneret:** når skriptet regner ut en annen tekst enn byggeverdien, viskes feltet som endres ut mot høyre og inn fra venstre (340ms, verdien 60ms etter nøkkelen), og teksten byttes mens feltet er skjult. Uendret tekst røres ikke, og spiller entreen fortsatt, byttes teksten rett. Én animasjon uten fill, så feltet aldri blir stående skjult.
+- **Respons (`--t-press` 0.1s, `--t-fast` 0.2s, `--t-lift` 0.3s, `--t-zoom` 0.6s):** knapper løftes 2px ved hover og trykkes til `scale(.98)` ved klikk; klikkbare kort (`.card-link`) løftes 3px med `--shadow-lift` og `blue-mid`-kant; bilder i lenker (`.photo-frame`) zoomer til 1.03 inne i rammen; tekstlenker (lenker uten klasse og `.link`) har hårstrek i ro og en 2px strek som tegnes fra venstre ved hover og fokus; navlenker får en rød strek som tegnes ved hover og står fast for `aria-current`; HUD-kontroller får mørkere flate ved hover og `scale(.96)` ved klikk.
+- **Redusert bevegelse:** varighet og forsinkelse settes til 0, så alt står i sluttilstand med en gang og ingenting er skjult. Statusbyttet skjer uten animasjon. 3D-presentasjoner vises som et statisk oversiktsbilde med tallene.
 
 ## Do's and Don'ts
 
