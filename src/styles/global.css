@@ -66,6 +66,32 @@ a:hover {
   outline-color: var(--white);
 }
 
+/* Hopp til innhold: skjult til den får fokus */
+.skip-link {
+  position: absolute;
+  top: var(--s-xs);
+  left: var(--s-xs);
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-cond);
+  font-size: var(--fs-button);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--white);
+  background: var(--red);
+  border-radius: var(--r-sm);
+  transform: translateY(calc(-100% - var(--s-sm)));
+}
+
+.skip-link:focus-visible {
+  transform: none;
+  color: var(--white);
+  outline-color: var(--white);
+  outline-offset: -5px;
+}
+
 /* Struktur */
 .container {
   width: 100%;

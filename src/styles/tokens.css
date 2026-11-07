@@ -17,6 +17,9 @@
   --muted-on-dark: rgba(255, 255, 255, 0.62);
   --line-on-dark: rgba(255, 255, 255, 0.14);
   --line: rgba(13, 24, 36, 0.1);
+  /* Kanter på komponenter (input, kontroller): minst 3:1 mot flaten */
+  --line-strong: #7a8499;
+  --line-on-dark-strong: rgba(255, 255, 255, 0.45);
   --error-bg: #fdecea;
 
   /* Løypefarger – kun i kart */

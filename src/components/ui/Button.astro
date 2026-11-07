@@ -19,6 +19,7 @@ const trailing = icon ?? (external ? 'external-link' : undefined);
   {...external ? { target: '_blank', rel: 'noopener' } : {}}
 >
   <slot />
+  {external && <span class="visually-hidden"> (åpnes i ny fane)</span>}
   {trailing && <Icon name={trailing} size={18} />}
 </a>
 
@@ -50,15 +51,16 @@ const trailing = icon ?? (external ? 'external-link' : undefined);
     color: var(--white);
   }
 
+  /* Mørkere ved hover, så hvit tekst holder AA (8:1) */
   .btn-primary:hover {
-    background: var(--red-light);
+    background: var(--red-dark);
     color: var(--white);
     transform: translateY(-2px);
   }
 
   .btn-outline {
     color: var(--white);
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--line-on-dark-strong);
   }
 
   .btn-outline:hover {

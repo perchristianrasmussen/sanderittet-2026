@@ -17,6 +17,8 @@ colors:
   muted: "#5a6580"
   muted-on-dark: "rgba(255,255,255,0.62)"
   line-on-dark: "rgba(255,255,255,0.14)"
+  line-strong: "#7a8499"
+  line-on-dark-strong: "rgba(255,255,255,0.45)"
   error-bg: "#fdecea"
   route-start: "#e6c120"
   route-green: "#1a9e5c"
@@ -123,7 +125,7 @@ components:
     rounded: "{rounded.sm}"
     padding: "0.9rem 1.75rem"
   button-primary-hover:
-    backgroundColor: "{colors.red-light}"
+    backgroundColor: "{colors.red-dark}"
   button-outline:
     backgroundColor: "transparent"
     textColor: "{colors.white}"
@@ -229,12 +231,12 @@ Klubbfargene rødt og blått mot en dyp arenablå og kjølige lyse nøytraler, m
 
 ### Primary
 - **Rittrød** (`red`): primærknapper, etikettfeltets nøkkeldel, topplinjen på tallpaneler, bannerets nøkkel, det røde ordet i titler og aksentstreken.
-- **Lys rittrød** (`red-light`): hover på røde knapper, og løypelinjer og fremdrift på mørk bakgrunn der `red` blir for mørk.
-- **Dyp rittrød** (`red-dark`): tekst i feilmeldinger.
+- **Lys rittrød** (`red-light`): løypelinjer og fremdrift på mørk bakgrunn der `red` blir for mørk.
+- **Dyp rittrød** (`red-dark`): hover på røde knapper (hvit tekst holder 8:1) og tekst i feilmeldinger.
 
 ### Secondary
 - **Klubbblå** (`blue`): informasjonspaneler og CTA-bokser, blå seksjonsetiketter og dagsnavn i treningsoversikten.
-- **Mellomblå** (`blue-mid`): inline-lenker, fokusramme på input og hover-ramme på kort.
+- **Mellomblå** (`blue-mid`): inline-lenker, fokusring på lyse flater og hover-ramme på kort.
 - **Blekblå** (`blue-pale`): bakgrunn i lyse klubbseksjoner, ikonbokser og GPX-knapper.
 
 ### Neutral
@@ -242,6 +244,7 @@ Klubbfargene rødt og blått mot en dyp arenablå og kjølige lyse nøytraler, m
 - **Natt** (`night`) og **panelglass** (`panel`): bakgrunn for kart og 3D-presentasjoner, og glasset bak tallpaneler og bannere oppå bilde eller kart.
 - **Blekk** (`text`), **grus** (`muted`), **hvit** og **off-white**: tekst og lyse flater.
 - **Tekst og linjer på mørkt** (`muted-on-dark`, `line-on-dark`): sekundærtekst og kantlinjer på mørke flater.
+- **Komponentkanter** (`line-strong` på lyst, `line-on-dark-strong` på mørkt): kanten på input, outline-knapper og HUD-kontroller. Begge holder minst 3:1 mot flaten; de svake linjene (`line`, `line-on-dark`) er bare for skillelinjer og kort.
 
 ### Løypefarger (kun i kart)
 `route-start`, `route-green`, `route-blue`, `red` (XCO 13+), `route-orange` og `route-shortcut` (stiplet). De er kartspråk og knyttet til aldersklasser.
@@ -284,7 +287,7 @@ Fontene serveres fra prosjektet med `@font-face` og lastes ikke fra Google Fonts
 - **Seksjonsrytme:** 6rem vertikalt på desktop og 4rem på mobil. Det er mer luft over en overskrift enn under.
 - **Lys/mørk-veksling:** seksjonene bytter mellom mørk (`dark`) og lys (white / off-white / blue-pale). To like flater skal ikke ligge etter hverandre.
 - **Seksjonsstart:** Bebas-H2 med rødt ord → skråstilt aksentstrek → ingress. Ingen dekorativ etikett over titler.
-- **Hero:** fullhøyde, foto fra klubben under arenagradient, trefargestripe øverst og innholdet nederst til venstre. Tallpaneler (Norgescup 2024, Norgescup 2025, NM 2026) står som TV-grafikk øverst til høyre på desktop og under tittelen på mobil.
+- **Hero:** fullhøyde, foto fra klubben under arenagradient, trefargestripe øverst og innholdet nederst til venstre. Tallpaneler (Norgescup 2024, Norgescup 2025, NM 2026) står som TV-grafikk øverst til høyre på desktop. På mobil er rekkefølgen H1, undertekst, banner, Spond-knappen i full bredde og så tallpanelene som én kompakt rad nederst, slik at knappen alltid er i første skjermbilde.
 - **Kart og presentasjon:** kartmoduler kan gå i full bredde. Grafikk (tittel, tallpaneler, høydeprofil) ligger som HUD over kartet.
 - **Breakpoint:** 760px. Under det stables gridder til én kolonne, tallpaneler brytes til en rad som kan rulles sideveis eller krympes, og navigasjonen blir en hamburgermeny.
 
@@ -327,9 +330,9 @@ Nøkkel i `red` (kursiv 800) og verdi i `panel`, kant i kant. Brukes til hendels
 Et panel i `panel` med 3px rød topplinje, likt tallpanelene, og etiketten «HØYDEPROFIL». Profilen er en hvit, gjennomsiktig flate, og fremdriften er rød med en gradient, km-merker i `label` og min/maks i meter. Den brukes i løypepresentasjoner og på løypesidene.
 
 ### Buttons
-- **Primary:** `red`, hvit tekst, `button`-typografi i versaler, 2px radius. Hover gir `red-light` og `translateY(-2px)`. Pil-glyf for retning (`→` ny side, `↓` hopp ned, `↗` ekstern).
-- **Outline:** transparent med `1.5px` hvit kant (30 % alfa) på mørkt, eller `blue` på lyst.
-- **HUD-kontroll:** `panel`-glass, 1px `line-on-dark`, Barlow Condensed versaler og 0 radius (spill av, hastighet, kartlag).
+- **Primary:** `red`, hvit tekst, `button`-typografi i versaler, 2px radius. Hover gir `red-dark` og `translateY(-2px)`; `red-light` brukes ikke bak hvit tekst (4,2:1). Pil-glyf for retning (`→` ny side, `↓` hopp ned, `↗` ekstern). Lenker som åpnes i ny fane har skjult tekst «(åpnes i ny fane)».
+- **Outline:** transparent med `1.5px` `line-on-dark-strong`-kant på mørkt, eller `blue` på lyst.
+- **HUD-kontroll:** `panel`-glass, 1px `line-on-dark-strong`, Barlow Condensed versaler, 0 radius og minst 44×44px (spill av, hastighet, kartlag). Brytere har `aria-pressed`; aktiv bryter er hvit med `night`-tekst og 3px rød bunnlinje.
 
 ### Cards / Containers
 - **Lyst kort:** `white`, 4px, 1.5px svak kant og padding 2rem. Klikkbare kort får hover-løft.
@@ -337,10 +340,13 @@ Et panel i `panel` med 3px rød topplinje, likt tallpanelene, og etiketten «HØ
 - **Blått panel:** `blue` med Bebas-tittel, skråstilt aksentstrek og rød knapp. Brukes til CTA.
 
 ### Inputs / Fields
-`off-white`-bakgrunn, 1.5px svak kant, 2px radius og Barlow. Labels står i `label`. Fokus gir `blue-mid`-kant og hvit bakgrunn. Feil gir `red`-kant og en feilboks i `error-bg` med 1px rød kant, et ikon og en tekst som sier hva som er galt og hvordan det rettes.
+`off-white`-bakgrunn, 1.5px `line-strong`-kant, 2px radius og Barlow. Labels står i `label`. Fokus gir `blue-mid`-kant, hvit bakgrunn og fokusringen. Feil gir `red`-kant og en feilboks i `error-bg` med 1px rød kant, et ikon og en tekst som sier hva som er galt og hvordan det rettes.
 
 ### Navigation
-Mørk (`dark`), 2px rød bunnlinje og fast plassering med glass på forsiden. Logo pluss «Sande **Sykkel**» i Bebas. Lenkene står i `nav`-typografi, 70 % hvit, og blir hvite ved hover. Siste lenke er en rød CTA til trening («Bli med»). På mobil blir den en hamburgermeny med en mørk nedtrekksliste.
+Mørk (`dark`), 2px rød bunnlinje og fast plassering med glass på forsiden. Logo pluss «Sande **Sykkel**» i Bebas. Lenkene står i `nav`-typografi, 70 % hvit, og blir hvite ved hover. Siste lenke er en rød CTA til trening («Bli med»). Lenker og CTA har minst 44px treffflate, og siden man står på får `aria-current` og rød understrek. Navigasjonen ligger i `<header>` (komponenten `Nav.astro`). Under 760px blir den en hamburgerknapp («Meny» / «Lukk meny», `aria-expanded`) som åpner et mørkt panel i full bredde med store rader (≥48px) og den røde CTA-en; Escape lukker og gir fokus tilbake til knappen. Uten JS står lenkene synlige under logoen.
+
+### Fokus og tilgjengelighet
+Alt som kan fokuseres får en 2px fokusring med `:focus-visible`: `blue-mid` på lyse flater og hvit på mørke og blå flater. `outline: none` brukes ikke. Første fokuserbare element er «Hopp til innhold», skjult til det får fokus, og hero med H1 ligger inne i `<main>`.
 
 ### Ikoner
 Et konsekvent linjeikonsett med 1.75px strek i `currentColor`, servert som inline SVG. Emojier brukes ikke som ikoner.

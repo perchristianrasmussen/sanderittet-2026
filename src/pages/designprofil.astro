@@ -6,17 +6,18 @@ import Tag from '../components/ui/Tag.astro';
 import StatPanel from '../components/ui/StatPanel.astro';
 import Banner from '../components/ui/Banner.astro';
 import NesteTreningBanner from '../components/NesteTreningBanner.astro';
+import Nav from '../components/Nav.astro';
 import AccentBar from '../components/ui/AccentBar.astro';
 import Icon, { type IconName } from '../components/ui/Icon.astro';
 import heroPhoto from '../assets/img/rytter-sti.jpg';
-import logo from '../assets/img/sandelogo.png';
 
 const colorGroups = [
   {
     name: 'Klubbfarger',
     items: [
       { token: 'red', hex: '#C8241A', name: 'Rittrød', role: 'Handling, ett rødt ord, grafikkens nøkkel' },
-      { token: 'red-light', hex: '#E8342A', name: 'Lys rittrød', role: 'Hover, løypelinjer på mørkt' },
+      { token: 'red-dark', hex: '#9E1A12', name: 'Dyp rittrød', role: 'Hover på røde knapper, feiltekst' },
+      { token: 'red-light', hex: '#E8342A', name: 'Lys rittrød', role: 'Løypelinjer og fremdrift på mørkt' },
       { token: 'blue', hex: '#16397A', name: 'Klubbblå', role: 'Informasjon og CTA-paneler' },
       { token: 'blue-mid', hex: '#1E4EA6', name: 'Mellomblå', role: 'Lenker og fokus' },
       { token: 'blue-pale', hex: '#E8EEF8', name: 'Blekblå', role: 'Lyse klubbseksjoner' },
@@ -44,7 +45,7 @@ const colorGroups = [
   },
 ];
 
-const iconNames: IconName[] = ['arrow-right', 'arrow-down', 'external-link', 'map-pin', 'calendar', 'clock', 'download', 'mail', 'bike', 'mountain', 'play', 'alert-circle'];
+const iconNames: IconName[] = ['arrow-right', 'arrow-down', 'external-link', 'map-pin', 'calendar', 'clock', 'download', 'mail', 'bike', 'mountain', 'play', 'alert-circle', 'menu', 'x'];
 
 // Eksempeldata for høydeprofilen – ikke ekte løypetall.
 const profile = [24, 26, 31, 35, 33, 38, 44, 49, 46, 41, 43, 50, 57, 61, 58, 52, 47, 44, 40, 36, 33, 30, 27, 25];
@@ -59,43 +60,31 @@ const progressX = w * 0.58;
 ---
 
 <Base title="Designprofil – Sande Sykkelklubb">
-  <!-- Forsidens første skjerm, slik den er tenkt -->
-  <section class="hero on-dark" aria-labelledby="hero-title">
-    <Image src={heroPhoto} alt="Ung rytter i Sande-drakt på vei ned en steinete sti i skogen" class="hero-photo" widths={[800, 1400, 2000, 2600]} sizes="100vw" loading="eager" fetchpriority="high" />
-    <div class="hero-shade"></div>
-    <div class="hero-stripe" aria-hidden="true"></div>
+  <Nav overlay />
 
-    <nav class="nav" aria-label="Hovedmeny (eksempel)">
-      <a href="/designprofil" class="nav-brand">
-        <Image src={logo} alt="" width={40} height={40} />
-        <span>Sande <b>Sykkel</b></span>
-      </a>
-      <ul>
-        <li><a href="#">Trening</a></li>
-        <li><a href="#">Løyper</a></li>
-        <li><a href="#">Sanderittet</a></li>
-        <li><a href="#">Historikk</a></li>
-        <li><a href="#" class="nav-cta">Bli med</a></li>
-      </ul>
-    </nav>
+  <main id="innhold">
+    <!-- Forsidens første skjerm, slik den er tenkt -->
+    <section class="hero on-dark" aria-labelledby="hero-title">
+      <Image src={heroPhoto} alt="Ung rytter i Sande-drakt på vei ned en steinete sti i skogen" class="hero-photo" widths={[800, 1400, 2000, 2600]} sizes="100vw" loading="eager" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="hero-stripe" aria-hidden="true"></div>
 
-    <div class="hero-stats">
-      <StatPanel label="Norgescup" value="2024" size="sm" />
-      <StatPanel label="Norgescup" value="2025" size="sm" />
-      <StatPanel label="NM terreng" value="2026" size="sm" />
-    </div>
-
-    <div class="hero-body">
-      <h1 id="hero-title" class="display">Sande <span class="hl">Sykkel</span>&shy;klubb</h1>
-      <p class="hero-sub">Trening for alle aldre på Lersbrygga, fra påske til høstferie.</p>
-      <div class="hero-action">
-        <NesteTreningBanner />
-        <Button href="https://group.spond.com/OXGYJ" external>Bli med i Spond</Button>
+      <div class="hero-body">
+        <h1 id="hero-title" class="display">Sande <span class="hl">Sykkel</span>&shy;klubb</h1>
+        <p class="hero-sub">Trening for alle aldre på Lersbrygga, fra påske til høstferie.</p>
+        <div class="hero-action">
+          <NesteTreningBanner />
+          <Button href="https://group.spond.com/OXGYJ" external class="hero-cta">Bli med i Spond</Button>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <main>
+      <div class="hero-stats">
+        <StatPanel label="Norgescup" value="2024" size="sm" />
+        <StatPanel label="Norgescup" value="2025" size="sm" />
+        <StatPanel label="NM terreng" value="2026" size="sm" />
+      </div>
+    </section>
+
     <section class="section on-light">
       <div class="container">
         <h2 class="headline">Designprofil <span class="hl">v2</span></h2>
@@ -247,8 +236,8 @@ const progressX = w * 0.58;
           </div>
           <div class="hud-controls">
             <button type="button"><Icon name="play" size={16} /> Spill av</button>
-            <button type="button">1×</button>
-            <button type="button">Topo</button>
+            <button type="button" aria-pressed="false" data-toggle>1×</button>
+            <button type="button" aria-pressed="true" data-toggle>Topo</button>
           </div>
           <div class="profile">
             <span class="label profile-label">Høydeprofil</span>
@@ -307,6 +296,15 @@ const progressX = w * 0.58;
   </footer>
 </Base>
 
+<script>
+  // Demo: HUD-bryterne veksler aria-pressed.
+  for (const knapp of document.querySelectorAll<HTMLButtonElement>('[data-toggle]')) {
+    knapp.addEventListener('click', () => {
+      knapp.setAttribute('aria-pressed', String(knapp.getAttribute('aria-pressed') !== 'true'));
+    });
+  }
+</script>
+
 <style>
   /* Hero */
   .hero {
@@ -348,73 +346,6 @@ const progressX = w * 0.58;
     background: linear-gradient(90deg, var(--red) 0 33.3%, var(--white) 33.3% 66.6%, var(--blue) 66.6%);
   }
 
-  .nav {
-    position: absolute;
-    top: 4px;
-    left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.9rem var(--gutter);
-    border-bottom: 2px solid var(--red);
-    background: rgba(13, 24, 36, 0.55);
-    backdrop-filter: blur(10px);
-  }
-
-  .nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    color: var(--white);
-    text-decoration: none;
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    letter-spacing: 0.04em;
-    line-height: 1;
-  }
-
-  .nav-brand b {
-    font-weight: 400;
-    color: var(--red);
-  }
-
-  .nav ul {
-    display: flex;
-    align-items: center;
-    gap: 1.75rem;
-    list-style: none;
-    padding: 0;
-  }
-
-  .nav ul a {
-    font-family: var(--font-cond);
-    font-size: var(--fs-nav);
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.75);
-    transition: color var(--t-fast);
-  }
-
-  .nav ul a:hover {
-    color: var(--white);
-  }
-
-  .nav ul .nav-cta {
-    background: var(--red);
-    color: var(--white);
-    padding: 0.5rem 1rem;
-    border-radius: var(--r-sm);
-    font-weight: 700;
-  }
-
-  .nav ul .nav-cta:hover {
-    background: var(--red-light);
-  }
-
   .hero-stats {
     position: absolute;
     top: 6.5rem;
@@ -438,6 +369,7 @@ const progressX = w * 0.58;
     font-size: clamp(1.0625rem, 1.6vw, 1.3rem);
     color: rgba(255, 255, 255, 0.82);
     max-width: 42ch;
+    text-wrap: pretty;
     animation: rise 0.9s 0.2s var(--ease-out) both;
   }
 
@@ -569,16 +501,6 @@ const progressX = w * 0.58;
     border: 1.5px solid var(--line);
     border-radius: var(--r-md);
     padding: 2rem;
-    transition:
-      border-color var(--t-fast),
-      transform 0.25s var(--ease-out),
-      box-shadow 0.25s var(--ease-out);
-  }
-
-  .card:hover {
-    border-color: var(--blue-mid);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lift);
   }
 
   .card-day {
@@ -606,6 +528,10 @@ const progressX = w * 0.58;
     padding: 2.5rem;
   }
 
+  .panel-blue :global(:focus-visible) {
+    outline-color: var(--white);
+  }
+
   .panel-blue p {
     color: rgba(255, 255, 255, 0.8);
     margin-bottom: 1.5rem;
@@ -628,7 +554,7 @@ const progressX = w * 0.58;
     font: inherit;
     color: var(--text);
     background: var(--off-white);
-    border: 1.5px solid var(--line);
+    border: 1.5px solid var(--line-strong);
     border-radius: var(--r-sm);
     padding: 0.7rem 0.85rem;
     transition:
@@ -640,8 +566,8 @@ const progressX = w * 0.58;
     color: var(--muted);
   }
 
+  /* Fokusring kommer fra global :focus-visible */
   .form-demo input:focus {
-    outline: none;
     border-color: var(--blue-mid);
     background: var(--white);
   }
@@ -715,7 +641,9 @@ const progressX = w * 0.58;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    min-height: 40px;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
     font-family: var(--font-cond);
     font-size: 0.875rem;
     font-weight: 600;
@@ -723,15 +651,25 @@ const progressX = w * 0.58;
     text-transform: uppercase;
     color: var(--white);
     background: var(--panel);
-    border: 1px solid var(--line-on-dark);
+    border: 1px solid var(--line-on-dark-strong);
     padding: 8px 12px;
     cursor: pointer;
     backdrop-filter: blur(6px);
-    transition: border-color var(--t-fast);
+    transition:
+      border-color var(--t-fast),
+      background-color var(--t-fast);
   }
 
   .hud-controls button:hover {
-    border-color: rgba(255, 255, 255, 0.45);
+    border-color: var(--white);
+  }
+
+  /* Aktiv bryter: hvit flate med rød bunnlinje */
+  .hud-controls button[aria-pressed='true'] {
+    background: var(--white);
+    color: var(--night);
+    border-color: var(--white);
+    box-shadow: inset 0 -3px 0 var(--red);
   }
 
   .profile {
@@ -826,27 +764,49 @@ const progressX = w * 0.58;
   }
 
   @media (max-width: 760px) {
-    .nav ul li:not(:last-child) {
-      display: none;
+    .hero {
+      padding-top: 6rem;
+      padding-bottom: 1.5rem;
     }
 
-    .hero {
-      padding-top: 7rem;
+    /* Rytteren står midt i bildet */
+    .hero :global(.hero-photo) {
+      object-position: 55% 50%;
     }
 
     .hero h1 {
       font-size: clamp(3rem, 16vw, 5rem);
     }
 
+    .hero-action {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+    }
+
+    .hero-action :global(.hero-cta) {
+      width: 100%;
+    }
+
+    /* Tallpanelene i én kompakt rad under handlingen */
     .hero-stats {
       position: static;
-      order: -1;
-      margin-bottom: 1.25rem;
+      margin-top: 1.25rem;
     }
 
     .hero-stats :global(.stat) {
       min-width: 0;
       flex: 1;
+      padding: 7px 10px 9px;
+    }
+
+    .hero-stats :global(.k) {
+      letter-spacing: 0.08em;
+    }
+
+    .swatches {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
 
     .type-row {
