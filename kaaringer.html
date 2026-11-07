@@ -121,6 +121,22 @@
   input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--blue-mid); background: var(--white); }
   .invalid { border-color: var(--red) !important; }
 
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .fjern {
+    background: none; border: none; cursor: pointer;
+    font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em; padding: 0.3rem 0;
+  }
+  .fjern:hover { color: var(--red); }
+  .btn-add {
+    width: 100%; background: none; cursor: pointer;
+    border: 1.5px dashed rgba(22,57,122,0.35); border-radius: 4px;
+    padding: 1rem; color: var(--blue);
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.03em;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-add:hover { background: var(--blue-pale); border-color: var(--blue); }
+
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
   .error {
@@ -212,6 +228,8 @@
       </div>
 
       <div id="kategorier"></div>
+      <div id="egne"></div>
+      <button type="button" class="btn-add" id="legg-til">+ Foreslå en egen kategori</button>
 
       <div class="error" id="feil" role="alert"></div>
 
@@ -258,14 +276,31 @@
   const liste = document.getElementById('kategorier');
   const feil = document.getElementById('feil');
   const sendKnapp = document.getElementById('send');
+  const egne = document.getElementById('egne');
+  let teller = 0;
 
-  KATEGORIER.forEach((navn, i) => {
-    const tittel = navn.replace(/^Årets /, '');
+  // navn = fast kategori; uten navn blir det et kort for egen kategori
+  function lagKort(navn) {
+    const i = teller++;
     const card = document.createElement('div');
     card.className = 'card';
-    card.dataset.kategori = navn;
-    card.innerHTML = `
-      <div class="card-title">Årets <span>${tittel}</span></div>
+    if (navn) {
+      card.dataset.kategori = navn;
+      card.innerHTML = `<div class="card-title">Årets <span>${navn.replace(/^Årets /, '')}</span></div>`;
+    } else {
+      card.dataset.egen = '1';
+      card.innerHTML = `
+        <div class="card-head">
+          <div class="card-title">Egen <span>kategori</span></div>
+          <button type="button" class="fjern">Fjern ✕</button>
+        </div>
+        <div class="field">
+          <label for="kategorinavn-${i}">Kategori</label>
+          <input type="text" id="kategorinavn-${i}" class="kategorinavn" placeholder="F.eks. Årets beste heiarop" autocomplete="off">
+        </div>`;
+      card.querySelector('.fjern').addEventListener('click', () => card.remove());
+    }
+    card.insertAdjacentHTML('beforeend', `
       <div class="field">
         <label for="kandidat-${i}">Kandidat</label>
         <input type="text" id="kandidat-${i}" class="kandidat" autocomplete="off">
@@ -273,13 +308,21 @@
       <div class="field">
         <label for="begrunnelse-${i}">Begrunnelse</label>
         <textarea id="begrunnelse-${i}" class="begrunnelse"></textarea>
-      </div>`;
+      </div>`);
     card.addEventListener('input', () => {
       const harInnhold = [...card.querySelectorAll('input, textarea')].some(el => el.value.trim());
       card.classList.toggle('filled', harInnhold);
       card.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
     });
-    liste.appendChild(card);
+    return card;
+  }
+
+  KATEGORIER.forEach(navn => liste.appendChild(lagKort(navn)));
+
+  document.getElementById('legg-til').addEventListener('click', () => {
+    const card = lagKort();
+    egne.appendChild(card);
+    card.querySelector('.kategorinavn').focus();
   });
 
   function visFeil(tekst) {
@@ -301,19 +344,22 @@
       mangler = mangler || innsender;
     }
 
-    liste.querySelectorAll('.card').forEach(card => {
+    form.querySelectorAll('#kategorier .card, #egne .card').forEach(card => {
+      const kategorinavn = card.querySelector('.kategorinavn');
       const kandidat = card.querySelector('.kandidat');
       const begrunnelse = card.querySelector('.begrunnelse');
+      const kn = kategorinavn ? kategorinavn.value.trim() : card.dataset.kategori;
       const k = kandidat.value.trim();
       const b = begrunnelse.value.trim();
-      if (!k && !b) return;
+      if (!k && !b && (!kategorinavn || !kn)) return;
+      if (!kn) { kategorinavn.classList.add('invalid'); mangler = mangler || kategorinavn; }
       if (!k) { kandidat.classList.add('invalid'); mangler = mangler || kandidat; }
       if (!b) { begrunnelse.classList.add('invalid'); mangler = mangler || begrunnelse; }
-      nominasjoner.push({ kategori: card.dataset.kategori, kandidat: k, begrunnelse: b });
+      nominasjoner.push({ kategori: kategorinavn ? 'Egen kategori: ' + kn : kn, kandidat: k, begrunnelse: b });
     });
 
     if (mangler) {
-      visFeil('Fyll ut feltene som er markert med rødt. Hver nominasjon trenger både kandidat og begrunnelse.');
+      visFeil('Fyll ut feltene som er markert med rødt. Hver nominasjon trenger kandidat og begrunnelse, og egne kategorier trenger også et navn.');
       mangler.focus();
       return;
     }
@@ -350,6 +396,7 @@
 
   document.getElementById('ny').addEventListener('click', () => {
     form.reset();
+    egne.innerHTML = '';
     liste.querySelectorAll('.card').forEach(c => c.classList.remove('filled'));
     document.getElementById('takk').classList.remove('show');
     form.style.display = '';
