@@ -1,0 +1,456 @@
+---
+// Årets kåringer: skjult nominasjonsskjema (noindex, ikke i menyen). Svarene går til et privat
+// Google-regneark via Apps Script, samme endepunkt som på den gamle siden (legacy/kaaringer.html).
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Sidetopp from '../components/Sidetopp.astro';
+import AccentBar from '../components/ui/AccentBar.astro';
+import Tag from '../components/ui/Tag.astro';
+
+const kategorier = [
+  'Årets Trynings',
+  'Årets mest uheldige',
+  'Årets mest konsekvente på trening',
+  'Årets skravlekopp',
+  'Årets nykommer',
+  'Årets fremskritt',
+  'Årets kvinnelige rytter',
+  'Årets mannlige rytter',
+];
+---
+
+<Base title="Årets kåringer – Sande Sykkelklubb" noindex>
+  <Nav />
+
+  <main id="innhold">
+    <Sidetopp id="kaaring-tittel">
+      <Fragment slot="tittel">Årets <span class="hl">kåringer</span></Fragment>
+      <p class="lead">Hvem fortjener en pris i år? Nominer kandidater og fortell oss hvorfor. Du trenger ikke fylle ut alle kategoriene, bare de du har et forslag til.</p>
+      <p class="topp-tag"><Tag label="Juleavslutning" value="2026" /></p>
+    </Sidetopp>
+
+    <section class="section on-light">
+      <div class="container smal">
+        <form id="nominasjon" novalidate>
+          <h2 class="headline">Hvem <span class="hl">nominerer</span>?</h2>
+          <AccentBar />
+          <div class="felt">
+            <label for="innsender" class="label">Ditt navn</label>
+            <input type="text" id="innsender" name="innsender" autocomplete="name" required />
+          </div>
+
+          <div class="hp" aria-hidden="true">
+            <label for="nettside">Nettside</label>
+            <input type="text" id="nettside" name="nettside" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <h2 class="headline kandidater-tittel">Dine <span class="hl">kandidater</span></h2>
+          <AccentBar />
+          <p class="intro">Skriv navnet på kandidaten og en kort begrunnelse. En god historie teller!</p>
+
+          <div id="kategorier" class="kort-liste">
+            {
+              kategorier.map((navn, i) => (
+                <fieldset class="kort" data-kategori={navn}>
+                  <legend class="title">{navn}</legend>
+                  <div class="felt">
+                    <label for={`kandidat-${i}`} class="label">Kandidat</label>
+                    <input type="text" id={`kandidat-${i}`} class="kandidat" autocomplete="off" />
+                  </div>
+                  <div class="felt">
+                    <label for={`begrunnelse-${i}`} class="label">Begrunnelse</label>
+                    <textarea id={`begrunnelse-${i}`} class="begrunnelse" rows="3" />
+                  </div>
+                </fieldset>
+              ))
+            }
+          </div>
+          <div id="egne" class="kort-liste"></div>
+          <button type="button" class="knapp-legg-til" id="legg-til">Foreslå en egen kategori</button>
+
+          <p class="feil" id="feil" role="alert"></p>
+
+          <div class="send-rad">
+            <button type="submit" class="btn btn-primary send" id="send">Send nominasjoner</button>
+            <span class="personvern">Bare juryen ser svarene. De vises ikke på nettsiden.</span>
+          </div>
+        </form>
+
+        <div class="takk" id="takk" hidden>
+          <h2 class="headline" tabindex="-1">Tusen <span class="hl">takk</span>!</h2>
+          <AccentBar />
+          <p>Nominasjonene dine er registrert. Vinnerne kåres på juleavslutningen.</p>
+          <button type="button" class="btn btn-primary" id="ny">Send flere nominasjoner</button>
+        </div>
+      </div>
+    </section>
+
+    <template id="egen-mal">
+      <fieldset class="kort" data-egen>
+        <legend class="title">Egen kategori</legend>
+        <button type="button" class="fjern">Fjern</button>
+        <div class="felt">
+          <label class="label" data-for="kategorinavn">Kategori</label>
+          <input type="text" class="kategorinavn" placeholder="F.eks. Årets beste heiarop" autocomplete="off" />
+        </div>
+        <div class="felt">
+          <label class="label" data-for="kandidat">Kandidat</label>
+          <input type="text" class="kandidat" autocomplete="off" />
+        </div>
+        <div class="felt">
+          <label class="label" data-for="begrunnelse">Begrunnelse</label>
+          <textarea class="begrunnelse" rows="3"></textarea>
+        </div>
+      </fieldset>
+    </template>
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  // Web app-URL fra Google Apps Script. Svarene havner i et privat Google-regneark.
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxI1t8Rzn9t25jR-49xzGtCu9IHU4IaXwSruTgt93_LyQg2ycPILQ6YOuUP79NTtrwCkw/exec';
+
+  const form = document.getElementById('nominasjon') as HTMLFormElement;
+  const egne = document.getElementById('egne')!;
+  const feil = document.getElementById('feil')!;
+  const sendKnapp = document.getElementById('send') as HTMLButtonElement;
+  const takk = document.getElementById('takk')!;
+  const mal = document.getElementById('egen-mal') as HTMLTemplateElement;
+  let teller = 100;
+
+  // Fjerner feilmarkering når feltet endres
+  // og markerer kort som har innhold
+  form.addEventListener('input', (e) => {
+    const felt = e.target as HTMLElement;
+    felt.removeAttribute('aria-invalid');
+    const kort = felt.closest('.kort');
+    if (kort) {
+      const harInnhold = [...kort.querySelectorAll<HTMLInputElement>('input, textarea')].some((el) => el.value.trim());
+      kort.classList.toggle('utfylt', harInnhold);
+    }
+  });
+
+  document.getElementById('legg-til')!.addEventListener('click', () => {
+    const kort = (mal.content.cloneNode(true) as DocumentFragment).firstElementChild as HTMLFieldSetElement;
+    const i = teller++;
+    for (const label of kort.querySelectorAll<HTMLLabelElement>('label[data-for]')) {
+      const id = `${label.dataset.for}-${i}`;
+      label.htmlFor = id;
+      (label.nextElementSibling as HTMLElement).id = id;
+    }
+    kort.querySelector('.fjern')!.addEventListener('click', () => kort.remove());
+    egne.appendChild(kort);
+    kort.querySelector<HTMLInputElement>('.kategorinavn')!.focus();
+  });
+
+  const visFeil = (tekst: string) => {
+    feil.textContent = tekst;
+  };
+
+  const marker = (el: HTMLElement) => el.setAttribute('aria-invalid', 'true');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    visFeil('');
+    form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+
+    const innsender = document.getElementById('innsender') as HTMLInputElement;
+    const nominasjoner: { kategori: string; kandidat: string; begrunnelse: string }[] = [];
+    let mangler: HTMLElement | null = null;
+
+    if (!innsender.value.trim()) {
+      marker(innsender);
+      mangler ??= innsender;
+    }
+
+    form.querySelectorAll<HTMLFieldSetElement>('.kort').forEach((kort) => {
+      const kategorinavn = kort.querySelector<HTMLInputElement>('.kategorinavn');
+      const kandidat = kort.querySelector<HTMLInputElement>('.kandidat')!;
+      const begrunnelse = kort.querySelector<HTMLTextAreaElement>('.begrunnelse')!;
+      const kn = kategorinavn ? kategorinavn.value.trim() : kort.dataset.kategori!;
+      const k = kandidat.value.trim();
+      const b = begrunnelse.value.trim();
+      if (!k && !b && (!kategorinavn || !kn)) return;
+      if (!kn && kategorinavn) {
+        marker(kategorinavn);
+        mangler ??= kategorinavn;
+      }
+      if (!k) {
+        marker(kandidat);
+        mangler ??= kandidat;
+      }
+      if (!b) {
+        marker(begrunnelse);
+        mangler ??= begrunnelse;
+      }
+      nominasjoner.push({ kategori: kategorinavn ? 'Egen kategori: ' + kn : kn, kandidat: k, begrunnelse: b });
+    });
+
+    if (mangler) {
+      visFeil('Fyll ut feltene som er markert med rødt. Hver nominasjon trenger kandidat og begrunnelse, og egne kategorier trenger også et navn.');
+      (mangler as HTMLElement).focus();
+      return;
+    }
+    if (!nominasjoner.length) {
+      visFeil('Du må nominere minst én kandidat.');
+      return;
+    }
+
+    sendKnapp.disabled = true;
+    sendKnapp.textContent = 'Sender …';
+    try {
+      // text/plain unngår CORS-preflight, som Apps Script ikke støtter
+      const svar = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          innsender: innsender.value.trim(),
+          nettside: (document.getElementById('nettside') as HTMLInputElement).value,
+          nominasjoner,
+        }),
+      });
+      const data = await svar.json();
+      if (!data.ok) throw new Error(data.error || 'Ukjent feil');
+      form.hidden = true;
+      takk.hidden = false;
+      takk.querySelector<HTMLElement>('h2')!.focus();
+    } catch {
+      visFeil('Noe gikk galt, og nominasjonene ble ikke sendt. Prøv igjen om litt.');
+    } finally {
+      sendKnapp.disabled = false;
+      sendKnapp.textContent = 'Send nominasjoner';
+    }
+  });
+
+  document.getElementById('ny')!.addEventListener('click', () => {
+    form.reset();
+    egne.innerHTML = '';
+    form.querySelectorAll('.utfylt').forEach((k) => k.classList.remove('utfylt'));
+    takk.hidden = true;
+    form.hidden = false;
+    document.getElementById('innsender')!.focus();
+  });
+</script>
+
+<style>
+  .topp-tag {
+    margin-top: var(--s-md);
+  }
+
+  .smal {
+    max-width: calc(var(--container-narrow) + 2 * var(--gutter));
+  }
+
+  .kandidater-tittel {
+    margin-top: var(--s-xl);
+  }
+
+  .intro {
+    margin-bottom: var(--s-md);
+    color: var(--muted);
+  }
+
+  .felt {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .felt + .felt {
+    margin-top: var(--s-sm);
+  }
+
+  .felt .label {
+    color: var(--blue);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.9rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--white);
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--r-md);
+    transition: border-color var(--t-fast);
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input:hover,
+  textarea:hover {
+    border-color: var(--blue-mid);
+  }
+
+  input:focus-visible,
+  textarea:focus-visible {
+    border-color: var(--blue-mid);
+    outline-offset: 1px;
+  }
+
+  [aria-invalid='true'] {
+    border-color: var(--red);
+    background: var(--error-bg);
+  }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .kort-liste {
+    display: grid;
+    gap: var(--s-sm);
+  }
+
+  #egne:not(:empty) {
+    margin-top: var(--s-sm);
+  }
+
+  .kort {
+    position: relative;
+    margin: 0;
+    padding: var(--s-md);
+    background: var(--off-white);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    min-width: 0;
+  }
+
+  /* Kortet er fylt ut: blå kant viser hva som blir sendt */
+  .kort.utfylt {
+    border-color: var(--blue-mid);
+  }
+
+  .kort legend {
+    float: left;
+    width: 100%;
+    margin-bottom: var(--s-sm);
+    padding: 0;
+    color: var(--dark);
+  }
+
+  .kort legend + * {
+    clear: both;
+  }
+
+  .fjern {
+    position: absolute;
+    top: var(--s-sm);
+    right: var(--s-sm);
+    min-height: 44px;
+    padding: 0 0.75rem;
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--track-tag);
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .fjern:hover {
+    color: var(--red);
+  }
+
+  .knapp-legg-til {
+    width: 100%;
+    min-height: 56px;
+    margin-top: var(--s-sm);
+    font-family: var(--font-cond);
+    font-size: var(--fs-button);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: transparent;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition:
+      border-color var(--t-fast),
+      color var(--t-fast);
+  }
+
+  .knapp-legg-til:hover {
+    color: var(--blue-mid);
+    border-color: var(--blue-mid);
+  }
+
+  .feil:not(:empty) {
+    margin-top: var(--s-md);
+    padding: var(--s-sm) var(--s-md);
+    color: var(--red-dark);
+    background: var(--error-bg);
+    border-radius: var(--r-md);
+  }
+
+  .send-rad {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-sm) var(--s-md);
+    margin-top: var(--s-lg);
+  }
+
+  /* Knappene her er <button>, med samme form som Button-komponenten */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.9rem 1.75rem;
+    font-family: var(--font-cond);
+    font-size: var(--fs-button);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--red);
+    border: 1.5px solid transparent;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition:
+      background-color var(--t-fast),
+      transform var(--t-fast) var(--ease-out-expo);
+  }
+
+  .btn:hover {
+    background: var(--red-dark);
+    transform: translateY(-2px);
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+    transition-duration: var(--t-press);
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: progress;
+    transform: none;
+  }
+
+  .personvern {
+    font-size: var(--fs-body-sm);
+    color: var(--muted);
+  }
+
+  .takk p {
+    margin-bottom: var(--s-md);
+    color: var(--muted);
+  }
+
+  .takk h2:focus {
+    outline: none;
+  }
+</style>

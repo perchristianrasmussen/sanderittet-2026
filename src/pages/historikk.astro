@@ -1,0 +1,143 @@
+---
+// Historikk: klubben og arrangementene på Lersbrygga, skrevet som historie.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Sidetopp from '../components/Sidetopp.astro';
+import AccentBar from '../components/ui/AccentBar.astro';
+import Button from '../components/ui/Button.astro';
+import Tag from '../components/ui/Tag.astro';
+import { adresse, moderklubbUrl } from '../data/klubb.ts';
+import rytterRotter from '../assets/img/rytter-rotter.jpg';
+import norgescupPremie from '../assets/img/norgescup-premie.jpg';
+import startfelt from '../assets/img/startfelt.jpg';
+---
+
+<Base
+  title="Historikk – Sande Sykkelklubb"
+  description="Sande Sykkelklubb arrangerte Norgescup på Lersbrygga i 2024 og 2025 og NM i terrengsykling i 2026. Historien til sykkelgruppa i Sande Sportsklubb."
+>
+  <Nav current="historikk" />
+
+  <main id="innhold">
+    <Sidetopp id="historikk-tittel" bilde={rytterRotter} bildeAlt="Rytter i klubbdrakt sykler over røtter i skogsløypa" fokus="50% 40%">
+      <Fragment slot="tittel">Fra Norgescup til <span class="hl">NM</span></Fragment>
+      <p class="lead">Sykkelgruppa i Sande Sportsklubb har egne løyper på Lersbrygga og har arrangert ritt på nasjonalt nivå. Her samler vi det klubben har vært med på.</p>
+    </Sidetopp>
+
+    <!-- Om klubben -->
+    <section class="section on-light" aria-labelledby="klubb-tittel">
+      <div class="container to-kol">
+        <div>
+          <h2 id="klubb-tittel" class="headline">Sykkelgruppa i <span class="hl">Sande</span></h2>
+          <AccentBar />
+          <p class="lead">Sande Sykkelklubb er sykkelgruppa i Sande Sportsklubb, med motto «Klart vi kan det!». Vi har faste treninger for barn og ungdom fra påske til høstferie, og vi arrangerer Sanderittet hvert år.</p>
+        </div>
+        <dl class="fakta">
+          <div>
+            <dt class="label">Moderklubb</dt>
+            <dd><a href={moderklubbUrl} target="_blank" rel="noopener">Sande Sportsklubb<span class="visually-hidden"> (åpnes i ny fane)</span></a></dd>
+          </div>
+          <div>
+            <dt class="label">Hjemmebane</dt>
+            <dd>{adresse.navn}, {adresse.poststed}</dd>
+          </div>
+          <div>
+            <dt class="label">Trening</dt>
+            <dd><a href="/trening">Tider, alder og utstyr</a></dd>
+          </div>
+          <div>
+            <dt class="label">Rittet</dt>
+            <dd><a href="/sanderittet">Sanderittet</a></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+    <!-- Arrangementene -->
+    <section class="section on-dark" aria-labelledby="arr-tittel">
+      <div class="container to-kol">
+        <div>
+          <h2 id="arr-tittel" class="headline">Arrangementer på <span class="hl">Lersbrygga</span></h2>
+          <AccentBar />
+          <ol class="tidslinje">
+            <li>
+              <span class="num ar">2024</span>
+              <div>
+                <h3 class="title">Norgescup</h3>
+                <p>Klubben arrangerte Norgescup på Lersbrygga.</p>
+              </div>
+            </li>
+            <li>
+              <span class="num ar">2025</span>
+              <div>
+                <h3 class="title">Norgescup</h3>
+                <p>Ny Norgescup på hjemmebane, året før mesterskapet.</p>
+              </div>
+            </li>
+            <li class="nm">
+              <span class="num ar">2026</span>
+              <div>
+                <h3 class="title">NM i terrengsykling</h3>
+                <p class="tags"><Tag label="NM" value="Avholdt" /></p>
+                <p>Rundbane (XCO) lørdag 30. mai og kortbane (XCC) søndag 31. mai, på Lersbrygga.</p>
+                <Button href="/nm2026" variant="outline" icon="arrow-right">Om NM 2026</Button>
+              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="bilder">
+          <Image src={norgescupPremie} alt="Unge ryttere med medaljer jubler foran Norgescup-veggen" class="foto" widths={[500, 800, 1200]} sizes="(max-width: 760px) 50vw, 24vw" />
+          <Image src={startfelt} alt="Startfeltet stilt opp på arenaen før start" class="foto" widths={[450, 900]} sizes="(max-width: 760px) 50vw, 24vw" />
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .to-kol {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-xl);
+    align-items: start;
+  }
+
+  .bilder {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-sm);
+    aspect-ratio: 5 / 4;
+  }
+
+  .bilder :global(.foto:last-child) {
+    margin-top: var(--s-xl);
+    height: calc(100% - var(--s-xl));
+  }
+
+  @media (max-width: 1000px) {
+    .to-kol {
+      grid-template-columns: 1fr;
+      gap: var(--s-lg);
+    }
+
+    .bilder {
+      aspect-ratio: 2 / 1;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .bilder {
+      aspect-ratio: 4 / 3;
+      gap: var(--s-xs);
+    }
+
+    .bilder :global(.foto:last-child) {
+      margin-top: 0;
+      height: 100%;
+    }
+  }
+</style>

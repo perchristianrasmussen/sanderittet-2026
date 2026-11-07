@@ -18,17 +18,20 @@ export interface Sponsor {
   skala?: number;
   /** Plate i logoens størrelse bak logoen når den krever det, f.eks. lys logo som forsvinner på hvitt. Flisen er fortsatt hvit. */
   bakgrunn?: string;
+  /** Kort omtale til /sponsorer, fra klubbens gamle sponsorside */
+  omtale: string;
 }
 
-// Rekkefølge og lenker fra legacy/sponsorer.html (sponsorer 2026)
+// Rekkefølge, lenker og omtaler fra legacy/sponsorer.html (sponsorer 2026). Omtalene er forkortet,
+// og tall som går ut på dato (omsetning, ansatte) er tatt bort.
 export const sponsorer: Sponsor[] = [
-  { navn: 'Gastromat', url: 'https://gastromat.no', logo: gastromat, form: 'kvadrat', skala: 1.6 },
-  { navn: 'BD Samferdsel', url: 'https://www.bdsamferdsel.no', logo: bdSamferdsel, form: 'kvadrat', skala: 1.1 },
-  { navn: 'Berg-Hansen', url: 'https://www.berg-hansen.no', logo: bergHansen, form: 'bred', skala: 0.9 },
-  { navn: 'Sande Dyreklinikk', url: 'https://www.sandedyreklinikk.no', logo: sandeDyreklinikk, form: 'bred', skala: 1.5 },
-  { navn: 'GK', url: 'https://www.gk.no', logo: gk, form: 'kvadrat', skala: 1.35 },
-  { navn: 'Rolls Sykkel', url: 'https://www.rolls-sykkelservice.no', logo: rollsSykkel, form: 'kvadrat', skala: 1.1 },
+  { navn: 'Gastromat', url: 'https://gastromat.no', logo: gastromat, form: 'kvadrat', skala: 1.6, omtale: 'Sande-bedrift med røtter tilbake til 1966, kjent for allkrydderet sitt. Gastromat støtter idretten i hjembyen og er en naturlig partner for Sanderittet.' },
+  { navn: 'BD Samferdsel', url: 'https://www.bdsamferdsel.no', logo: bdSamferdsel, form: 'kvadrat', skala: 1.1, omtale: 'Regional aktør innen veginfrastruktur og samferdselsprodukter med base i Holmestrand, med alt langs veikanten fra trafikkskilt og master til rekkverk.' },
+  { navn: 'Berg-Hansen', url: 'https://www.berg-hansen.no', logo: bergHansen, form: 'bred', skala: 0.9, omtale: 'Norges eldste og største reisebyrå, med over 100 års erfaring innen forretningsreiser, grupper og humanitær sektor.' },
+  { navn: 'Sande Dyreklinikk', url: 'https://www.sandedyreklinikk.no', logo: sandeDyreklinikk, form: 'bred', skala: 1.5, omtale: 'Moderne dyreklinikk på Revåveien i Sande, med alt fra rutinebesøk og vaksinasjoner til kirurgi, røntgen og ultralyd.' },
+  { navn: 'GK', url: 'https://www.gk.no', logo: gk, form: 'kvadrat', skala: 1.35, omtale: 'Teknisk totalentreprenør og servicepartner innen ventilasjon, kjøling, byggautomasjon, elektro og rør, startet som et lite ventilasjonsselskap i 1964.' },
+  { navn: 'Rolls Sykkel', url: 'https://www.rolls-sykkelservice.no', logo: rollsSykkel, form: 'kvadrat', skala: 1.1, omtale: 'Den lokale sykkelbutikken og verkstedet i Sande, forhandler av Merida og Control, med service for alle sykkeltyper, med og uten motor.' },
   // Lys logo: står på en plate i samme røde som på klubbens gamle sponsorside
-  { navn: 'Kjeldaas', url: 'https://kjeldaas-as.no', logo: kjeldaas, form: 'bred', skala: 1.05, bakgrunn: '#b32013' },
-  { navn: 'OneMed', url: 'https://www.onemed.com/no', logo: onemed, form: 'bred', skala: 0.85 },
+  { navn: 'Kjeldaas', url: 'https://kjeldaas-as.no', logo: kjeldaas, form: 'bred', skala: 1.05, bakgrunn: '#b32013', omtale: 'Anleggsentreprenør med base i Sande, grunnlagt i 1971, innen veg, vann og avløp, idrettsanlegg og rørfornyelse uten graving.' },
+  { navn: 'OneMed', url: 'https://www.onemed.com/no', logo: onemed, form: 'bred', skala: 0.85, omtale: 'Norges største leverandør av medisinsk forbruksmateriell, fra sårpleie og hygiene til utstyr for operasjonssaler.' },
 ];

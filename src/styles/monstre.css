@@ -1,0 +1,170 @@
+/* Delte innholdsmønstre for forsiden og undersidene (DESIGN.md: Faktaliste, Tidslinje, Infokort).
+   Sidene setter bare egne avvik i sine scoped stiler. */
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-xs);
+}
+
+/* Ingressen i en seksjon står fritt; innholdet under får luft */
+.section .lead {
+  margin-bottom: var(--s-lg);
+}
+
+.foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--r-lg);
+}
+
+/* Faktaliste: etikett til venstre, tekst til høyre, hårstreker mellom radene */
+.fakta {
+  margin: 0;
+}
+
+.fakta > div {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: var(--s-md);
+  padding-block: 1.1rem;
+  border-top: 1px solid var(--line);
+}
+
+.fakta > div:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.fakta dt {
+  padding-top: 0.3rem;
+  color: var(--blue);
+}
+
+.fakta dd {
+  margin: 0;
+  max-width: 52ch;
+}
+
+.on-dark .fakta > div {
+  border-color: var(--line-on-dark);
+}
+
+.on-dark .fakta dt {
+  color: var(--muted-on-dark);
+}
+
+.on-dark .fakta dd {
+  color: var(--soft-on-dark);
+}
+
+/* Infokort på mørk flate */
+.info-card {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-on-dark);
+  border-radius: var(--r-md);
+  padding: var(--s-md);
+}
+
+.info-card p {
+  color: var(--soft-on-dark);
+}
+
+/* Blått panel for én tydelig handling */
+.panel-blue {
+  background: var(--blue);
+  color: var(--white);
+  border-radius: var(--r-md);
+  padding: var(--s-lg);
+}
+
+.panel-blue :focus-visible {
+  outline-color: var(--white);
+}
+
+.panel-blue p {
+  color: var(--soft-on-dark);
+  margin-bottom: var(--s-md);
+}
+
+/* Tidslinje: årstall i tallskrift, mesterskapet med rød topplinje */
+.tidslinje {
+  padding: 0;
+  list-style: none;
+}
+
+.tidslinje li {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--s-md);
+  padding-block: var(--s-md);
+  border-top: 1px solid var(--line-on-dark);
+}
+
+.tidslinje li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.tidslinje .ar {
+  font-size: var(--fs-stat);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--muted-on-dark);
+}
+
+.tidslinje p {
+  margin-top: 0.4rem;
+  color: var(--soft-on-dark);
+}
+
+.tidslinje .title {
+  color: var(--white);
+}
+
+.tidslinje .nm {
+  border-top: 3px solid var(--red);
+}
+
+.tidslinje li.nm:first-child {
+  padding-top: var(--s-md);
+}
+
+.tidslinje .nm .ar {
+  color: var(--white);
+}
+
+.tidslinje .nm .tags {
+  margin-top: 0.6rem;
+}
+
+.tidslinje .btn {
+  margin-top: var(--s-md);
+}
+
+@media (max-width: 760px) {
+  .fakta > div {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .fakta dt {
+    padding-top: 0;
+  }
+
+  .tidslinje li {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: var(--s-sm);
+  }
+
+  .tidslinje .ar {
+    font-size: var(--fs-stat-sm);
+  }
+
+  .panel-blue {
+    padding: var(--s-md);
+  }
+}

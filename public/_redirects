@@ -1,0 +1,19 @@
+# Gamle adresser fra sanderittet.no (legacy/). Virker når sanderittet.no videresendes hit med stien bevart.
+# Selve sanderittet.no-forsiden (/) sendes til /sanderittet med en 302-regel i Cloudflare, ikke her.
+/index.html / 301
+/nm2026.html /nm2026 301
+/sanderittet-2026.html /nm2026 301
+/sanderittet-20261.html /nm2026 301
+/loyper.html /loyper 301
+/loypekart-komponenter.html /loyper 301
+/sponsorer.html /sponsorer 301
+/kaaringer.html /kaaringer 301
+
+# GPX-filene lå i roten med mellomrom og æøå i navnet
+/R%C3%B8d%20Lang%20XCO.gpx /gpx/rod-lang-xco.gpx 301
+/R%C3%B8d%20kort%20XCO.gpx /gpx/rod-kort-xco.gpx 301
+/Bl%C3%A5%20l%C3%B8ype%20(XCO).gpx /gpx/bla-xco.gpx 301
+/Gr%C3%B8nn%20l%C3%B8ype%20(XCO).gpx /gpx/gronn-xco.gpx 301
+/Kortbane%20(XCC).gpx /gpx/kortbane-xcc.gpx 301
+/Gr%C3%B8nn%20kort%20(XCC).gpx /gpx/gronn-kort-xcc.gpx 301
+/XCC%20Kort.gpx /gpx/xcc-kort.gpx 301

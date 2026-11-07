@@ -1,6 +1,15 @@
 ---
-// Bunntekst: ordmerket, adressen og koblingen til moderklubben.
+// Bunntekst: ordmerket, lenker til alle sidene, adressen og koblingen til moderklubben.
 import { adresse, moderklubbUrl } from '../data/klubb.ts';
+
+const lenker = [
+  { href: '/trening', tekst: 'Trening' },
+  { href: '/loyper', tekst: 'Løyper' },
+  { href: '/sanderittet', tekst: 'Sanderittet' },
+  { href: '/nm2026', tekst: 'NM 2026' },
+  { href: '/historikk', tekst: 'Historikk' },
+  { href: '/sponsorer', tekst: 'Sponsorer' },
+];
 ---
 
 <footer class="footer on-dark">
@@ -9,6 +18,11 @@ import { adresse, moderklubbUrl } from '../data/klubb.ts';
       <p class="footer-brand">Sande <b>Sykkel</b>klubb</p>
       <p class="label">Lersbrygga <span class="sep">·</span> {adresse.poststed}</p>
     </div>
+    <nav aria-label="Sidene">
+      <ul class="footer-lenker">
+        {lenker.map((l) => <li><a href={l.href} class="link">{l.tekst}</a></li>)}
+      </ul>
+    </nav>
     <p class="label">En del av <a href={moderklubbUrl}>Sande Sportsklubb</a></p>
   </div>
 </footer>
@@ -36,6 +50,25 @@ import { adresse, moderklubbUrl } from '../data/klubb.ts';
   .footer-brand b {
     font-weight: 400;
     color: var(--red);
+  }
+
+  .footer-lenker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-md);
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer-lenker a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   .footer a {

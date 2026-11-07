@@ -1,0 +1,96 @@
+---
+// Løypekort med løypefarge, disiplin og lengde, som lenker til løypesidene /loyper/<slug>.
+import Icon from '../../components/ui/Icon.astro';
+import type { KatalogLoype } from './motor/katalog.ts';
+import { fmtKm } from './motor/geo.ts';
+
+interface Props {
+  loyper: KatalogLoype[];
+  'aria-label'?: string;
+}
+
+const { loyper, 'aria-label': ariaLabel } = Astro.props;
+const strekfarge = (farge: string) => (farge === 'ukjent' ? 'var(--line-strong)' : `var(--route-${farge})`);
+---
+
+<ul class="loypeliste" aria-label={ariaLabel}>
+  {
+    loyper.map((l) => (
+      <li style={`--loype: ${strekfarge(l.farge)}`} class:list={{ stiplet: l.stiplet }}>
+        <a href={`/loyper/${l.slug}`} class="card-link loypekort">
+          <span class="strek" aria-hidden="true" />
+          <span class="navn">{l.navn}</span>
+          <span class="meta">
+            {l.disiplin} <span class="sep">·</span> {fmtKm(l.lengde)} km
+          </span>
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .loypeliste {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+    gap: var(--s-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .loypekort {
+    display: grid;
+    grid-template-columns: 26px 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--off-white);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    color: var(--dark);
+    text-decoration: none;
+  }
+
+  .strek {
+    grid-row: 1 / span 2;
+    grid-column: 1;
+    height: 4px;
+    background: var(--loype);
+  }
+
+  .stiplet .strek {
+    background: repeating-linear-gradient(90deg, var(--loype) 0 7px, transparent 7px 11px);
+  }
+
+  .loypekort :global(svg) {
+    grid-row: 1 / span 2;
+    grid-column: 3;
+    color: var(--muted);
+  }
+
+  .navn,
+  .meta {
+    grid-column: 2;
+  }
+
+  .navn {
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .meta {
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

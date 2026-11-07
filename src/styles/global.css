@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './monstre.css';
 
 /* Barlow Condensed har for bred Ø/ø i 500–800 rett, så det blir hull etter bokstaven.
    Rettede kopier (scripts/rett-oslash.mjs) tar over bare for U+D8 og U+F8. */

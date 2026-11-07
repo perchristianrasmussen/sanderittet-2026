@@ -1,18 +1,35 @@
 ---
-// Enkel 404 til den nye siden er på plass.
+// Fant ikke siden: kort beskjed og veier videre.
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Sidetopp from '../components/Sidetopp.astro';
+import Button from '../components/ui/Button.astro';
 ---
 
-<html lang="nb">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex" />
-    <title>Fant ikke siden – Sande Sykkelklubb</title>
-  </head>
-  <body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0d1824;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:1rem;">
-    <main>
-      <h1>Fant ikke siden</h1>
-      <p><a href="/" style="color:#fff;">Til forsiden</a></p>
-    </main>
-  </body>
-</html>
+<Base title="Fant ikke siden – Sande Sykkelklubb" noindex>
+  <Nav />
+
+  <main id="innhold">
+    <Sidetopp id="ikke-funnet">
+      <Fragment slot="tittel">Utenfor <span class="hl">løypa</span></Fragment>
+      <p class="lead">Vi fant ikke siden du lette etter. Den kan ha flyttet da klubben fikk ny nettside.</p>
+      <p class="knapper">
+        <Button href="/" icon="arrow-right">Til forsiden</Button>
+        <Button href="/trening" variant="outline">Trening</Button>
+        <Button href="/sanderittet" variant="outline">Sanderittet</Button>
+      </p>
+    </Sidetopp>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .knapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-sm);
+    margin-top: var(--s-lg);
+  }
+</style>

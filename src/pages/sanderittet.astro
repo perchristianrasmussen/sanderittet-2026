@@ -1,0 +1,228 @@
+---
+// Sanderittets faste adresse. Innholdet utenom sesong er status og bakgrunn; neste ritt styres fra data/sanderittet.ts.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Sidetopp from '../components/Sidetopp.astro';
+import AccentBar from '../components/ui/AccentBar.astro';
+import Banner from '../components/ui/Banner.astro';
+import Button from '../components/ui/Button.astro';
+import Tag from '../components/ui/Tag.astro';
+import Icon from '../components/ui/Icon.astro';
+import Loypeliste from '../features/loypekart/Loypeliste.astro';
+import { loyper } from '../features/loypekart/data/katalog.ts';
+import { nesteRitt, tidligereRitt } from '../data/sanderittet.ts';
+import { adresse, arenakart, epost } from '../data/klubb.ts';
+import startRekrutt from '../assets/img/start-rekrutt.jpg';
+import klubbtelt from '../assets/img/klubbtelt.jpg';
+import svabergSti from '../assets/img/svaberg-sti.jpg';
+
+const status = nesteRitt
+  ? { label: `Sanderittet ${nesteRitt.ar}`, value: nesteRitt.datoTekst, datetime: nesteRitt.dato }
+  : { label: 'Neste ritt', value: 'Dato kommer her' };
+---
+
+<Base
+  title="Sanderittet – terrengritt på Lersbrygga i Sande"
+  description="Sanderittet er Sande Sykkelklubbs årlige terrengritt på Lersbrygga i Sande i Vestfold. Her kommer dato, løyper og påmelding for neste ritt."
+>
+  <Nav current="sanderittet" />
+
+  <main id="innhold">
+    <Sidetopp id="ritt-tittel" bilde={svabergSti} bildeAlt="To ryttere på et svaberg mellom sperrebånd i skogsløypa" fokus="50% 50%">
+      <Fragment slot="tittel">Sande<span class="hl">rittet</span></Fragment>
+      <p class="lead">Klubbens årlige terrengritt på Lersbrygga, i løypene i skogen rundt idrettsanlegget. Dato, program og påmelding for neste ritt kommer på denne siden.</p>
+      <div class="topp-rad">
+        <Banner label={status.label} value={status.value} datetime={status.datetime} size="sm" />
+      </div>
+      {nesteRitt?.pamelding && (
+        <div class="topp-rad">
+          <Button href={nesteRitt.pamelding} external size="lg">Meld deg på</Button>
+        </div>
+      )}
+    </Sidetopp>
+
+    <!-- Om rittet -->
+    <section class="section on-light" aria-labelledby="om-ritt-tittel">
+      <div class="container to-kol">
+        <div>
+          <h2 id="om-ritt-tittel" class="headline">Rittet på <span class="hl">Lersbrygga</span></h2>
+          <AccentBar />
+          <dl class="fakta">
+            <div>
+              <dt class="label">Sted</dt>
+              <dd>{adresse.navn}, {adresse.poststed}. <a href={arenakart.apne} target="_blank" rel="noopener">Arenakartet i Google Maps<span class="visually-hidden"> (åpnes i ny fane)</span></a></dd>
+            </div>
+            <div>
+              <dt class="label">Øvelser</dt>
+              <dd>Løypene på Lersbrygga har rundbane (XCO) og kortbane (XCC) i flere lengder, fra de korteste rundene for de yngste til rød lang.</dd>
+            </div>
+            <div>
+              <dt class="label">Påmelding</dt>
+              <dd>{nesteRitt?.pamelding ? <a href={nesteRitt.pamelding} target="_blank" rel="noopener">Påmeldingen er åpen<span class="visually-hidden"> (åpnes i ny fane)</span></a> : 'Lenken til påmeldingen kommer her når den åpner.'}</dd>
+            </div>
+            <div>
+              <dt class="label">Frivillig</dt>
+              <dd>Vi trenger mange frivillige på rittet. Vil du bidra, <a href={`mailto:${epost}`}>send oss en e-post</a>.</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="bilder">
+          <Image src={klubbtelt} alt="Ryttere og foreldre samlet foran klubbens røde telt på arenaen" class="foto" widths={[600, 1000, 1600]} sizes="(max-width: 1000px) 100vw, 40vw" />
+          <Image src={startRekrutt} alt="To unge ryttere i klubbdrakt på vei mot start, med en dommer ved siden av" class="foto foto-start" widths={[600, 1000, 1600]} sizes="(max-width: 1000px) 100vw, 40vw" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Løypene -->
+    <section class="section on-pale" aria-labelledby="ritt-loyper-tittel">
+      <div class="container">
+        <h2 id="ritt-loyper-tittel" class="headline">Løypene i <span class="hl">rittet</span></h2>
+        <AccentBar />
+        <p class="lead">Hver løype har kart, 3D-gjennomkjøring og GPX til klokka eller telefonen.</p>
+        <Loypeliste loyper={loyper} aria-label="Løypene på Lersbrygga" />
+        <p class="alle">
+          <a href="/loyper" class="link lenke">Se alle løypene i kartet <Icon name="arrow-right" size={16} /></a>
+        </p>
+      </div>
+    </section>
+
+    <!-- Tidligere ritt -->
+    <section class="section on-dark" aria-labelledby="tidligere-tittel">
+      <div class="container to-kol">
+        <div>
+          <h2 id="tidligere-tittel" class="headline">Tidligere <span class="hl">ritt</span></h2>
+          <AccentBar />
+          <p class="lead">I 2026 var Sanderittet norgesmesterskapet i terrengsykling, etter Norgescup på Lersbrygga i 2024 og 2025.</p>
+          <p><a href="/historikk" class="link lenke">Hele historikken <Icon name="arrow-right" size={16} /></a></p>
+        </div>
+        <ul class="ritt-liste">
+          {
+            tidligereRitt.map((r) => (
+              <li>
+                <a href={r.href} class="card-link ritt-kort">
+                  <span class="num ar">{r.ar}</span>
+                  <span class="ritt-navn title">{r.navn}</span>
+                  <Tag label="NM" value="Avholdt" />
+                  <Icon name="arrow-right" size={20} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .topp-rad {
+    margin-top: var(--s-md);
+  }
+
+  .to-kol {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-xl);
+    align-items: start;
+  }
+
+  .bilder {
+    display: grid;
+    gap: var(--s-sm);
+  }
+
+  .bilder :global(.foto) {
+    aspect-ratio: 16 / 9;
+  }
+
+  .bilder :global(.foto-start) {
+    object-position: 50% 40%;
+  }
+
+  .lead {
+    margin-bottom: var(--s-lg);
+  }
+
+  .lenke {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    font-weight: 600;
+  }
+
+  .alle {
+    margin-top: var(--s-md);
+  }
+
+  .on-dark .lenke {
+    color: var(--white);
+  }
+
+  .ritt-liste {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Rittkort på mørk flate: årstall, navn og status, med rød topplinje som mesterskapet i tidslinjen */
+  .ritt-kort {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'ar navn pil'
+      'ar tag pil';
+    gap: 0.5rem var(--s-md);
+    align-items: center;
+    padding: var(--s-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line-on-dark);
+    border-top: 3px solid var(--red);
+    color: var(--white);
+  }
+
+  .ritt-kort .ar {
+    grid-area: ar;
+    font-size: var(--fs-stat);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .ritt-navn {
+    grid-area: navn;
+  }
+
+  .ritt-kort :global(.tag) {
+    grid-area: tag;
+    justify-self: start;
+  }
+
+  .ritt-kort :global(svg) {
+    grid-area: pil;
+  }
+
+  @media (max-width: 1000px) {
+    .to-kol {
+      grid-template-columns: 1fr;
+      gap: var(--s-lg);
+    }
+
+    .bilder {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .bilder {
+      grid-template-columns: 1fr;
+    }
+
+    .ritt-kort .ar {
+      font-size: var(--fs-stat-sm);
+    }
+  }
+</style>

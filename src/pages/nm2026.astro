@@ -1,0 +1,303 @@
+---
+// NM 2026: historisk registrering av mesterskapet klubben arrangerte. Skrevet i fortid.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Sidetopp from '../components/Sidetopp.astro';
+import AccentBar from '../components/ui/AccentBar.astro';
+import StatPanel from '../components/ui/StatPanel.astro';
+import Tag from '../components/ui/Tag.astro';
+import Icon from '../components/ui/Icon.astro';
+import Loypeliste from '../features/loypekart/Loypeliste.astro';
+import { loypegrupper } from '../features/loypekart/data/katalog.ts';
+import { invitasjonUrl, program } from '../data/nm2026.ts';
+import { adresse } from '../data/klubb.ts';
+import arena from '../assets/img/arena-svaberg.jpg';
+import rytterJorde from '../assets/img/rytter-jorde.jpg';
+import rytterSvaberg from '../assets/img/rytter-svaberg.jpg';
+
+const typeTekst = { start: 'Start', premie: 'Premie', mote: 'Møte', info: 'Arena' } as const;
+---
+
+<Base
+  title="NM i terrengsykling 2026 på Lersbrygga – Sande Sykkelklubb"
+  description="Sande Sportsklubb arrangerte NM i terrengsykling på Lersbrygga 30.–31. mai 2026, med rundbane (XCO) og kortbane (XCC). Program, løyper og bakgrunn."
+>
+  <Nav current="historikk" />
+
+  <main id="innhold">
+    <Sidetopp id="nm-tittel" bilde={arena} bildeAlt="Rytter på svaberget i løypa på Lersbrygga, med arenaen og tribunegjerdet bak" fokus="50% 62%">
+      <Fragment slot="tittel">NM i terrengsykling <span class="hl">2026</span></Fragment>
+      <p class="lead">Sande Sportsklubb var vertskap for norgesmesterskapet i terrengsykling på Lersbrygga helgen 30.–31. mai 2026, med rundbane (XCO) lørdag og kortbane (XCC) søndag.</p>
+      <p class="tags topp-tags">
+        <Tag label="NM" value="Avholdt" />
+        <Tag label="Sted" value="Lersbrygga" />
+      </p>
+    </Sidetopp>
+
+    <!-- Mesterskapet -->
+    <section class="section on-light" aria-labelledby="om-tittel">
+      <div class="container to-kol">
+        <div>
+          <h2 id="om-tittel" class="headline">To dager med <span class="hl">mesterskap</span></h2>
+          <AccentBar />
+          <ul class="dager" aria-label="Øvelsene">
+            <StatPanel as="li" label="Lørdag 30. mai" value="XCO" unit="rundbane" tone="light" />
+            <StatPanel as="li" label="Søndag 31. mai" value="XCC" unit="kortbane" tone="light" />
+          </ul>
+          <dl class="fakta">
+            <div>
+              <dt class="label">Arrangør</dt>
+              <dd>Sande Sportsklubb Sykkel</dd>
+            </div>
+            <div>
+              <dt class="label">Godkjent av</dt>
+              <dd>Norges Cykleforbund</dd>
+            </div>
+            <div>
+              <dt class="label">Arena</dt>
+              <dd>{adresse.navn}, {adresse.poststed}</dd>
+            </div>
+            <div>
+              <dt class="label">Klasser</dt>
+              <dd>Fra rekruttklassene for 6–10 år til junior, elite, master og sport, i begge øvelsene.</dd>
+            </div>
+            <div>
+              <dt class="label">Veien dit</dt>
+              <dd>Løypene ble finpusset gjennom Norgescup på Lersbrygga i 2024 og 2025. <a href="/historikk">Se historikken</a></dd>
+            </div>
+          </dl>
+          <p class="invitasjon">
+            <a href={invitasjonUrl} class="link lenke" target="_blank" rel="noopener">Invitasjonen til NM 2026 (PDF)<span class="visually-hidden"> (åpnes i ny fane)</span> <Icon name="external-link" size={16} /></a>
+          </p>
+        </div>
+
+        <div class="bilder">
+          <Image src={rytterJorde} alt="To ryttere med startnummer på en gresslette i løypa" class="foto" widths={[450, 900]} sizes="(max-width: 760px) 50vw, 24vw" />
+          <Image src={rytterSvaberg} alt="Rytter i klubbdrakt sykler opp et svaberg i skogen" class="foto" widths={[450, 900]} sizes="(max-width: 760px) 50vw, 24vw" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Programmet -->
+    <section class="section on-dark" aria-labelledby="program-tittel">
+      <div class="container">
+        <h2 id="program-tittel" class="headline">Programmet for <span class="hl">helgen</span></h2>
+        <AccentBar />
+        <p class="lead">Slik sto tidsskjemaet i invitasjonen (versjon 1, 3. april 2026). Endringer underveis ble kunngjort på lagledermøtene.</p>
+
+        <div class="program">
+          {
+            program.map((d) => (
+              <section class="programdag" aria-labelledby={`dag-${d.disiplin}`}>
+                <h3 id={`dag-${d.disiplin}`} class="dag-topp">
+                  <Tag label={d.disiplin} value={d.navn} />
+                  <span class="title dag-navn">
+                    <time datetime={d.dato}>{d.dag} {Number(d.dato.slice(8))}. mai</time>
+                  </span>
+                </h3>
+                <ol class="punkter">
+                  {d.punkter.map((p) => (
+                    <li class={`punkt punkt-${p.type}`}>
+                      <time class="num tid" datetime={`${d.dato}T${p.tid}`}>{p.tid}</time>
+                      <span class="type">{typeTekst[p.type]}</span>
+                      <span class="tekst">{p.tekst}</span>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Løypene -->
+    <section class="section on-light" aria-labelledby="nm-loyper-tittel">
+      <div class="container">
+        <h2 id="nm-loyper-tittel" class="headline">Løypene på <span class="hl">Lersbrygga</span></h2>
+        <AccentBar />
+        <p class="lead">Mesterskapet gikk i klubbens egne løyper i skogen rundt idrettsanlegget. Alle løypene ligger med kart, 3D-gjennomkjøring og GPX på løypesidene.</p>
+        <div class="loypegrupper">
+          {
+            loypegrupper.map((g) => (
+              <div>
+                <h3 class="title gruppe-navn">{g.disiplin === 'XCO' ? 'Rundbane (XCO)' : g.disiplin === 'XCC' ? 'Kortbane (XCC)' : g.disiplin}</h3>
+                <Loypeliste loyper={g.loyper} aria-label={`${g.disiplin}-løyper`} />
+              </div>
+            ))
+          }
+        </div>
+        <p class="alle">
+          <a href="/loyper" class="link lenke">Se alle løypene i kartet <Icon name="arrow-right" size={16} /></a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .topp-tags {
+    margin-top: var(--s-md);
+  }
+
+  .to-kol {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: var(--s-xl);
+    align-items: start;
+  }
+
+  .dager {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: var(--s-lg);
+    padding: 0;
+    list-style: none;
+  }
+
+  .dager :global(.stat) {
+    flex: 1 1 12rem;
+  }
+
+  .invitasjon {
+    margin-top: var(--s-md);
+  }
+
+  .lenke {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    font-weight: 600;
+  }
+
+  .bilder {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-sm);
+    aspect-ratio: 3 / 2.4;
+  }
+
+  .bilder :global(.foto:last-child) {
+    margin-top: var(--s-xl);
+    height: calc(100% - var(--s-xl));
+  }
+
+  /* Programmet: to kolonner med tidslister, tidene i tallskrift */
+  .program {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-xl);
+  }
+
+  .dag-topp {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-sm);
+    margin-bottom: var(--s-sm);
+    font-weight: 400;
+  }
+
+  .dag-navn {
+    color: var(--white);
+  }
+
+  .punkter {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .punkt {
+    display: grid;
+    grid-template-columns: 3.5rem 4.5rem minmax(0, 1fr);
+    gap: var(--s-sm);
+    align-items: baseline;
+    padding-block: 0.6rem;
+    border-top: 1px solid var(--line-on-dark);
+    color: var(--soft-on-dark);
+  }
+
+  .tid {
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .type {
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: var(--track-tag);
+    text-transform: uppercase;
+    color: var(--muted-on-dark);
+  }
+
+  /* Startene er programmets hovedpunkter og står i hvitt; møter og premieutdelinger er dempet */
+  .punkt-start .tekst {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .punkt-start .type {
+    color: var(--white);
+  }
+
+  .loypegrupper {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-lg);
+  }
+
+  .gruppe-navn {
+    color: var(--dark);
+    margin-bottom: var(--s-sm);
+  }
+
+  .alle {
+    margin-top: var(--s-md);
+  }
+
+  @media (max-width: 1000px) {
+    .to-kol,
+    .program,
+    .loypegrupper {
+      grid-template-columns: 1fr;
+    }
+
+    .bilder {
+      aspect-ratio: 2 / 1;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .punkt {
+      grid-template-columns: 3.25rem minmax(0, 1fr);
+      gap: 0 var(--s-sm);
+    }
+
+    .type {
+      grid-column: 2;
+    }
+
+    .tekst {
+      grid-column: 2;
+    }
+
+    .bilder {
+      aspect-ratio: 4 / 3;
+      gap: var(--s-xs);
+    }
+
+    .bilder :global(.foto:last-child) {
+      margin-top: 0;
+      height: 100%;
+    }
+  }
+</style>

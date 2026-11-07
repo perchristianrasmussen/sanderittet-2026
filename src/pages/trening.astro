@@ -1,0 +1,309 @@
+---
+// Treningssiden: alt en ny familie trenger før første mandag på Lersbrygga.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Sidetopp from '../components/Sidetopp.astro';
+import NesteTreningBanner from '../components/NesteTreningBanner.astro';
+import AccentBar from '../components/ui/AccentBar.astro';
+import Button from '../components/ui/Button.astro';
+import StatPanel from '../components/ui/StatPanel.astro';
+import Tag from '../components/ui/Tag.astro';
+import Icon from '../components/ui/Icon.astro';
+import { treningsplan, sted } from '../data/trening.ts';
+import { sesong } from '../lib/nesteTrening.ts';
+import { adresse, arenakart, epost, spondUrl } from '../data/klubb.ts';
+import treningSkog from '../assets/img/trening-skog.jpg';
+import treningGruppe from '../assets/img/trening-gruppe.jpg';
+import treningKneik from '../assets/img/trening-kneik.jpg';
+import treningRot from '../assets/img/trening-rot.jpg';
+
+const ukedager = ['', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
+const smaa = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
+const dagerMedTrening = [...new Set(treningsplan.okter.map((o) => o.ukedag))];
+
+// Sesongen som gjelder nå eller kommer neste: første og siste treningsdag regnet ut fra planen
+const DAG_MS = 86_400_000;
+const idag = Math.floor(Date.now() / DAG_MS);
+const iar = new Date().getUTCFullYear();
+const sesongAr = idag < sesong(iar, treningsplan).til ? iar : iar + 1;
+const { fra, til } = sesong(sesongAr, treningsplan);
+// Dag 0 er torsdag 1. januar 1970; ISO-ukedag 1 er mandag
+const ukedagNr = (dag: number) => ((dag + 3) % 7) + 1;
+const harTrening = (dag: number) => treningsplan.okter.some((o) => o.ukedag === ukedagNr(dag));
+let forste = fra;
+while (!harTrening(forste)) forste++;
+let siste = til - 1;
+while (!harTrening(siste)) siste--;
+const maneder = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
+const dato = (dag: number) => {
+  const d = new Date(dag * DAG_MS);
+  return `${d.getUTCDate()}. ${maneder[d.getUTCMonth()]}`;
+};
+const iso = (dag: number) => new Date(dag * DAG_MS).toISOString().slice(0, 10);
+---
+
+<Base
+  title="Trening – Sande Sykkelklubb"
+  description="Sykkeltrening for barn og ungdom på Lersbrygga i Sande i Vestfold, mandager og torsdager fra påske til høstferie. Første gang kan dere bare møte opp."
+>
+  <Nav current="trening" />
+
+  <main id="innhold">
+    <Sidetopp id="trening-tittel" bilde={treningSkog} bildeAlt="Ung rytter i klubbdrakt sykler ned en rotete skogssti" fokus="50% 35%">
+      <Fragment slot="tittel">Trening for barn og <span class="hl">ungdom</span></Fragment>
+      <p class="lead">Vi trener på {sted} fra påske til høstferie, med teknikk og moro i terrenget. Nybegynnere er velkomne, og foreldre kan gjerne bli med.</p>
+      <div class="topp-status"><NesteTreningBanner size="sm" /></div>
+    </Sidetopp>
+
+    <!-- Tider og sesong -->
+    <section class="section on-light" aria-labelledby="tider-tittel">
+      <div class="container to-kol">
+        <div>
+          <h2 id="tider-tittel" class="headline">Når vi <span class="hl">trener</span></h2>
+          <AccentBar />
+          {
+            dagerMedTrening.map((ukedag) => (
+              <div class="dag">
+                <h3 class="title dag-navn">{ukedager[ukedag]}</h3>
+                <ul class="tider" aria-label={`Treningstider ${smaa(ukedager[ukedag])}`}>
+                  {treningsplan.okter
+                    .filter((o) => o.ukedag === ukedag)
+                    .map((o) => (
+                      <StatPanel as="li" label={o.gruppe} value={o.start} unit={`–${o.slutt}`} tone="light" />
+                    ))}
+                </ul>
+              </div>
+            ))
+          }
+          <p class="tags">
+            <Tag label="Sted" value="Lersbrygga" tone="dark" />
+            <Tag label="Sesong" value="Påske–høstferie" tone="dark" />
+          </p>
+        </div>
+
+        <div>
+          <h3 class="title sub-h">Sesongen {sesongAr}</h3>
+          <dl class="fakta">
+            <div>
+              <dt class="label">Første trening</dt>
+              <dd><time datetime={iso(forste)}>{ukedager[ukedagNr(forste)]} {dato(forste)}</time>, i uka etter påske.</dd>
+            </div>
+            <div>
+              <dt class="label">Siste trening</dt>
+              <dd><time datetime={iso(siste)}>{ukedager[ukedagNr(siste)]} {dato(siste)}</time>, før høstferien i uke {treningsplan.hostferieUke}.</dd>
+            </div>
+            <div>
+              <dt class="label">Utenom sesongen</dt>
+              <dd>Det er ingen faste treninger på Lersbrygga fra høstferien til påske.</dd>
+            </div>
+          </dl>
+          <Image src={treningGruppe} alt="Barn og ungdom i rød og blå klubbdrakt samlet med syklene sine" class="foto foto-gruppe" widths={[600, 900]} sizes="(max-width: 760px) 100vw, 45vw" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Før første trening -->
+    <section class="section on-dark" aria-labelledby="forste-tittel">
+      <div class="container to-kol">
+        <div>
+          <h2 id="forste-tittel" class="headline">Før første <span class="hl">trening</span></h2>
+          <AccentBar />
+          <dl class="fakta">
+            <div>
+              <dt class="label">Hvem kan begynne</dt>
+              <dd>Det er ingen fast aldersgrense. Barnet må kunne sykle selv, på en sykkel med minst <span class="num tall">20″</span> hjul.</dd>
+            </div>
+            <div>
+              <dt class="label">Utstyr</dt>
+              <dd>Hjelm er påkrevd. Har dere ikke en sykkel som passer, kan dere låne av klubben.</dd>
+            </div>
+            <div>
+              <dt class="label">Første gang</dt>
+              <dd>Bare møt opp på Lersbrygga når treningen starter. Dere trenger ikke melde dere på.</dd>
+            </div>
+            <div>
+              <dt class="label">Foreldre</dt>
+              <dd>Foreldre er velkomne til å bli med på treningene.</dd>
+            </div>
+          </dl>
+
+          <div class="handling" id="spond">
+            <p class="handling-note" id="trening-spond-forklaring">Vil dere fortsette etter første gang, skjer påmelding og beskjeder i Spond-appen. Knappen åpner gruppa vår.</p>
+            <Button href={spondUrl} external size="lg" aria-describedby="trening-spond-forklaring">Bli med i Spond</Button>
+          </div>
+        </div>
+
+        <div class="bilder">
+          <Image src={treningKneik} alt="Rytter i klubbdrakt sykler opp en bratt kneik i skogen" class="foto" widths={[500, 800, 1100]} sizes="(max-width: 760px) 50vw, 22vw" />
+          <Image src={treningRot} alt="To ryttere på en skogssti med røtter i kveldssol" class="foto" widths={[500, 800, 1100]} sizes="(max-width: 760px) 50vw, 22vw" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Oppmøte -->
+    <section class="section on-pale" aria-labelledby="oppmote-tittel">
+      <div class="container to-kol oppmote">
+        <div>
+          <h2 id="oppmote-tittel" class="headline">Oppmøte på <span class="hl">Lersbrygga</span></h2>
+          <AccentBar />
+          <p class="lead">Treningene starter ved {adresse.navn}. Parkering og fasiliteter står i arenakartet.</p>
+          <p class="lenker">
+            <a href={arenakart.apne} class="link lenke" target="_blank" rel="noopener">Åpne arenakartet i Google Maps<span class="visually-hidden"> (åpnes i ny fane)</span> <Icon name="external-link" size={16} /></a>
+            <a href="/loyper" class="link lenke">Se løypene <Icon name="arrow-right" size={16} /></a>
+          </p>
+        </div>
+        <dl class="fakta">
+          <div>
+            <dt class="label">Adresse</dt>
+            <dd>{adresse.navn}, {adresse.vei}, {adresse.poststed}</dd>
+          </div>
+          <div>
+            <dt class="label">Parkering</dt>
+            <dd>Ved idrettsanlegget.</dd>
+          </div>
+          <div>
+            <dt class="label">Spørsmål</dt>
+            <dd><a href={`mailto:${epost}`}>{epost}</a></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .topp-status {
+    margin-top: var(--s-md);
+  }
+
+  .to-kol {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-xl);
+    align-items: start;
+  }
+
+  .dag + .dag {
+    margin-top: var(--s-md);
+  }
+
+  .dag-navn,
+  .sub-h {
+    color: var(--dark);
+    margin-bottom: var(--s-sm);
+  }
+
+  .tider {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tider :global(.stat) {
+    flex: 1 1 12rem;
+  }
+
+  .tags {
+    margin-top: var(--s-lg);
+  }
+
+  .fakta + :global(.foto) {
+    margin-top: var(--s-lg);
+  }
+
+  .to-kol :global(.foto-gruppe) {
+    aspect-ratio: 4 / 3;
+  }
+
+  .tall {
+    font-size: 1.15em;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .handling {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: var(--s-lg);
+  }
+
+  .handling-note {
+    font-size: var(--fs-body-sm);
+    line-height: 1.5;
+    color: var(--soft-on-dark);
+    max-width: 44ch;
+  }
+
+  .bilder {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-sm);
+    aspect-ratio: 6 / 5;
+  }
+
+  .bilder :global(.foto:first-child) {
+    margin-top: var(--s-xl);
+    height: calc(100% - var(--s-xl));
+  }
+
+  .oppmote {
+    align-items: end;
+  }
+
+  .oppmote .lead {
+    margin-bottom: var(--s-md);
+  }
+
+  .lenker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-md);
+  }
+
+  .lenke {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 1000px) {
+    .to-kol {
+      grid-template-columns: 1fr;
+      gap: var(--s-lg);
+    }
+
+    .bilder {
+      aspect-ratio: 2 / 1;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .tider :global(.stat) {
+      flex-basis: 100%;
+    }
+
+    .bilder {
+      aspect-ratio: 4 / 3;
+      gap: var(--s-xs);
+    }
+
+    .bilder :global(.foto:first-child) {
+      margin-top: 0;
+      height: 100%;
+    }
+
+    .handling :global(.btn) {
+      width: 100%;
+    }
+  }
+</style>

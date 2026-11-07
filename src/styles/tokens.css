@@ -51,6 +51,8 @@
   --fs-display: clamp(4rem, 12vw, 10rem);
   /* Display under 760px og i stilprøver */
   --fs-display-sm: clamp(3rem, 16vw, 5rem);
+  /* H1 i toppen av undersidene (Sidetopp) fra 761px */
+  --fs-display-page: clamp(4rem, 8vw, 6.5rem);
   --fs-headline: clamp(2.5rem, 6vw, 4.2rem);
   --fs-title: clamp(1.6rem, 3vw, 2.2rem);
   --fs-stat: 2.75rem;
