@@ -1,53 +1,658 @@
 ---
-// Midlertidig plassholder mens den nye siden bygges.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Footer from '../components/Footer.astro';
+import AccentBar from '../components/ui/AccentBar.astro';
+import Button from '../components/ui/Button.astro';
+import StatPanel from '../components/ui/StatPanel.astro';
+import Tag from '../components/ui/Tag.astro';
+import Icon from '../components/ui/Icon.astro';
+import { treningsplan, sted } from '../data/trening.ts';
+import { adresse, arenakart, epost, loyper, moderklubbUrl, spondUrl } from '../data/klubb.ts';
+import { sponsorer } from '../data/sponsorer.ts';
+import treningGruppe from '../assets/img/trening-gruppe.jpg';
+import ungRytter from '../assets/img/ung-rytter.jpg';
+import startstrek from '../assets/img/startstrek.jpg';
+import norgescupPremie from '../assets/img/norgescup-premie.jpg';
+import rytterFart from '../assets/img/rytter-fart.jpg';
+
+// Treningstidene kommer fra treningsplanen, så forsiden og banneret alltid sier det samme
+const dager = ['', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'];
+const tider = treningsplan.okter.map((o) => ({
+  label: `${dager[o.ukedag]} · ${o.gruppe.charAt(0).toLowerCase()}${o.gruppe.slice(1)}`,
+  start: o.start,
+  slutt: o.slutt,
+}));
+
+const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
 ---
 
-<html lang="nb">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <title>Sande Sykkelklubb</title>
-    <style>
-      :root {
-        color-scheme: dark;
-      }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        background: #0d1824;
-        color: #fff;
-        font-family: system-ui, sans-serif;
-        text-align: center;
-        padding: 1rem;
-      }
-      img {
-        width: 96px;
-        height: 96px;
-        object-fit: contain;
-      }
-      h1 {
-        font-size: clamp(1.75rem, 6vw, 3rem);
-        margin: 1rem 0 0.5rem;
-        letter-spacing: 0.02em;
-      }
-      p {
-        color: rgba(255, 255, 255, 0.65);
-        margin: 0;
-      }
-      a {
-        color: #fff;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <img src="/favicon.png" alt="Sande Sportsklubb logo" />
-      <h1>Sande Sykkelklubb</h1>
-      <p>Ny nettside er under bygging. Inntil videre: <a href="https://sanderittet.no">sanderittet.no</a></p>
-    </main>
-  </body>
-</html>
+<Base
+  title="Sande Sykkelklubb – sykkeltrening for barn og ungdom på Lersbrygga"
+  description="Ukentlig sykkeltrening for barn og ungdom på Lersbrygga i Sande i Vestfold, fra påske til høstferie. Nybegynnere er velkomne, og første gang kan dere bare møte opp."
+>
+  <Nav overlay />
+
+  <main id="innhold">
+    <Hero merInfo="#trening" />
+
+    <!-- Trening: det foreldre trenger å vite før første mandag -->
+    <section id="trening" class="section on-light" aria-labelledby="trening-tittel">
+      <div class="container">
+        <h2 id="trening-tittel" class="headline">Slik er en <span class="hl">treningskveld</span></h2>
+        <AccentBar />
+        <p class="lead">Vi trener på {sted} fra påske til høstferie, med teknikk og moro i terrenget. Alle gruppene starter klokka 18 på mandager, og de eldste trener også på torsdager. Foreldre er velkomne til å bli med.</p>
+
+        <div class="trening-grid">
+          <div class="trening-info">
+            <h3 class="title sub-h">Treningstider</h3>
+            <ul class="tider" aria-label="Treningstider">
+              {tider.map((t) => <StatPanel as="li" label={t.label} value={t.start} unit={`–${t.slutt}`} tone="light" />)}
+            </ul>
+            <p class="tags">
+              <Tag label="Sesong" value="Påske–høstferie" tone="dark" />
+              <Tag label="Sted" value="Lersbrygga" tone="dark" />
+            </p>
+
+            <h3 class="title sub-h sub-h-gap">Før første trening</h3>
+            <dl class="fakta">
+              <div>
+                <dt class="label">Hvem kan begynne</dt>
+                <dd>Det er ingen fast aldersgrense. Barnet må kunne sykle selv, på en sykkel med minst <span class="num tall">20″</span> hjul.</dd>
+              </div>
+              <div>
+                <dt class="label">Utstyr</dt>
+                <dd>Hjelm er påkrevd. Har dere ikke en sykkel som passer, kan dere låne av klubben.</dd>
+              </div>
+              <div>
+                <dt class="label">Første gang</dt>
+                <dd>Bare møt opp på Lersbrygga når treningen starter. Dere trenger ikke melde dere på.</dd>
+              </div>
+              <div>
+                <dt class="label">Vil dere fortsette</dt>
+                <dd>Bli med i <a href="#bli-med">Spond-gruppa</a>. Der skjer påmelding og beskjeder.</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="trening-bilder">
+            <Image src={treningGruppe} alt="Barn og ungdom i rød og blå klubbdrakt samlet med syklene sine" class="foto foto-gruppe" widths={[600, 900]} sizes="(max-width: 760px) 100vw, 40vw" />
+            <Image src={ungRytter} alt="Ung rytter med hjelm sykler på en grusti i skogen" class="foto foto-ung" widths={[500, 800, 1100]} sizes="(max-width: 760px) 100vw, 40vw" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Finn frem: adresse, parkering og arenakartet -->
+    <section id="finn-frem" class="section on-dark" aria-labelledby="finn-frem-tittel">
+      <div class="container">
+        <h2 id="finn-frem-tittel" class="headline">Finn frem til <span class="hl">Lersbrygga</span></h2>
+        <AccentBar />
+        <p class="lead">Treningene og rittene våre holder til på {adresse.navn}, der klubben har egne løyper. Kartet viser løypetraséer, arena, parkering og fasiliteter.</p>
+
+        <div class="kart-grid">
+          <div class="kart">
+            <div class="kart-ramme">
+              <iframe src={arenakart.embed} title="Interaktivt kart over Lersbrygga med løyper, parkering og fasiliteter" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <a href={arenakart.apne} class="link kart-lenke" target="_blank" rel="noopener">Åpne i Google Maps<span class="visually-hidden"> (åpnes i ny fane)</span> <Icon name="external-link" size={16} /></a>
+          </div>
+
+          <div class="kart-info">
+            <div class="info-card">
+              <h3 class="label">Adresse</h3>
+              <p>{adresse.navn}<br />{adresse.vei}<br />{adresse.poststed}</p>
+            </div>
+            <div class="info-card">
+              <h3 class="label">Parkering</h3>
+              <p>Parkering ved idrettsanlegget. Se kartet for detaljer.</p>
+            </div>
+            <div class="info-card">
+              <h3 class="label">Løyper</h3>
+              <p class="tags">
+                <Tag label="XCO" value={`${antall('XCO')} løyper`} />
+                <Tag label="XCC" value={`${antall('XCC')} løyper`} />
+              </p>
+              <p>Rundbane og kortbane i flere lengder, med løypekart og GPX.</p>
+              <a href="/loyper" class="link info-lenke">Se løypene <Icon name="arrow-right" size={16} /></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sanderittet -->
+    <section id="sanderittet" class="section on-pale" aria-labelledby="sanderittet-tittel">
+      <div class="container split">
+        <div>
+          <h2 id="sanderittet-tittel" class="headline">Vi arrangerer <span class="hl">Sanderittet</span></h2>
+          <AccentBar />
+          <p class="lead">Hvert år arrangerer klubben Sanderittet på Lersbrygga, et av regionens mest populære terrengritt. Informasjon, løyper og påmelding samles på rittets egen side.</p>
+          <p class="tags">
+            <Tag label="Ritt" value="Hvert år" tone="dark" />
+            <Tag label="Sted" value="Lersbrygga" tone="dark" />
+          </p>
+          <Button href="/sanderittet" variant="outline-light" icon="arrow-right">Til Sanderittet</Button>
+        </div>
+        <Image src={startstrek} alt="Unge ryttere med startnummer stilt opp på startstreken" class="foto foto-split" widths={[600, 900, 1200]} sizes="(max-width: 760px) 100vw, 45vw" />
+      </div>
+    </section>
+
+    <!-- Historikk: avholdte mesterskap, skrevet som historie -->
+    <section id="historikk" class="section on-dark" aria-labelledby="historikk-tittel">
+      <div class="container">
+        <h2 id="historikk-tittel" class="headline">Fra Norgescup til <span class="hl">NM</span></h2>
+        <AccentBar />
+        <p class="lead">Løypene på Lersbrygga ble finpusset gjennom to Norgescupper. I 2026 var klubben vertskap for norgesmesterskapet i terrengsykling.</p>
+
+        <div class="historikk-grid">
+          <ol class="tidslinje">
+            <li>
+              <span class="num ar">2024</span>
+              <div>
+                <h3 class="title">Norgescup</h3>
+                <p>Klubben arrangerte Norgescup på Lersbrygga.</p>
+              </div>
+            </li>
+            <li>
+              <span class="num ar">2025</span>
+              <div>
+                <h3 class="title">Norgescup</h3>
+                <p>Ny Norgescup på hjemmebane, året før mesterskapet.</p>
+              </div>
+            </li>
+            <li class="nm">
+              <span class="num ar">2026</span>
+              <div>
+                <h3 class="title">NM i terrengsykling</h3>
+                <p class="tags"><Tag label="NM" value="Avholdt" /></p>
+                <p>Rundbane (XCO) lørdag 30. mai og kortbane (XCC) søndag 31. mai, på Lersbrygga.</p>
+                <Button href="/nm2026" variant="outline" icon="arrow-right">Om NM 2026</Button>
+              </div>
+            </li>
+          </ol>
+
+          <div class="historikk-bilder">
+            <Image src={rytterFart} alt="Rytter i rød og blå drakt i full fart langs sperrebåndet" class="foto foto-fart" widths={[600, 1000, 1400]} sizes="(max-width: 760px) 100vw, 45vw" />
+            <Image src={norgescupPremie} alt="Unge ryttere med medaljer jubler foran Norgescup-veggen" class="foto foto-premie" widths={[500, 800]} sizes="(max-width: 760px) 50vw, 22vw" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sponsorer og kontakt deler én lys flate før footeren -->
+    <div class="on-light">
+      <section id="sponsorer" class="section" aria-labelledby="sponsorer-tittel">
+        <div class="container">
+          <h2 id="sponsorer-tittel" class="headline">Våre <span class="hl">sponsorer</span></h2>
+          <AccentBar />
+          <p class="lead">Disse bedriftene støtter Sande Sykkelklubb og gjør aktivitetene våre mulig.</p>
+
+          <ul class="sponsorer">
+            {sponsorer.map((s) => (
+              <li>
+                <a href={s.url} class={`card-link sponsor sponsor-${s.form}`} target="_blank" rel="noopener">
+                  <Image src={s.logo} alt={s.navn} width={s.form === 'bred' ? 360 : 200} />
+                  <span class="visually-hidden"> (åpnes i ny fane)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p class="sponsor-bunn">
+            <a href="/sponsorer" class="link">Les mer om sponsorene</a>
+            <span>Interessert i å støtte oss? <a href="#kontakt" class="link">Ta kontakt</a></span>
+          </p>
+        </div>
+      </section>
+
+      <section id="kontakt" class="section section-joined" aria-labelledby="kontakt-tittel">
+        <div class="container kontakt-grid">
+          <div>
+            <h2 id="kontakt-tittel" class="headline">Kom i <span class="hl">kontakt</span></h2>
+            <AccentBar />
+            <dl class="fakta kontakt">
+              <div>
+                <dt class="label">Leder for sykkelgruppa</dt>
+                <dd><a href={`mailto:${epost}`}>{epost}</a></dd>
+              </div>
+              <div>
+                <dt class="label">Påmelding og beskjeder</dt>
+                <dd><a href={spondUrl} target="_blank" rel="noopener">Spond-gruppa vår<span class="visually-hidden"> (åpnes i ny fane)</span></a></dd>
+              </div>
+              <div>
+                <dt class="label">Moderklubb</dt>
+                <dd><a href={moderklubbUrl} target="_blank" rel="noopener">Sande Sportsklubb<span class="visually-hidden"> (åpnes i ny fane)</span></a></dd>
+              </div>
+              <div>
+                <dt class="label">Treningssted og arena</dt>
+                <dd>{adresse.navn}, {adresse.poststed}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="panel-blue">
+            <h3 class="title">Lurer dere på noe?</h3>
+            <AccentBar />
+            <p>Spørsmål om trening, sponsing eller arrangementene på Lersbrygga? Send oss en e-post, så hjelper vi dere i gang.</p>
+            <Button href={`mailto:${epost}`} icon="mail">Send oss en e-post</Button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* Fortsetter flaten over; luften kommer fra seksjonen før */
+  .section-joined {
+    padding-top: 0;
+  }
+
+  /* Ingressen står fritt; innholdet under får luft */
+  .lead {
+    margin-bottom: var(--s-lg);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-xs);
+  }
+
+  .foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--r-lg);
+  }
+
+  /* Trening */
+  .trening-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: var(--s-xl);
+    align-items: start;
+  }
+
+  .sub-h {
+    color: var(--dark);
+    margin-bottom: var(--s-sm);
+  }
+
+  .sub-h-gap {
+    margin-top: var(--s-xl);
+  }
+
+  .tider {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    margin-bottom: var(--s-sm);
+    list-style: none;
+  }
+
+  .tider :global(.stat) {
+    flex: 1 1 10rem;
+  }
+
+  .fakta {
+    margin: 0;
+  }
+
+  .fakta > div {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: var(--s-md);
+    padding-block: 1.1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .fakta > div:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .fakta dt {
+    padding-top: 0.3rem;
+    color: var(--blue);
+  }
+
+  .fakta dd {
+    margin: 0;
+    max-width: 52ch;
+  }
+
+  .tall {
+    font-size: 1.15em;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .trening-bilder {
+    display: grid;
+    gap: var(--s-sm);
+  }
+
+  .trening-bilder :global(.foto-gruppe) {
+    aspect-ratio: 4 / 3;
+  }
+
+  .trening-bilder :global(.foto-ung) {
+    aspect-ratio: 4 / 3;
+    object-position: 50% 60%;
+  }
+
+  /* Finn frem */
+  .kart-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: var(--s-md);
+    align-items: start;
+  }
+
+  .kart-ramme {
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    border: 1.5px solid var(--line-on-dark);
+    box-shadow: var(--shadow-embed);
+    background: var(--night);
+  }
+
+  .kart-ramme iframe {
+    display: block;
+    width: 100%;
+    height: 480px;
+    border: 0;
+  }
+
+  .kart-lenke {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    margin-top: var(--s-xs);
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .kart-info {
+    display: grid;
+    gap: var(--s-sm);
+  }
+
+  .info-card {
+    display: grid;
+    gap: 0.6rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line-on-dark);
+    border-radius: var(--r-md);
+    padding: var(--s-md);
+  }
+
+  .info-card p {
+    color: var(--soft-on-dark);
+  }
+
+  .info-lenke {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    justify-self: start;
+    min-height: 44px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  /* Sanderittet */
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-xl);
+    align-items: center;
+  }
+
+  .split .tags {
+    margin: var(--s-md) 0 var(--s-lg);
+  }
+
+  .split :global(.foto-split) {
+    aspect-ratio: 4 / 3;
+    object-position: 50% 60%;
+  }
+
+  /* Historikk */
+  .historikk-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-xl);
+    align-items: start;
+  }
+
+  .tidslinje {
+    padding: 0;
+    list-style: none;
+  }
+
+  .tidslinje li {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: var(--s-md);
+    padding-block: var(--s-md);
+    border-top: 1px solid var(--line-on-dark);
+  }
+
+  .tidslinje li:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .tidslinje .ar {
+    font-size: var(--fs-stat);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--muted-on-dark);
+  }
+
+  .tidslinje p {
+    margin-top: 0.4rem;
+    color: var(--soft-on-dark);
+  }
+
+  .tidslinje .title {
+    color: var(--white);
+  }
+
+  /* Mesterskapet: rød topplinje som tallpanelene, og hvitt årstall */
+  .tidslinje .nm {
+    border-top: 3px solid var(--red);
+  }
+
+  .tidslinje .nm .ar {
+    color: var(--white);
+  }
+
+  .tidslinje .nm .tags {
+    margin-top: 0.6rem;
+  }
+
+  .tidslinje :global(.btn) {
+    margin-top: var(--s-md);
+  }
+
+  /* To bilder side om side med felles høyde */
+  .historikk-bilder {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: var(--s-sm);
+    aspect-ratio: 5 / 4;
+  }
+
+  .historikk-bilder :global(.foto-fart) {
+    object-position: 45% 50%;
+  }
+
+  .historikk-bilder :global(.foto-premie) {
+    object-position: 50% 40%;
+  }
+
+  /* Sponsorer */
+  .sponsorer {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s-sm);
+    padding: 0;
+    list-style: none;
+  }
+
+  .sponsor {
+    display: grid;
+    place-items: center;
+    height: 8rem;
+    padding: var(--s-md);
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: var(--r-md);
+  }
+
+  .sponsor :global(img) {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .sponsor-kvadrat :global(img) {
+    max-height: 5rem;
+  }
+
+  .sponsor-bred :global(img) {
+    max-height: 3rem;
+  }
+
+  .sponsor-bunn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-sm) var(--s-lg);
+    margin-top: var(--s-md);
+    color: var(--muted);
+  }
+
+  .sponsor-bunn a {
+    font-weight: 600;
+  }
+
+  /* Kontakt */
+  .kontakt-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: var(--s-xl);
+    align-items: end;
+  }
+
+  .kontakt > div {
+    grid-template-columns: 13rem minmax(0, 1fr);
+  }
+
+  .kontakt a {
+    font-weight: 600;
+  }
+
+  .panel-blue {
+    background: var(--blue);
+    color: var(--white);
+    border-radius: var(--r-md);
+    padding: var(--s-lg);
+  }
+
+  .panel-blue :global(:focus-visible) {
+    outline-color: var(--white);
+  }
+
+  .panel-blue p {
+    color: var(--soft-on-dark);
+    margin-bottom: var(--s-md);
+  }
+
+  @media (max-width: 1000px) {
+    .kart-grid,
+    .historikk-grid,
+    .kontakt-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .kart-info {
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    }
+
+    .historikk-bilder {
+      aspect-ratio: 2 / 1;
+    }
+
+    .sponsorer {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .trening-grid,
+    .split {
+      grid-template-columns: 1fr;
+      gap: var(--s-lg);
+    }
+
+    .fakta > div,
+    .kontakt > div {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+
+    .fakta dt {
+      padding-top: 0;
+    }
+
+    .sub-h-gap {
+      margin-top: var(--s-lg);
+    }
+
+    .tider :global(.stat) {
+      flex-basis: 100%;
+    }
+
+    .kart-ramme iframe {
+      height: 360px;
+    }
+
+    .tidslinje li {
+      grid-template-columns: 4.5rem minmax(0, 1fr);
+      gap: var(--s-sm);
+    }
+
+    .tidslinje .ar {
+      font-size: var(--fs-stat-sm);
+    }
+
+    .historikk-bilder {
+      aspect-ratio: 4 / 3;
+    }
+
+    .sponsorer {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--s-xs);
+    }
+
+    .sponsor {
+      height: 6.5rem;
+      padding: var(--s-sm);
+    }
+
+    .panel-blue {
+      padding: var(--s-md);
+    }
+  }
+</style>

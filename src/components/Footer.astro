@@ -1,0 +1,49 @@
+---
+// Bunntekst: ordmerket, adressen og koblingen til moderklubben.
+import { adresse, moderklubbUrl } from '../data/klubb.ts';
+---
+
+<footer class="footer on-dark">
+  <div class="container footer-inner">
+    <div>
+      <p class="footer-brand">Sande <b>Sykkel</b>klubb</p>
+      <p class="label">Lersbrygga <span class="sep">·</span> {adresse.poststed}</p>
+    </div>
+    <p class="label">En del av <a href={moderklubbUrl}>Sande Sportsklubb</a></p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 3px solid var(--red);
+    padding-block: 2.5rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+  }
+
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: var(--fs-brand);
+    letter-spacing: 0.04em;
+  }
+
+  .footer-brand b {
+    font-weight: 400;
+    color: var(--red);
+  }
+
+  .footer a {
+    color: var(--white);
+  }
+
+  /* Hvit også ved hover; den delte streken tegnes inn (red-light gir 4,2:1 på dark) */
+  .footer a:hover {
+    color: var(--white);
+  }
+</style>

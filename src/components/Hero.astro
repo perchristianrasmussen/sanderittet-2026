@@ -1,0 +1,350 @@
+---
+// Forsidens første skjerm. Brukes både på forsiden og på /designprofil, så de aldri sklir fra hverandre.
+import { Image } from 'astro:assets';
+import Button from './ui/Button.astro';
+import StatPanel from './ui/StatPanel.astro';
+import Icon from './ui/Icon.astro';
+import NesteTreningBanner from './NesteTreningBanner.astro';
+import heroPhoto from '../assets/img/rytter-sti.jpg';
+import { spondUrl, arrangementer } from '../data/klubb.ts';
+
+interface Props {
+  /** Lenke videre til praktisk info lenger ned på siden, f.eks. #trening. */
+  merInfo?: string;
+}
+
+const { merInfo } = Astro.props;
+---
+
+<section class="hero on-dark" aria-labelledby="hero-title" data-hero>
+  <Image src={heroPhoto} alt="Ung rytter i Sande-drakt på vei ned en steinete sti i skogen" class="hero-photo" widths={[800, 1400, 2000, 2600]} sizes="(min-width: 761px) 145vw, 100vw" loading="eager" fetchpriority="high" />
+  <div class="hero-shade"></div>
+  <!-- Lokal skygge bak tekstkolonnen, så H1 og det røde ordet holder kontrast mot bildet -->
+  <div class="hero-scrim"></div>
+
+  <div class="hero-body">
+    <h1 id="hero-title" class="display">Sande <span class="h1-b"><span class="hl">Sykkel</span>&shy;klubb</span></h1>
+    <p class="hero-sub">Ukentlig sykkeltrening for barn og ungdom på Lersbrygga, fra påske til høstferie. Nybegynnere er velkomne, og foreldre kan gjerne bli med.</p>
+    <!-- Status på egen linje, så handlingen under er det tyngste røde -->
+    <div class="hero-status">
+      <NesteTreningBanner size="sm" />
+    </div>
+    <div class="hero-action" id="bli-med">
+      <p class="hero-note" id="spond-forklaring">Første gang kan dere bare møte opp. Vil dere fortsette, skjer påmelding og beskjeder i Spond-appen. Knappen åpner gruppa vår.</p>
+      <div class="hero-buttons">
+        <Button href={spondUrl} external size="lg" class="hero-cta" aria-describedby="spond-forklaring">Bli med i Spond</Button>
+        {merInfo && (
+          <a href={merInfo} class="link hero-more">Tider, alder og utstyr <Icon name="arrow-down" size={18} /></a>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <!-- På mobil står «Arrangør» én gang over raden i stedet for i hvert panel -->
+    <p class="label hero-stats-cap" aria-hidden="true">Arrangør på Lersbrygga</p>
+    <ul aria-label="Arrangementer på Lersbrygga">
+      {arrangementer.map((a) => <StatPanel as="li" label={`Arrangør · ${a.navn}`} value={a.ar} size="sm" />)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: min(100svh, 920px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--s-lg);
+    /* Plass til navigasjonen over, også når menyen brytes til to linjer */
+    padding: calc(var(--header-h) + var(--s-sm)) var(--gutter) clamp(2.5rem, 7vh, 5rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Bildet er bredere enn heroen og forankret til venstre, så rytteren står til høyre for tekstkolonnen */
+  .hero :global(.hero-photo) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 118%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    object-position: 35% 45%;
+    z-index: -3;
+  }
+
+  .hero-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      linear-gradient(180deg, rgba(13, 24, 36, 0.7) 0%, rgba(13, 24, 36, 0.15) 30%, rgba(13, 24, 36, 0.35) 55%, rgba(13, 24, 36, 0.92) 100%),
+      radial-gradient(ellipse 60% 55% at 85% 20%, rgba(22, 57, 122, 0.45), transparent 70%);
+  }
+
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse 62% 70% at 0% 82%, rgba(13, 24, 36, 0.72), rgba(13, 24, 36, 0.4) 55%, transparent 80%);
+  }
+
+  /* Tallpanelene står øverst til høyre i flyten under navigasjonen; i DOM kommer de etter handlingen */
+  .hero-stats {
+    order: -1;
+    align-self: flex-end;
+    margin-bottom: auto;
+  }
+
+  .hero-stats ul {
+    display: flex;
+    gap: 6px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-stats-cap {
+    display: none;
+  }
+
+  .hero-body {
+    max-width: 62rem;
+  }
+
+  .hero h1 {
+    text-shadow: 0 6px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  /* «Sykkelklubb» på egen linje, så tittelen holder seg i venstre kolonne */
+  .h1-b {
+    display: block;
+  }
+
+  .hero-sub {
+    margin-top: 0.75rem;
+    font-size: var(--fs-sub);
+    color: var(--soft-on-dark);
+    max-width: 42ch;
+    text-wrap: pretty;
+  }
+
+  /* Neste trening er en statuslinje, ikke en knapp: egen rad under underteksten */
+  .hero-status {
+    margin-top: var(--s-md);
+  }
+
+  /* Forklaringen står foran knappen og er bundet til den med aria-describedby */
+  .hero-action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: var(--s-md);
+  }
+
+  .hero-note {
+    font-size: var(--fs-body-sm);
+    line-height: 1.5;
+    color: var(--soft-on-dark);
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+
+  .hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-sm) var(--s-md);
+  }
+
+  .hero-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .hero-more :global(.icon) {
+    transition: transform var(--t-lift) var(--ease-out-expo);
+  }
+
+  .hero-more:hover :global(.icon) {
+    transform: translateY(2px);
+  }
+
+  /* «På lufta»: én entré på ca. 1 s ved lasting, bare i heroen.
+     Tittel og undertekst er synlige fra start og setter seg; grafikken viskes inn
+     fra venstre (nøkkel, verdi, knapp), og tallpanelene faller ned ett og ett
+     mens den røde topplinjen tegnes. Sluttilstanden er standardstilen, og
+     fill-mode backwards gjør at ingenting blir hengende igjen etterpå. */
+  .hero h1 {
+    animation: settle 700ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-sub {
+    animation: settle-sm 640ms 60ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-status :global(.bk) {
+    animation: wipe-in 400ms 200ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-status :global(.bv) {
+    animation: wipe-in 400ms 300ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-action :global(.hero-cta) {
+    animation: wipe-in 380ms 400ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-stats :global(.stat) {
+    animation: drop-in 450ms 420ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-stats :global(.stat)::before {
+    animation: draw-rule 400ms 500ms var(--ease-out-expo) backwards;
+  }
+
+  .hero-stats :global(.stat:nth-child(2)) {
+    animation-delay: 500ms;
+  }
+
+  .hero-stats :global(.stat:nth-child(2))::before {
+    animation-delay: 580ms;
+  }
+
+  .hero-stats :global(.stat:nth-child(3)) {
+    animation-delay: 580ms;
+  }
+
+  .hero-stats :global(.stat:nth-child(3))::before {
+    animation-delay: 660ms;
+  }
+
+  @keyframes settle {
+    from {
+      transform: translateY(16px);
+    }
+  }
+
+  @keyframes settle-sm {
+    from {
+      transform: translateY(12px);
+    }
+  }
+
+  @keyframes wipe-in {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+  }
+
+  /* Faller 10px; avstanden til det som står over (nav på desktop, knappen på mobil) er minst 16px, så ingenting overlapper */
+  @keyframes drop-in {
+    from {
+      transform: translateY(-10px);
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  @keyframes draw-rule {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  /* Smal desktop og nettbrett: bildet trekkes lenger ut, så rytteren ikke står bak tittelen */
+  @media (min-width: 761px) and (max-width: 1100px) {
+    .hero :global(.hero-photo) {
+      width: 145%;
+      /* Høye vinduer beskjærer i bredden: vis venstre del, så rytteren havner lenger til høyre */
+      object-position: 10% 45%;
+    }
+
+    .hero-scrim {
+      background: radial-gradient(ellipse 80% 72% at 0% 85%, rgba(13, 24, 36, 0.78), rgba(13, 24, 36, 0.45) 55%, transparent 82%);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      gap: 1.25rem;
+      padding-top: 6rem;
+      padding-bottom: 1.5rem;
+    }
+
+    /* Rytteren står midt i bildet */
+    .hero :global(.hero-photo) {
+      width: 100%;
+      object-position: 55% 50%;
+    }
+
+    .hero-scrim {
+      background: linear-gradient(180deg, transparent 25%, rgba(13, 24, 36, 0.55) 55%, rgba(13, 24, 36, 0.7));
+    }
+
+    .h1-b {
+      display: inline;
+    }
+
+    .hero h1 {
+      font-size: var(--fs-display-sm);
+    }
+
+    .hero-status {
+      margin-top: 1rem;
+    }
+
+    .hero-action {
+      align-items: stretch;
+      margin-top: 1rem;
+    }
+
+    .hero-buttons {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.25rem;
+    }
+
+    .hero-more {
+      align-self: flex-start;
+    }
+
+    /* Tallpanelene i én kompakt rad under handlingen, med «Arrangør» én gang over */
+    .hero-stats {
+      order: 0;
+      align-self: stretch;
+      margin: 0;
+    }
+
+    .hero-stats-cap {
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-stats :global(.stat) {
+      min-width: 0;
+      flex: 1;
+      padding: 10px 10px 9px;
+    }
+
+    .hero-stats :global(.k) {
+      letter-spacing: 0.08em;
+    }
+
+    /* «Arrangør ·» står i overlinjen; i panelet er den bare for skjermlesere */
+    .hero-stats :global(.kp:first-child) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+</style>
