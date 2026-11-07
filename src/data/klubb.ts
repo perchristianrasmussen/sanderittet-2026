@@ -15,16 +15,7 @@ export const arenakart = {
   apne: 'https://www.google.com/maps/d/viewer?mid=1datrdzmdxW2jajR8Jm-aCLSSoBuVZIQ&ll=59.56487205617529%2C10.255352623532689&z=17',
 };
 
-// Løypene med GPX (PRODUCT.md, Capabilities). Fargene følger aldersklasser.
-export const loyper: { navn: string; disiplin: 'XCO' | 'XCC' }[] = [
-  { navn: 'Rød lang', disiplin: 'XCO' },
-  { navn: 'Rød kort', disiplin: 'XCO' },
-  { navn: 'Blå', disiplin: 'XCO' },
-  { navn: 'Grønn', disiplin: 'XCO' },
-  { navn: 'Kortbane', disiplin: 'XCC' },
-  { navn: 'Grønn kort', disiplin: 'XCC' },
-  { navn: 'XCC kort', disiplin: 'XCC' },
-];
+// Løypene ligger i src/features/loypekart/data/ (GPX-filer + indeks), se data/katalog.ts.
 
 // Arrangementer klubben har hatt på Lersbrygga
 export const arrangementer = [

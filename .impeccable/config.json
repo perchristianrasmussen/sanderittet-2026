@@ -27,6 +27,24 @@
         ],
         "createdAt": "2026-11-07T10:25:11.811Z",
         "reason": "Agent: forkastede beslutningsskisser (brukeren avviste retningene), ikke del av siden"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/features/loypekart/Loypeoversikt.astro"
+        ],
+        "createdAt": "2026-11-07T19:39:36.982Z",
+        "reason": "Claude, per DESIGN.md HUD-kontroll: aktiv bryter (aria-pressed) er hvit med 3px rød bunnlinje"
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/features/loypekart/Loypeoversikt.astro"
+        ],
+        "createdAt": "2026-11-07T19:39:37.242Z",
+        "reason": "Claude, per DESIGN.md tallpanel: panelglass med 3px rød topplinje og 0 radius; popupen setter border-radius: var(--r-none)"
       }
     ]
   }

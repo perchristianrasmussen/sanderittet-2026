@@ -1,34 +1,23 @@
-// Klubbens GPX-filer (kopiert fra legacy/ til public/gpx/). Navnene er lenketekstene på den gamle løypesiden.
+// Indeksen over klubbens løyper. GPX-filene ligger i data/gpx/.
+//
+// Ny løype: legg GPX-filen i data/gpx/ og en linje her. Slugen er filnavnet med små bokstaver,
+// æ/ø/å som ae/o/a og bindestrek i stedet for mellomrom («Rød Lang XCO.gpx» → «rod-lang-xco»).
+// En fil som mangler her, vises likevel (grå, navn fra filnavnet), og bygget skriver en advarsel.
+// En linje uten fil, en ødelagt fil eller to filer med samme slug stopper bygget.
+//
+// farge: start | green | blue | red | orange | shortcut (tokens.css, --route-*). Følger aldersklasser.
+// stiplet: skiller to løyper med samme farge. vises: false = av når kartet åpnes. skjult: true = ikke på siden.
+import type { LoypeOppforing } from '../motor/katalog.ts';
 
-export type Disiplin = 'XCO' | 'XCC';
-
-export interface Loype {
-  slug: string;
-  navn: string;
-  disiplin: Disiplin;
-  /** Kilde i legacy/ */
-  kildefil: string;
-  gpx: string;
-}
-
-const loype = (slug: string, navn: string, disiplin: Disiplin, kildefil: string): Loype => ({
-  slug,
-  navn,
-  disiplin,
-  kildefil,
-  gpx: `/gpx/${slug}.gpx`,
-});
-
-export const loyper: Loype[] = [
-  loype('rod-lang-xco', 'Rød lang', 'XCO', 'Rød Lang XCO.gpx'),
-  loype('rod-kort-xco', 'Rød kort', 'XCO', 'Rød kort XCO.gpx'),
-  loype('bla-xco', 'Blå løype', 'XCO', 'Blå løype (XCO).gpx'),
-  loype('gronn-xco', 'Grønn løype', 'XCO', 'Grønn løype (XCO).gpx'),
-  loype('gronn-kort-xcc', 'Grønn kort', 'XCC', 'Grønn kort (XCC).gpx'),
-  loype('kortbane-xcc', 'Kortbane', 'XCC', 'Kortbane (XCC).gpx'),
-  loype('xcc-kort', 'XCC Kort', 'XCC', 'XCC Kort.gpx'),
+export const oppforinger: LoypeOppforing[] = [
+  { slug: 'rod-lang-xco', navn: 'Rød lang', disiplin: 'XCO', farge: 'red' },
+  { slug: 'rod-kort-xco', navn: 'Rød kort', disiplin: 'XCO', farge: 'red', stiplet: true },
+  { slug: 'bla-xco', navn: 'Blå', disiplin: 'XCO', farge: 'blue' },
+  { slug: 'gronn-xco', navn: 'Grønn', disiplin: 'XCO', farge: 'green' },
+  { slug: 'kortbane-xcc', navn: 'Kortbane', disiplin: 'XCC', farge: 'orange' },
+  { slug: 'gronn-kort-xcc', navn: 'Grønn kort', disiplin: 'XCC', farge: 'green', stiplet: true },
+  { slug: 'xcc-kort', navn: 'XCC kort', disiplin: 'XCC', farge: 'start' },
 ];
 
-export const standardLoype = loyper[0];
-
-export const finnLoype = (slug: string | null | undefined) => loyper.find((l) => l.slug === slug);
+/** Løypa laben og presentasjonen viser når ingen er valgt */
+export const standardSlug = 'rod-lang-xco';

@@ -2,29 +2,80 @@
 // Løypepresentasjon: 3D-flytur langs en GPX-løype med TV-grafikk oppå kartet.
 // Fyller forelderen; gi den en høyde (laben bruker hele vinduet).
 import 'maplibre-gl/dist/maplibre-gl.css';
+import Icon from '../../components/ui/Icon.astro';
+import { finnLoype, loyper } from './data/katalog.ts';
+import { fmtKm } from './motor/geo.ts';
 
 interface Props {
-  /** URL til GPX-filen */
-  gpx: string;
+  /** Løype fra katalogen. Fyller gpx, tittel, disiplin og farge. */
+  slug?: string;
+  /** URL til GPX-filen (når slug ikke er gitt) */
+  gpx?: string;
   /** Overstyrer navnet som ellers leses fra filnavnet */
   tittel?: string;
   /** Overstyrer disiplinen som ellers leses fra filnavnet */
   disiplin?: string;
+  /** Løypefargen fra indeksen (start | green | blue | red | orange | shortcut). Styrer streken, rytteren og høydeprofilen. */
+  farge?: string;
   /** Les ?gpx= (slug eller URL) fra adressen og sett dokumenttittelen. Bare for helsides bruk. */
   lesUrlParameter?: boolean;
+  /**
+   * Inne i en vanlig side: starter først når man trykker «Spill av» (stillbilde av løypa til da),
+   * kartet tar ikke imot mus, tastene virker bare med fokus i presentasjonen, og overskriftene er
+   * vanlig tekst så siden beholder sin egen h1.
+   */
+  innebygd?: boolean;
 }
 
-const { gpx, tittel, disiplin, lesUrlParameter = false } = Astro.props;
+const { slug, lesUrlParameter = false, innebygd = false } = Astro.props;
+const l = finnLoype(slug);
+if (slug && !l) throw new Error(`Loypepresentasjon: fant ikke løypa «${slug}» i katalogen`);
+const gpx = Astro.props.gpx ?? l?.gpx ?? '';
+const tittel = Astro.props.tittel ?? l?.navn;
+const disiplin = Astro.props.disiplin ?? l?.disiplin;
+const farge = Astro.props.farge ?? l?.farge;
 const disc = disiplin ?? 'XCO';
+const Overskrift = innebygd ? 'p' : 'h1';
+const Overskrift2 = innebygd ? 'p' : 'h2';
+// ?gpx=<slug> slås opp i katalogen; bare med når adressen leses
+const indeks = lesUrlParameter ? JSON.stringify(loyper.map(({ slug, gpx, navn, disiplin, farge }) => ({ slug, gpx, navn, disiplin, farge }))) : undefined;
+
+// Stillbildet: løypa tegnet som SVG ved bygg (enkel projeksjon, nok for et lite område)
+// Viewboxen har løypas egne proporsjoner, så den fyller både brede og høye rammer
+let plakat: { d: string; start: [string, string]; viewBox: string } | null = null;
+if (innebygd && l) {
+  const [x0, y0, x1, y1] = l.bbox;
+  const k = Math.cos((((y0 + y1) / 2) * Math.PI) / 180);
+  const bw = (x1 - x0) * k, bh = y1 - y0;
+  const s = 1000 / Math.max(bw, bh), pad = 40;
+  const pt = ([x, y]: [number, number]): [string, string] => [(pad + (x - x0) * k * s).toFixed(1), (pad + (y1 - y) * s).toFixed(1)];
+  plakat = {
+    d: 'M' + l.coords.map((c) => pt(c).join(' ')).join('L'),
+    start: pt(l.coords[0]),
+    viewBox: `0 0 ${(bw * s + 2 * pad).toFixed(0)} ${(bh * s + 2 * pad).toFixed(0)}`,
+  };
+}
+const strekfarge = farge && farge !== 'ukjent' ? `var(--route-${farge})` : 'var(--red)';
 ---
 
-<div class="lp" data-phase="loading" data-gpx={gpx} data-tittel={tittel} data-disiplin={disiplin} data-les-url={lesUrlParameter ? '' : undefined}>
+<div
+  class:list={['lp', { innebygd }]}
+  data-phase="loading"
+  data-gpx={gpx}
+  data-tittel={tittel}
+  data-disiplin={disiplin}
+  data-farge={farge}
+  data-les-url={lesUrlParameter ? '' : undefined}
+  data-innebygd={innebygd ? '' : undefined}
+  data-loyper={indeks}
+  style={`--loype: ${strekfarge}`}
+>
   <div class="map" data-ref="map"></div>
   <div class="vignette"></div>
 
   <div class="title hud">
     <div class="tag"><b data-ref="discTag">{disc}</b><span>Løypepresentasjon</span></div>
-    <h1 data-ref="courseName">{tittel ?? 'Løype'}</h1>
+    <Overskrift class="navn" data-ref="courseName">{tittel ?? 'Løype'}</Overskrift>
     <div class="sub" data-ref="courseSub"></div>
     <div class="bar"></div>
   </div>
@@ -39,7 +90,7 @@ const disc = disiplin ?? 'XCO';
 
   <div class="summary hud">
     <div class="tag"><b data-ref="discTag2">{disc}</b><span>Løypa</span></div>
-    <h2 data-ref="sumName"></h2>
+    <Overskrift2 class="navn" data-ref="sumName"></Overskrift2>
     <div class="row">
       <div class="stat"><div class="k">LENGDE</div><div class="v"><span data-ref="sumLen"></span><small>KM</small></div></div>
       <div class="stat"><div class="k">HØYDEMETER</div><div class="v"><span data-ref="sumClimb"></span><small>M</small></div></div>
@@ -61,25 +112,72 @@ const disc = disiplin ?? 'XCO';
   </div>
 
   <div class="loading" data-ref="loading"><div class="spin"></div><div data-ref="loadMsg">Laster løype og terreng…</div></div>
-  <div class="drop" data-ref="drop">Slipp GPX-fil her</div>
+  {!innebygd && <div class="drop" data-ref="drop">Slipp GPX-fil her</div>}
+
+  {
+    innebygd && (
+      <div class="plakat" data-ref="plakat">
+        {plakat && (
+          <svg class="plakat-kart" viewBox={plakat.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <path d={plakat.d} class="plakat-kant" />
+            <path d={plakat.d} class:list={['plakat-strek', { stiplet: l?.stiplet }]} />
+            <circle cx={plakat.start[0]} cy={plakat.start[1]} r="9" class="plakat-start" />
+          </svg>
+        )}
+        <div class="plakat-tekst">
+          <div class="tag">
+            <b>{disc}</b>
+            <span>{l ? `${fmtKm(l.lengde)} km` : 'Løypepresentasjon'}</span>
+          </div>
+          <button type="button" class="spill" data-ref="spill">
+            <Icon name="play" size={20} />
+            Spill av løypa
+          </button>
+          <p class="plakat-hint">Flytur i 3D med høydeprofil. Laster kart og terreng.</p>
+        </div>
+      </div>
+    )
+  }
 </div>
 
 <script>
-  import { startPresentasjon } from './kart/presentasjon.ts';
-  import { finnLoype } from './data/loyper.ts';
-
-  for (const root of document.querySelectorAll<HTMLElement>('.lp[data-gpx]')) {
-    const { gpx = '', tittel, disiplin } = root.dataset;
-    startPresentasjon(root, {
+  // MapLibre (~1,5 MB) lastes først når presentasjonen faktisk skal starte
+  async function start(root: HTMLElement) {
+    const { startPresentasjon } = await import('./kart/presentasjon.ts');
+    const { gpx = '', tittel, disiplin, farge, loyper = '[]' } = root.dataset;
+    const indeks: { slug: string; gpx: string; navn: string; disiplin: string; farge: string }[] = JSON.parse(loyper);
+    return startPresentasjon(root, {
       gpx,
       tittel,
       disiplin,
+      farge,
       lesUrlParameter: 'lesUrl' in root.dataset,
+      innebygd: 'innebygd' in root.dataset,
       finnLoype: (q) => {
-        const l = finnLoype(q);
-        return l && { gpx: l.gpx, tittel: l.navn, disiplin: l.disiplin };
+        const l = indeks.find((l) => l.slug === q);
+        return l && { gpx: l.gpx, tittel: l.navn, disiplin: l.disiplin, farge: l.farge };
       },
     });
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('.lp[data-gpx]')) {
+    const spill = root.querySelector<HTMLButtonElement>('[data-ref="spill"]');
+    if (!spill) {
+      start(root);
+      continue;
+    }
+    // Innebygd: ingenting lastes eller beveger seg før man ber om det
+    spill.addEventListener(
+      'click',
+      async () => {
+        spill.disabled = true;
+        root.dataset.startet = '';
+        await start(root);
+        root.querySelector('[data-ref="plakat"]')?.remove();
+        root.querySelector<HTMLButtonElement>('[data-ref="bPlay"]')?.focus({ preventScroll: true });
+      },
+      { once: true },
+    );
   }
 </script>
 
@@ -145,7 +243,7 @@ const disc = disiplin ?? 'XCO';
     padding: 5px 12px;
   }
 
-  .title h1 {
+  .title .navn {
     font-family: var(--font-cond);
     font-style: italic;
     font-weight: 800;
@@ -274,7 +372,7 @@ const disc = disiplin ?? 'XCO';
     transition-delay: 1.4s;
   }
 
-  .summary h2 {
+  .summary .navn {
     font-family: var(--font-cond);
     font-style: italic;
     font-weight: 800;
@@ -386,17 +484,17 @@ const disc = disiplin ?? 'XCO';
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--red);
+    background: var(--loype, var(--red));
     border: 3px solid var(--white);
     animation: pulse 1.4s infinite;
   }
 
   @keyframes pulse {
     0% {
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--red) 75%, transparent);
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--loype, var(--red)) 75%, transparent);
     }
     100% {
-      box-shadow: 0 0 0 18px color-mix(in srgb, var(--red) 0%, transparent);
+      box-shadow: 0 0 0 18px color-mix(in srgb, var(--loype, var(--red)) 0%, transparent);
     }
   }
 
@@ -568,6 +666,130 @@ const disc = disiplin ?? 'XCO';
 
     .banner .bv {
       font-size: 17px;
+    }
+  }
+
+  /* ---------- Innebygd i en side ---------- */
+  /* Titlene skaleres etter rammen, ikke vinduet */
+  .lp.innebygd {
+    container-type: inline-size;
+  }
+
+  .innebygd .title .navn {
+    font-size: clamp(40px, 8cqw, 104px);
+  }
+
+  .innebygd .summary .navn {
+    font-size: clamp(34px, 5.5cqw, 72px);
+  }
+
+  /* Stillbildet før avspilling: løypa i sin farge på natt, og knappen */
+  .plakat {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: grid;
+    background:
+      radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.05), transparent 70%),
+      var(--night);
+  }
+
+  /* Luft rundt løypa; nederst plass til knappeplata */
+  .plakat-kart {
+    position: absolute;
+    inset: 8% 6% 22%;
+    width: 88%;
+    height: 70%;
+  }
+
+  /* Streken har fast bredde på skjermen uansett hvor mye SVG-en skaleres */
+  .plakat-kant,
+  .plakat-strek {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .plakat-kant {
+    stroke: rgba(255, 255, 255, 0.16);
+    stroke-width: 11px;
+  }
+
+  .plakat-strek {
+    stroke: var(--loype);
+    stroke-width: 4px;
+  }
+
+  .plakat-strek.stiplet {
+    stroke-dasharray: 9px 6px;
+    stroke-linecap: butt;
+  }
+
+  .plakat-start {
+    fill: var(--white);
+    stroke: var(--night);
+    stroke-width: 3px;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .plakat-tekst {
+    position: relative;
+    align-self: end;
+    justify-self: start;
+    display: grid;
+    justify-items: start;
+    gap: 14px;
+    margin: 0 0 32px 32px;
+    padding: 16px 18px;
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+  }
+
+  .spill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0 22px;
+    font-family: var(--font-cond);
+    font-size: var(--fs-button-lg);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--red);
+    border: 0;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease-out-expo);
+  }
+
+  .spill:hover {
+    background: var(--red-dark);
+  }
+
+  .spill:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 3px;
+  }
+
+  .plakat-hint {
+    margin: 0;
+    font-size: var(--fs-body-sm);
+    color: var(--muted-on-dark);
+  }
+
+  @media (max-width: 760px) {
+    .plakat-tekst {
+      margin: 0 0 16px 16px;
+      max-width: calc(100% - 32px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp :global(.rider) {
+      animation: none;
     }
   }
 </style>

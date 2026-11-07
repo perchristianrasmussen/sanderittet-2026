@@ -21,6 +21,15 @@ export interface Rute {
   name: string;
 }
 
+// Minimal XML-parser for GPX-punkter uten DOM (bygg og Node): nok til <trkpt>/<rtept lat lon>.
+// I nettleseren brukes DOMParser.
+export const xmlUtenDom: XmlParser = (tekst) => ({
+  getElementsByTagName: (tag) =>
+    [...tekst.matchAll(new RegExp(`<${tag}\\b([^>]*)>`, 'g'))].map(([, attr]) => ({
+      getAttribute: (navn: string) => attr.match(new RegExp(`\\b${navn}\\s*=\\s*["']([^"']*)["']`))?.[1] ?? null,
+    })),
+});
+
 export function parseGpx(text: string, parse: XmlParser): LngLat[] {
   const xml = parse(text);
   let pts = Array.from(xml.getElementsByTagName('trkpt'));

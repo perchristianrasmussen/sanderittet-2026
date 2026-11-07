@@ -36,3 +36,62 @@ export function lagStil(): StyleSpecification {
     terrain: { source: 'dem', exaggeration: CFG.exaggeration },
   };
 }
+
+// ---------- Oversiktskartet: alle løypene i 2D, hver i sin farge ----------
+
+/** Farge per løypefarge-nøkkel (fra --route-* i tokens.css) og reserve for løyper uten farge. */
+export type Fargekart = Record<string, string> & { ukjent: string };
+
+export const fargeUttrykk = (farger: Fargekart): ExpressionSpecification => [
+  'match',
+  ['get', 'farge'],
+  ...Object.entries(farger).flatMap(([k, v]) => [k, v]),
+  farger.ukjent,
+] as unknown as ExpressionSpecification;
+
+export const OVERSIKT_LAG = {
+  kant: 'loyper-kant',
+  hel: 'loyper-hel',
+  stiplet: 'loyper-stiplet',
+  fokusKant: 'loyper-fokus-kant',
+  fokus: 'loyper-fokus',
+  pil: 'loyper-pil',
+  treff: 'loyper-treff',
+} as const;
+
+export function lagOversiktStil(farger: Fargekart): StyleSpecification {
+  const rundLinje = { 'line-join': 'round', 'line-cap': 'round' } as const;
+  const ingen: ExpressionSpecification = ['==', ['get', 'slug'], ''];
+  // Korte løyper over lange, så de ikke forsvinner under en lang løype på samme sti
+  const sortering: ExpressionSpecification = ['-', 0, ['get', 'lengde']];
+  const farge = fargeUttrykk(farger);
+  // zoom må stå øverst i interpolate, så påslaget legges på hvert stopp
+  const bredde = (pluss = 0): ExpressionSpecification => ['interpolate', ['linear'], ['zoom'], 13, 2.5 + pluss, 16, 4 + pluss, 18, 6 + pluss];
+  return {
+    version: 8,
+    sources: {
+      topo: { type: 'raster', tileSize: 256, maxzoom: 18, attribution: ATTRIBUSJON.topo, tiles: [TOPO_URL] },
+      sat: { type: 'raster', tileSize: 256, maxzoom: 19, attribution: ATTRIBUSJON.sat, tiles: [SAT_URL] },
+      loyper: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+    },
+    layers: [
+      { id: 'bg', type: 'background', paint: { 'background-color': RUTEFARGE.bakgrunn } },
+      { id: 'topo', type: 'raster', source: 'topo', paint: { 'raster-saturation': -0.35, 'raster-fade-duration': 150 } },
+      { id: 'sat', type: 'raster', source: 'sat', layout: { visibility: 'none' }, paint: { 'raster-saturation': -0.25, 'raster-brightness-max': 0.85, 'raster-fade-duration': 150 } },
+      { id: OVERSIKT_LAG.kant, type: 'line', source: 'loyper', filter: ingen, layout: { ...rundLinje, 'line-sort-key': sortering }, paint: { 'line-color': '#fff', 'line-width': bredde(3) } },
+      { id: OVERSIKT_LAG.hel, type: 'line', source: 'loyper', filter: ingen, layout: { ...rundLinje, 'line-sort-key': sortering }, paint: { 'line-color': farge, 'line-width': bredde() } },
+      { id: OVERSIKT_LAG.stiplet, type: 'line', source: 'loyper', filter: ingen, layout: { 'line-join': 'round', 'line-sort-key': sortering }, paint: { 'line-color': farge, 'line-width': bredde(), 'line-dasharray': [2, 1.2] } },
+      { id: OVERSIKT_LAG.fokusKant, type: 'line', source: 'loyper', filter: ingen, layout: rundLinje, paint: { 'line-color': RUTEFARGE.bakgrunn, 'line-width': bredde(6) } },
+      { id: OVERSIKT_LAG.fokus, type: 'line', source: 'loyper', filter: ingen, layout: rundLinje, paint: { 'line-color': farge, 'line-width': bredde(2) } },
+      {
+        id: OVERSIKT_LAG.pil,
+        type: 'symbol',
+        source: 'loyper',
+        filter: ingen,
+        layout: { 'symbol-placement': 'line', 'symbol-spacing': 70, 'icon-image': 'pil', 'icon-size': 0.6, 'icon-rotation-alignment': 'map', 'icon-allow-overlap': true, 'icon-ignore-placement': true },
+      },
+      // Usynlig og bred, så løypene er lette å treffe med mus og finger
+      { id: OVERSIKT_LAG.treff, type: 'line', source: 'loyper', filter: ingen, layout: rundLinje, paint: { 'line-color': '#000', 'line-opacity': 0, 'line-width': 22 } },
+    ],
+  };
+}

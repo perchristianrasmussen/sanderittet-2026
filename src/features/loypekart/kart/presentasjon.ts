@@ -18,11 +18,15 @@ export interface Kilde {
   gpx: string;
   tittel?: string;
   disiplin?: string;
+  /** Løypefargen fra indeksen (start | green | blue | red | orange | shortcut). Uten farge: rød. */
+  farge?: string;
 }
 
 export interface PresentasjonValg extends Kilde {
   /** Les ?gpx= fra adressen (slug eller URL) og sett dokumenttittelen. */
   lesUrlParameter?: boolean;
+  /** Inne i en vanlig side: kartet tar ikke imot mus, tastene virker bare når presentasjonen har fokus, og ingen dra-og-slipp. */
+  innebygd?: boolean;
   finnLoype?: (q: string) => Kilde | undefined;
 }
 
@@ -37,11 +41,44 @@ function medAlfa(hex: string, a: number) {
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
 }
 
+// Bland en hex-farge mot en annen (t = 0: a, t = 1: b)
+function bland(a: string, b: string, t: number) {
+  const tall = (hex: string) => {
+    const h = hex.trim().replace('#', '');
+    const n = parseInt(h.length === 3 ? [...h].map((c) => c + c).join('') : h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const [x, y] = [tall(a), tall(b)];
+  return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+
+/** Fargene løypa tegnes med: strek (gradient), glød, og prikk/fremdrift i HUD-en. */
+interface Linjefarger {
+  done: readonly [string, string];
+  glow: readonly [string, string];
+  prikk: string;
+  lys: string;
+}
+
 export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
   const $ = <T extends HTMLElement = HTMLElement>(ref: string) => root.querySelector<T>(`[data-ref="${ref}"]`)!;
   const css = getComputedStyle(root);
   const token = (navn: string, reserve: string) => css.getPropertyValue(navn).trim() || reserve;
   const farge = { red: token('--red', '#c8241a'), redLight: token('--red-light', '#e8342a'), font: token('--font-cond', 'sans-serif') };
+
+  // Løypefargen styrer streken, rytteren og fremdriften i høydeprofilen. Etiketter, topplinjer og
+  // bannere er klubbens TV-grafikk og forblir røde. Rød (og ukjent) beholder prototypens nyanser.
+  const rod: Linjefarger = { done: RUTEFARGE.done, glow: RUTEFARGE.glow, prikk: farge.red, lys: farge.redLight };
+  let linje = rod;
+  function settLinjefarge(nokkel?: string) {
+    const base = nokkel && nokkel !== 'red' ? css.getPropertyValue(`--route-${nokkel}`).trim() : '';
+    if (!/^#[0-9a-f]{3,6}$/i.test(base)) linje = rod;
+    else {
+      const lys = bland(base, '#ffffff', 0.3);
+      linje = { done: [bland(base, '#000000', 0.12), lys], glow: [medAlfa(base, 0.45), medAlfa(lys, 0.8)], prikk: base, lys };
+    }
+    root.style.setProperty('--loype', linje.prikk);
+  }
 
   let R: Rute | null = null; // rutemodell
   let P: Profil | null = null; // høydeprofil
@@ -57,6 +94,8 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
     attributionControl: false,
     fadeDuration: 0,
     canvasContextAttributes: { antialias: true },
+    // Kameraet styres av presentasjonen; innebygd skal ikke hjulet stjele sidens rulling
+    interactive: !valg.innebygd,
   });
   map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
   map.on('error', (e) => console.warn('Kartfeil:', e.error?.message || e));
@@ -140,8 +179,8 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
   function updateProgress(d: number) {
     if (!R || !P) return;
     const p = d / R.L;
-    map.setPaintProperty('route-done', 'line-gradient', grad(p, ...RUTEFARGE.done));
-    map.setPaintProperty('route-glow', 'line-gradient', grad(p, ...RUTEFARGE.glow));
+    map.setPaintProperty('route-done', 'line-gradient', grad(p, ...linje.done));
+    map.setPaintProperty('route-glow', 'line-gradient', grad(p, ...linje.glow));
     rider.setLngLat(along(R, d, false));
     $('sDist').textContent = fmtKm(d);
     $('sEle').textContent = fmtInt(eleAt(P, R, d));
@@ -200,7 +239,7 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
     if (!Pr.has) {
       g.fillStyle = 'rgba(255,255,255,.5)';
       g.fillText('Ingen høydedata tilgjengelig', pl, h / 2);
-      g.fillStyle = farge.red;
+      g.fillStyle = linje.prikk;
       g.fillRect(pl, h - pb, X(d) - pl, 3 * k);
       return;
     }
@@ -245,11 +284,11 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
     g.clip();
     path();
     const gr = g.createLinearGradient(0, pt, 0, h - pb);
-    gr.addColorStop(0, medAlfa(farge.red, 0.85));
-    gr.addColorStop(1, medAlfa(farge.red, 0.12));
+    gr.addColorStop(0, medAlfa(linje.prikk, 0.85));
+    gr.addColorStop(1, medAlfa(linje.prikk, 0.12));
     g.fillStyle = gr;
     g.fill();
-    g.strokeStyle = farge.redLight;
+    g.strokeStyle = linje.lys;
     g.lineWidth = 2.5 * k;
     g.stroke();
     g.restore();
@@ -284,7 +323,7 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
     g.fill();
     g.beginPath();
     g.arc(x, y, 3.5 * k, 0, Math.PI * 2);
-    g.fillStyle = farge.red;
+    g.fillStyle = linje.prikk;
     g.fill();
   }
 
@@ -310,6 +349,7 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
     const rute = buildRoute(raw, fileName);
     if (over.tittel) rute.name = over.tittel;
     if (over.disiplin) rute.disc = over.disiplin;
+    settLinjefarge(over.farge);
     R = rute;
 
     map.getSource<GeoJSONSource>('route')?.setData({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: rute.coords } });
@@ -424,14 +464,18 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
   $('bClean').onclick = toggleClean;
 
   const onKey = (e: KeyboardEvent) => {
-    if ((e.target as HTMLElement | null)?.tagName === 'SELECT') return;
+    const tag = (e.target as HTMLElement | null)?.tagName ?? '';
+    if (tag === 'SELECT') return;
+    // Mellomrom på en knapp eller lenke gjør knappens egen jobb
+    if (e.code === 'Space' && (tag === 'BUTTON' || tag === 'A')) return;
     if (e.code === 'Space') {
       e.preventDefault();
       togglePlay();
     } else if (e.key === 'r' || e.key === 'R') S.ready && restart(true);
     else if (e.key === 'h' || e.key === 'H') toggleClean();
   };
-  addEventListener('keydown', onKey);
+  const tastMal: HTMLElement | Window = valg.innebygd ? root : window;
+  tastMal.addEventListener('keydown', onKey as EventListener);
 
   function onResize() {
     map.resize();
@@ -458,9 +502,11 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
     const f = [...(e.dataTransfer?.files ?? [])].find((f) => /\.gpx$/i.test(f.name));
     if (f) setupRoute(await f.text(), f.name);
   };
-  addEventListener('dragover', onDragOver);
-  addEventListener('dragleave', onDragLeave);
-  addEventListener('drop', onDrop);
+  if (!valg.innebygd) {
+    addEventListener('dragover', onDragOver);
+    addEventListener('dragleave', onDragLeave);
+    addEventListener('drop', onDrop);
+  }
 
   // ---------- Start ----------
   map.on('load', async () => {
@@ -482,7 +528,7 @@ export function startPresentasjon(root: HTMLElement, valg: PresentasjonValg) {
       cancelAnimationFrame(S.raf);
       clearTimeout(S.bannerTimer);
       ro.disconnect();
-      removeEventListener('keydown', onKey);
+      tastMal.removeEventListener('keydown', onKey as EventListener);
       removeEventListener('dragover', onDragOver);
       removeEventListener('dragleave', onDragLeave);
       removeEventListener('drop', onDrop);

@@ -2,12 +2,12 @@
 // Lab: løypepresentasjonen i hele vinduet. Ikke lenket fra menyen.
 import Base from '../../layouts/Base.astro';
 import Loypepresentasjon from '../../features/loypekart/Loypepresentasjon.astro';
-import { loyper, standardLoype } from '../../features/loypekart/data/loyper.ts';
+import { loyper, standardLoype } from '../../features/loypekart/data/katalog.ts';
 ---
 
 <Base title="Løypepresentasjon (lab)" noindex>
   <main id="innhold" class="lab">
-    <Loypepresentasjon gpx={standardLoype.gpx} tittel={standardLoype.navn} disiplin={standardLoype.disiplin} lesUrlParameter />
+    <Loypepresentasjon gpx={standardLoype.gpx} tittel={standardLoype.navn} disiplin={standardLoype.disiplin} farge={standardLoype.farge} lesUrlParameter />
 
     <form class="velger" method="get" data-velger>
       <label for="lab-loype">Løype</label>

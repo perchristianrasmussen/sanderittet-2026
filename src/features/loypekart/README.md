@@ -1,4 +1,24 @@
-# Løypekart: løypepresentasjon
+# Løypekart
+
+To visninger av klubbens GPX-løyper med MapLibre GL 6:
+
+- **Oversiktskartet** (`Loypeoversikt.astro`, på `/loyper`): alle løypene i 2D med løypevelger, fremheving med kjøreretning, «hvilke løyper går her» ved klikk og GPX-nedlasting. Valget lagres i adressen (`?vis=slug,slug`) så det kan deles.
+- **Løypesidene** (`/loyper/<slug>`, `src/pages/loyper/[slug].astro`): én side per løype, generert fra katalogen, med løypepresentasjonen innebygd, tall, GPX og lenker til de andre løypene. Oversiktskartet lenker hit (▶ i lista, navnet i popupen).
+- **Løypepresentasjonen** (`Loypepresentasjon.astro`): filmatisk 3D-flytur langs én løype. `<Loypepresentasjon slug="bla-xco" innebygd />` på løypesidene, i hele vinduet i laben.
+
+Begge leser løypene fra **katalogen**, så en ny GPX-fil dukker opp overalt uten kodeendringer.
+
+## Ny løype
+
+1. Legg GPX-filen i `data/gpx/`. Filnavnet blir adressen: små bokstaver, æ/ø/å som ae/o/a, bindestrek for mellomrom («Rød Lang XCO.gpx» → `rod-lang-xco` → `/gpx/rod-lang-xco.gpx`). Både spor (`<trkpt>`) og ruter (`<rtept>`) virker.
+2. Legg en linje i `data/loyper.ts` med navn, disiplin og farge (`start | green | blue | red | orange | shortcut`, fra `--route-*` i tokens.css). `stiplet` skiller to løyper med samme farge, `vises: false` gjør at den er av når kartet åpnes, og `skjult: true` tar den ut av siden uten å slette filen.
+3. `node scripts/check-loypemotor.mjs` og `npm run build`.
+
+Glemmer man steg 2, vises løypa likevel (grå, navn og disiplin fra filnavnet), og bygget skriver en advarsel. En linje uten fil, en fil med for få punkter (under 10 eller kortere enn 50 m), to filer med samme slug eller en ukjent farge stopper bygget med en melding som sier hvilken fil det gjelder.
+
+Navn i selve GPX-filene brukes ikke: klubbens filer heter ting som «Starten på XCC» inni.
+
+## Løypepresentasjonen
 
 En filmatisk 3D-flytur langs en GPX-løype, i stil med TV-grafikk: terreng, flyfoto eller Kartverket topo, kameraet som følger løypa, levende tall (distanse, høyde, stigning), høydeprofil, bannere og pinner for splitter, høyeste punkt og bratteste stigning, og en oppsummering til slutt.
 
@@ -14,19 +34,29 @@ src/features/loypekart/
 │   ├── rute.ts             parseGpx (XML-parseren sendes inn), buildRoute, along
 │   ├── hoyde.ts            Terrarium-dekoding, demFliser, elevAt, buildProfile, eleAt, gradAt
 │   ├── hendelser.ts        buildEvents (splitter, høyeste punkt, bratteste, mål)
-│   └── kamera.ts           fasetider, ramp, introCam, followCam, outroCam, mix, targetBearing
+│   ├── kamera.ts           fasetider, ramp, introCam, followCam, outroCam, mix, targetBearing
 ├── kart/                   MapLibre- og DOM-limet
 │   ├── stil.ts             kartstilen (sat, topo, dem, relieff, løypelag) og line-gradient-uttrykket
 │   ├── dem.ts              henter Terrarium-fliser og leser pikslene (adapter for motor/hoyde.ts)
 │   └── presentasjon.ts     kontrolleren: tilstand, tikkløkke, render, updateProgress, markører,
 │                           banner, høydeprofil på canvas, kontroller, tastatur, resize, dra-og-slipp, ?gpx=
-├── data/loyper.ts          indeks over klubbens GPX-filer i public/gpx/
+│   ├── katalog.ts          byggKatalog: GPX-filer + indeks → validerte løyper med lengde og geometri, tilGeoJson
+├── data/
+│   ├── gpx/                GPX-filene (eneste kopi; serveres som /gpx/<slug>.gpx)
+│   ├── loyper.ts           indeksen: navn, disiplin, farge per slug
+│   └── katalog.ts          kjører byggKatalog ved bygg (import.meta.glob). Bare serverkode.
+├── kart/oversikt.ts        kontrolleren for oversiktskartet (velger, fremheving, popup, ?vis=)
+├── Loypeoversikt.astro     oversiktskartet med velgeren
 └── Loypepresentasjon.astro komponenten: HUD-markup og stiler, starter kontrolleren i et klient-skript
 ```
 
 - **Motor** vet ingenting om kartet. Alt som kan regnes ut fra rute og tid ligger her, så det kan testes i Node (`node scripts/check-loypemotor.mjs`).
 - **Kart** eier MapLibre-instansen og DOM-en. `startPresentasjon(root, valg)` finner elementene sine med `data-ref` inne i `root`, så flere instanser ikke krasjer i id-er. Den returnerer `{ map, destroy }`.
 - **Komponenten** fyller forelderen (gi den en høyde). Props: `gpx` (URL), valgfritt `tittel` og `disiplin` (ellers leses de fra filnavnet, som i prototypen), og `lesUrlParameter` for helsides bruk: da leses `?gpx=` (slug fra `data/loyper.ts` eller en URL) og dokumenttittelen settes.
+
+## Innebygd eller i hele vinduet
+
+Med `innebygd` viser presentasjonen et stillbilde av løypa (SVG tegnet ved bygg, i løypas farge) og en «Spill av»-knapp. Ingenting lastes eller beveger seg før man trykker, så mobildata spares og «redusert bevegelse» får et statisk bilde. Kartet tar ikke imot mus (sidens rulling virker), tastene virker bare med fokus i presentasjonen, dra-og-slipp er av, og tittelen er `<p>` så siden beholder sin egen `h1`. Titlene skaleres etter rammens bredde (`cqw`).
 
 ## Lab-siden
 
@@ -47,9 +77,9 @@ Merk: i hodeløs Edge/Chrome med `--virtual-time-budget` blir kartet stående p�
 - **Workeren settes eksplisitt** (`setWorkerUrl` med `maplibre-gl-worker.mjs?url`). v6 finner den ellers relativt til sin egen modulfil, som ikke finnes etter at Vite har bundlet koden.
 - **Kantutjevning er faktisk på.** Prototypen ga `canvasContextAttributes: { antialias: true }`, men det valget fantes ikke i 4.7.1 (der het det `antialias`), så den kjørte uten. I v6 virker det. Det kan koste ytelse på svake maskiner.
 - **Oversiktskameraet regnes fra komponentens størrelse** (`root.clientWidth/Height`) i stedet for `innerWidth/innerHeight`. I hele vinduet er det det samme.
-- **Navn fra indeksen.** Prototypen leste navn og disiplin fra filnavnet. Filene har nå ASCII-navn (`rod-lang-xco.gpx`), så laben sender inn navnet fra `data/loyper.ts` («Rød lang»). Dra-og-slipp leser fortsatt fra filnavnet.
+- **Navn fra katalogen.** Prototypen leste navn og disiplin fra filnavnet. Nå slår laben opp `?gpx=<slug>` i katalogen (sendt med som `data-loyper`) og får navnet fra indeksen («Rød lang»). Dra-og-slipp leser fortsatt fra filnavnet.
 - **Dokumenttittelen** settes bare når `lesUrlParameter` er på, så en innebygd presentasjon ikke overskriver sidetittelen.
-- **Tokens i HUD-en.** Rødt er klubbens `--red` (#c8241a) og `--red-light` i stedet for prototypens #ff2a3a/#ff4757, `--night` i stedet for #05070a, og skrift og størrelser fra `tokens.css` der de var 1:1 (`--fs-tag`, `--fs-label`, `--fs-stat`, `--fs-banner` osv.). Oppsett, størrelser og koreografi er som før. Løypestreken i selve kartet (`RUTEFARGE` i `konfig.ts`) har fortsatt prototypens farger.
+- **Tokens i HUD-en.** Rødt er klubbens `--red` (#c8241a) og `--red-light` i stedet for prototypens #ff2a3a/#ff4757, `--night` i stedet for #05070a, og skrift og størrelser fra `tokens.css` der de var 1:1 (`--fs-tag`, `--fs-label`, `--fs-stat`, `--fs-banner` osv.). Oppsett, størrelser og koreografi er som før. Løypestreken, rytteren og fremdriften i høydeprofilen følger løypas farge fra indeksen (`farge`-prop, `--route-*`, satt som `--loype` på komponenten). Etiketter, topplinjer, bannere og splittpinner er klubbens TV-grafikk og forblir røde. Rød og ukjent farge bruker prototypens røde nyanser (`RUTEFARGE` i `konfig.ts`).
 - **UI-komponentene** (`Tag`, `StatPanel`, `Banner`) er ikke brukt: polstringen er litt annerledes (6px mot 5px i etikettfeltet, topplinjen som eget lag i tallpanelet), og tallene skrives om fra skriptet. HUD-en har egen markup med de samme tokenene.
 - **Bunten er stor** (MapLibre ~1 MB pluss workeren ~0,5 MB). Vite advarer om chunk over 500 kB. Den lastes bare på sider som bruker komponenten.
 
@@ -61,7 +91,8 @@ Merk: i hodeløs Edge/Chrome med `--virtual-time-budget` blir kartet stående p�
    - Tegn høydeprofilen én gang og flytt bare fremdriften og markøren (clip-path eller et eget lag over).
    - Animer overlegg bare med `transform`/`opacity` på `--ease-out-expo`.
 2. **Redusert bevegelse:** under `prefers-reduced-motion` vises et statisk oversiktsbilde med tallene (DESIGN.md, Bevegelse).
-3. **Mobil:** vis et plakatbilde (stillbilde av oversikten) til brukeren trykker spill av, så terreng og fliser ikke lastes før det trengs.
+3. ~~**Mobil:** plakatbilde til brukeren trykker spill av~~ (gjort for innebygd bruk).
 4. **Lisenser:** Esri World Imagery sine vilkår for offentlige nettsteder må sjekkes, eller kilden byttes til norsk ortofoto. Kartverket topo er CC BY 4.0 og krever attribusjon. AWS Terrain Tiles krever attribusjon (inkludert kildene bak).
 5. **Forhåndsberegning ved bygg:** lengde, høydemeter, høyeste punkt og bratteste stigning regnes ut ved bygg (motoren kjører i Node). Vurder Kartverkets høydedata for nøyaktighet; Terrarium på z15 er grovt i skog.
-6. **Oversiktskart over alle løypene** til `/loyper`.
+6. ~~Oversiktskart over alle løypene til `/loyper`~~ og ~~egne sider per løype~~ (gjort).
+7. **Overlapp:** rød lang/rød kort og kortbane/XCC kort går nesten på samme sti, så med alt på dekker de hverandre. Fremheving og klikk-popup løser det delvis; vurder `line-offset` eller å ha bare XCO på som standard.
