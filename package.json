@@ -18,7 +18,8 @@
     "@fontsource/barlow": "^5.3.0",
     "@fontsource/barlow-condensed": "^5.3.0",
     "@fontsource/bebas-neue": "^5.3.0",
-    "astro": "^7.4.7"
+    "astro": "^7.4.7",
+    "maplibre-gl": "^6.16.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
