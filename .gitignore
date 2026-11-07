@@ -1,0 +1,23 @@
+# Bygg og avhengigheter
+dist/
+.astro/
+node_modules/
+.wrangler/
+.dev.vars*
+.env
+.env.*
+
+# Lokale Impeccable-filer
+.impeccable/config.local.json
+.impeccable/hook.cache.json
+
+# Lokale agent-/editorfiler
+.claude/settings.local.json
+.github/hooks/
+
+# Store kildevideoer (ferdige videoer committes som .mp4)
+*.mov
+
+# OS
+.DS_Store
+Thumbs.db

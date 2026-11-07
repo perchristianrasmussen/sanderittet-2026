@@ -1,0 +1,3 @@
+# Under bygging – åpnes for indeksering ved lansering
+User-agent: *
+Disallow: /
