@@ -1,0 +1,598 @@
+---
+// Oversiktskart over alle løypene, med løypevelger ved siden av (under på mobil).
+// Løypene kommer fra katalogen (data/gpx/ + data/loyper.ts), så en ny GPX-fil dukker opp her av seg selv.
+// Uten JavaScript står lista igjen som forklaring med GPX-nedlasting.
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { loyper, loypegrupper } from './data/katalog.ts';
+import { tilInfo } from './motor/katalog.ts';
+import { fmtKm } from './motor/geo.ts';
+import Icon from '../../components/ui/Icon.astro';
+
+interface Props {
+  /** Les og skriv valget i adressen (?vis=slug,slug), så et utvalg kan deles. Bare én per side. */
+  brukAdresse?: boolean;
+  /** Tittel på kartplata */
+  tittel?: string;
+}
+
+const { brukAdresse = false, tittel = 'Løypene' } = Astro.props;
+const info = JSON.stringify(loyper.map(tilInfo));
+const strekfarge = (farge: string) => (farge === 'ukjent' ? 'var(--line-strong)' : `var(--route-${farge})`);
+---
+
+<div class="lo" data-loypeoversikt data-geojson="/loyper.geojson" data-loyper={info} data-adresse={brukAdresse ? '' : undefined}>
+  <div class="ramme" data-ref="ramme">
+    <div class="map" data-ref="map" role="region" aria-label="Kart over løypene"></div>
+
+    <div class="plate">
+      <span class="tag"><b>Lersbrygga</b><span>{loyper.length} løyper</span></span>
+      <p class="title plate-tittel">{tittel}</p>
+    </div>
+
+    <div class="kontroller">
+      <button type="button" class="hud-knapp" data-ref="grunnkart" aria-pressed="false">Flyfoto</button>
+      <button type="button" class="hud-knapp" data-ref="tilpass">Vis valgte</button>
+    </div>
+
+    <p class="melding" data-ref="melding" role="status">
+      <span class="med-js">Laster kartet …</span>
+      <noscript>Kartet trenger JavaScript. Løypene og GPX-filene står i lista.</noscript>
+    </p>
+    <p class="tom-melding" aria-hidden="true">Ingen løyper valgt</p>
+  </div>
+
+  <div class="velger">
+    <div class="velger-topp">
+      <p class="label">Velg løyper</p>
+      <p class="antall" data-ref="antall" aria-live="polite"></p>
+    </div>
+
+    {
+      loypegrupper.map((g) => (
+        <fieldset class="gruppe" data-gruppe={g.disiplin}>
+          <legend class="gruppe-topp">
+            <span class="tag">
+              <b>{g.disiplin}</b>
+              <span>{g.loyper.length === 1 ? '1 løype' : `${g.loyper.length} løyper`}</span>
+            </span>
+          </legend>
+          <div class="gruppe-knapper">
+            <button type="button" data-alle aria-label={`Vis alle ${g.disiplin}-løyper`}>Alle</button>
+            <button type="button" data-ingen aria-label={`Skjul alle ${g.disiplin}-løyper`}>Ingen</button>
+          </div>
+          <ul class="rader">
+            {g.loyper.map((l) => (
+              <li class:list={['rad', { stiplet: l.stiplet }]} data-rad={l.slug} style={`--farge: ${strekfarge(l.farge)}`}>
+                <label>
+                  <input type="checkbox" data-loype value={l.slug} checked={l.vises} />
+                  <span class="strek" aria-hidden="true" />
+                  <span class="navn">{l.navn}</span>
+                  <span class="lengde num">
+                    {fmtKm(l.lengde)}
+                    <small>km</small>
+                  </span>
+                </label>
+                <a class="gpx" href={l.gpx} download={l.lastNedSom}>
+                  GPX<span class="visually-hidden"> for {l.navn} ({l.disiplin})</span>
+                </a>
+                <a class="gpx se" href={`/loyper/${l.slug}`} title="Se løypa i 3D">
+                  <Icon name="play" size={16} />
+                  <span class="visually-hidden">Se {l.navn} ({l.disiplin}) i 3D</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+      ))
+    }
+    <p class="hjelp">Hold over en løype for å fremheve den med kjøreretning. Klikk i kartet for å se hvilke løyper som går der, og trykk ▶ for å se en løype i 3D.</p>
+  </div>
+</div>
+
+<script>
+  import { startOversikt } from './kart/oversikt.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-loypeoversikt]')) {
+    startOversikt(root, {
+      geojson: root.dataset.geojson!,
+      loyper: JSON.parse(root.dataset.loyper!),
+      brukAdresse: 'adresse' in root.dataset,
+    });
+  }
+</script>
+
+<style>
+  .lo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: var(--s-md);
+    align-items: start;
+  }
+
+  /* ---------- Kartramme ---------- */
+  .ramme {
+    position: relative;
+    height: clamp(420px, 72vh, 760px);
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    border: 1.5px solid var(--line-on-dark);
+    box-shadow: var(--shadow-embed);
+    background: var(--night);
+  }
+
+  .ramme:fullscreen {
+    border-radius: 0;
+    border: 0;
+  }
+
+  .map {
+    position: absolute;
+    inset: 0;
+  }
+
+  .plate {
+    position: absolute;
+    top: var(--s-sm);
+    left: var(--s-sm);
+    display: grid;
+    justify-items: start;
+    gap: var(--s-xs);
+    padding: 12px 16px 10px;
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    pointer-events: none;
+  }
+
+  .plate-tittel {
+    color: var(--white);
+    line-height: 1;
+  }
+
+  /* Etikettfelt (samme som Tag, mørk variant) */
+  .tag {
+    display: inline-flex;
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    letter-spacing: var(--track-tag);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .tag > * {
+    padding: 6px 12px;
+    font-weight: 700;
+  }
+
+  .tag b {
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .tag span {
+    background: var(--white);
+    color: var(--night);
+  }
+
+  .kontroller {
+    position: absolute;
+    left: var(--s-sm);
+    bottom: var(--s-sm);
+    display: flex;
+    gap: 6px;
+  }
+
+  .hud-knapp {
+    min-height: 44px;
+    padding: 0 14px;
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--line-on-dark-strong);
+    border-radius: var(--r-none);
+    cursor: pointer;
+    transition: background-color var(--t-lift, 0.2s) var(--ease-out-expo);
+  }
+
+  .hud-knapp:hover {
+    background: rgba(7, 9, 13, 0.95);
+  }
+
+  .hud-knapp[aria-pressed='true'] {
+    background: var(--white);
+    color: var(--night);
+    box-shadow: inset 0 -3px 0 var(--red);
+  }
+
+  .melding,
+  .tom-melding {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    margin: 0;
+    padding: 10px 16px;
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--panel);
+    pointer-events: none;
+    text-align: center;
+  }
+
+  /* «Laster» bare med skript; når kartet er klart forsvinner meldingen (feil setter ikke data-klar) */
+  .lo:not([data-aktiv]) .med-js,
+  .lo[data-klar] .melding {
+    display: none;
+  }
+
+  .tom-melding {
+    display: none;
+  }
+
+  .lo:global(.tom)[data-klar] .tom-melding {
+    display: block;
+  }
+
+  /* MapLibre-kontrollene i HUD-stil */
+  .lo :global(.maplibregl-ctrl-group) {
+    border-radius: var(--r-none);
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    box-shadow: none;
+    border: 1px solid var(--line-on-dark-strong);
+  }
+
+  .lo :global(.maplibregl-ctrl-group button) {
+    width: 44px;
+    height: 44px;
+  }
+
+  .lo :global(.maplibregl-ctrl-group button + button) {
+    border-top-color: var(--line-on-dark);
+  }
+
+  .lo :global(.maplibregl-ctrl-group button .maplibregl-ctrl-icon) {
+    filter: invert(1);
+  }
+
+  .lo :global(.maplibregl-ctrl-top-right) {
+    top: 6px;
+    right: 6px;
+  }
+
+  .lo :global(.maplibregl-cooperative-gesture-screen) {
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(7, 9, 13, 0.6);
+  }
+
+  /* Popup: hvilke løyper går her */
+  .lo :global(.loype-popup .maplibregl-popup-content) {
+    padding: 12px 14px 10px;
+    border-radius: var(--r-none);
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    color: var(--white);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    border-top: 3px solid var(--red);
+  }
+
+  .lo :global(.loype-popup .maplibregl-popup-tip) {
+    display: none;
+  }
+
+  .lo :global(.loype-popup .maplibregl-popup-close-button) {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    color: var(--muted-on-dark);
+  }
+
+  .lo :global(.popup-tittel) {
+    margin: 0 28px 6px 0;
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--track-tag);
+    text-transform: uppercase;
+    color: var(--muted-on-dark);
+  }
+
+  .lo :global(.loype-popup ul) {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lo :global(.loype-popup li) {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    column-gap: 10px;
+    align-items: center;
+  }
+
+  .lo :global(.loype-popup li::before) {
+    content: '';
+    grid-row: span 2;
+    height: 4px;
+    background: var(--farge);
+  }
+
+  .lo :global(.loype-popup li.stiplet::before) {
+    background: repeating-linear-gradient(90deg, var(--farge) 0 6px, transparent 6px 9px);
+  }
+
+  .lo :global(.popup-navn) {
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    color: var(--white);
+    text-decoration: underline;
+    text-decoration-color: var(--line-on-dark-strong);
+    text-underline-offset: 3px;
+  }
+
+  .lo :global(.popup-meta) {
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    color: var(--muted-on-dark);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lo :global(.loype-popup button) {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 2px;
+    padding: 4px 0;
+    font: 600 var(--fs-label) / 1.2 var(--font-cond);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--line-on-dark-strong);
+    cursor: pointer;
+  }
+
+  .lo :global(.loype-popup button:hover) {
+    border-bottom-color: var(--red-light);
+  }
+
+  /* ---------- Velgeren ---------- */
+  .velger {
+    display: grid;
+    gap: var(--s-md);
+    color: var(--white);
+  }
+
+  .velger-topp {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-xs);
+    padding-bottom: var(--s-xs);
+    border-bottom: 1px solid var(--line-on-dark);
+  }
+
+  .velger-topp p {
+    margin: 0;
+  }
+
+  .antall {
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-on-dark);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gruppe {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    row-gap: var(--s-xs);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  /* legend i et grid: float gjør at den oppfører seg som et vanlig grid-element */
+  .gruppe-topp {
+    float: left;
+    padding: 0;
+  }
+
+  .gruppe-knapper {
+    display: flex;
+    gap: 2px;
+  }
+
+  .gruppe-knapper button {
+    min-height: 36px;
+    padding: 0 10px;
+    font: 700 var(--fs-label) / 1 var(--font-cond);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: transparent;
+    border: 1px solid var(--line-on-dark-strong);
+    border-radius: var(--r-none);
+    cursor: pointer;
+  }
+
+  .gruppe-knapper button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .gruppe-knapper button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .rader {
+    grid-column: 1 / -1;
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rad {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--line-on-dark);
+    transition: background-color 0.15s;
+  }
+
+  .rad:global(.fokus) {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .rad label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 4px 8px 4px 4px;
+    cursor: pointer;
+    min-width: 0;
+  }
+
+  .rad input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex: none;
+    accent-color: var(--red);
+  }
+
+  .strek {
+    flex: none;
+    width: 26px;
+    height: 4px;
+    background: var(--farge);
+  }
+
+  .stiplet .strek {
+    background: repeating-linear-gradient(90deg, var(--farge) 0 7px, transparent 7px 11px);
+  }
+
+  .navn {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  .lengde {
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .lengde small {
+    margin-left: 2px;
+    font-size: var(--fs-label);
+    color: var(--muted-on-dark);
+  }
+
+  .rad:has(input:not(:checked)) :is(.strek, .navn, .lengde) {
+    opacity: 0.45;
+  }
+
+  .gpx {
+    display: flex;
+    align-items: center;
+    min-width: 44px;
+    justify-content: center;
+    padding: 0 6px;
+    font: 700 var(--fs-label) / 1 var(--font-cond);
+    letter-spacing: 0.1em;
+    color: var(--muted-on-dark);
+    text-decoration: none;
+    border-left: 1px solid var(--line-on-dark);
+  }
+
+  .se {
+    min-width: 44px;
+    color: var(--white);
+  }
+
+  .gpx:hover {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .hjelp {
+    margin: 0;
+    font-size: var(--fs-body-sm);
+    line-height: 1.5;
+    color: var(--muted-on-dark);
+  }
+
+  /* Før skriptet har koblet seg på: lista er en forklaring, ikke en velger */
+  .lo:not([data-aktiv]) :is(.rad input, .gruppe-knapper, .antall, .kontroller, .hjelp) {
+    display: none;
+  }
+
+  .lo:not([data-aktiv]) .rad label {
+    cursor: default;
+  }
+
+  @media (max-width: 1000px) {
+    .lo {
+      grid-template-columns: 1fr;
+    }
+
+    .ramme {
+      height: clamp(360px, 62vh, 620px);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .plate {
+      top: 10px;
+      left: 10px;
+      padding: 10px 12px 8px;
+    }
+
+    .kontroller {
+      left: 10px;
+      bottom: 10px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rad,
+    .hud-knapp {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,83 @@
+---
+// Lab: løypepresentasjonen i hele vinduet. Ikke lenket fra menyen.
+import Base from '../../layouts/Base.astro';
+import Loypepresentasjon from '../../features/loypekart/Loypepresentasjon.astro';
+import { loyper, standardLoype } from '../../features/loypekart/data/katalog.ts';
+---
+
+<Base title="Løypepresentasjon (lab)" noindex>
+  <main id="innhold" class="lab">
+    <Loypepresentasjon gpx={standardLoype.gpx} tittel={standardLoype.navn} disiplin={standardLoype.disiplin} farge={standardLoype.farge} lesUrlParameter />
+
+    <form class="velger" method="get" data-velger>
+      <label for="lab-loype">Løype</label>
+      <select id="lab-loype" name="gpx">
+        {loyper.map((l) => <option value={l.slug} selected={l === standardLoype}>{l.navn} ({l.disiplin})</option>)}
+      </select>
+      <noscript><button type="submit">Vis</button></noscript>
+    </form>
+  </main>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-velger]');
+  const select = form?.querySelector('select');
+  const valgt = new URLSearchParams(location.search).get('gpx');
+  if (select && valgt && [...select.options].some((o) => o.value === valgt)) select.value = valgt;
+  select?.addEventListener('change', () => form?.submit());
+</script>
+
+<style>
+  .lab {
+    position: fixed;
+    inset: 0;
+    height: 100dvh;
+  }
+
+  /* Over kartattribusjonen nede til venstre */
+  .velger {
+    position: absolute;
+    left: 24px;
+    bottom: 184px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-cond);
+    font-weight: 600;
+    font-size: var(--fs-meta);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-on-dark);
+    transition: opacity 0.3s;
+  }
+
+  .velger select,
+  .velger button {
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--panel);
+    border: 1px solid var(--line-on-dark);
+    border-radius: var(--r-none);
+    padding: 8px 12px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+
+  .velger select option {
+    background: #111;
+  }
+
+  .lab:has(:global(.lp.clean)) .velger {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (max-width: 760px) {
+    .velger {
+      left: 16px;
+      bottom: 152px;
+    }
+  }
+</style>

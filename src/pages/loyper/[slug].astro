@@ -1,0 +1,260 @@
+---
+// Én side per løype, generert fra katalogen: /loyper/<slug>. En ny GPX-fil gir en ny side.
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import AccentBar from '../../components/ui/AccentBar.astro';
+import Button from '../../components/ui/Button.astro';
+import StatPanel from '../../components/ui/StatPanel.astro';
+import Icon from '../../components/ui/Icon.astro';
+import Loypepresentasjon from '../../features/loypekart/Loypepresentasjon.astro';
+import { loyper } from '../../features/loypekart/data/katalog.ts';
+import type { KatalogLoype } from '../../features/loypekart/motor/katalog.ts';
+import { fmtKm } from '../../features/loypekart/motor/geo.ts';
+
+export function getStaticPaths() {
+  return loyper.map((loype) => ({ params: { slug: loype.slug }, props: { loype } }));
+}
+
+const { loype } = Astro.props as { loype: KatalogLoype };
+const km = fmtKm(loype.lengde);
+const andre = loyper.filter((l) => l.slug !== loype.slug);
+const strekfarge = (farge: string) => (farge === 'ukjent' ? 'var(--line-strong)' : `var(--route-${farge})`);
+---
+
+<Base
+  title={`${loype.navn} (${loype.disiplin}) – løypene på Lersbrygga`}
+  description={`${loype.navn}, ${loype.disiplin}-løype på Lersbrygga i Sande i Vestfold: ${km} km. Se løypa i 3D og last ned GPX.`}
+>
+  <Nav current="loyper" />
+
+  <main id="innhold">
+    <section class="section on-dark loype" aria-labelledby="loype-tittel">
+      <div class="container">
+        <a href="/loyper" class="link tilbake"><span class="pil" aria-hidden="true">←</span> Alle løyper</a>
+
+        <div class="topp">
+          <div>
+            <h1 id="loype-tittel" class="headline" style={`--loype: ${strekfarge(loype.farge)}`}>
+              <span class="strek" aria-hidden="true"></span>{loype.navn}
+            </h1>
+            <AccentBar />
+          </div>
+          <ul class="tall" aria-label="Om løypa">
+            <StatPanel as="li" label="Disiplin" value={loype.disiplin} />
+            <StatPanel as="li" label="Lengde" value={km} unit="km" />
+            <StatPanel as="li" label="Type" value={loype.rundlop ? 'Runde' : 'A–B'} />
+          </ul>
+        </div>
+
+        <div class="ramme">
+          <Loypepresentasjon slug={loype.slug} innebygd />
+        </div>
+
+        <div class="under">
+          <p class="hjelp">Mellomrom spiller av og pauser, R starter på nytt. Tallene for høyde og stigning er beregnet fra terrengdata og er omtrentlige.</p>
+          <Button href={loype.gpx} download={loype.lastNedSom} icon="download" variant="outline">Last ned GPX</Button>
+        </div>
+      </div>
+    </section>
+
+    {
+      andre.length > 0 && (
+        <section class="section on-light andre" aria-labelledby="andre-tittel">
+          <div class="container">
+            <h2 id="andre-tittel" class="title">Flere løyper på Lersbrygga</h2>
+            <ul class="andre-liste">
+              {andre.map((l) => (
+                <li style={`--loype: ${strekfarge(l.farge)}`} class:list={{ stiplet: l.stiplet }}>
+                  <a href={`/loyper/${l.slug}`} class="card-link andre-kort">
+                    <span class="strek" aria-hidden="true" />
+                    <span class="andre-navn">{l.navn}</span>
+                    <span class="andre-meta">
+                      {l.disiplin} <span class="sep">·</span> {fmtKm(l.lengde)} km
+                    </span>
+                    <Icon name="arrow-right" size={18} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p class="alle">
+              <a href="/loyper" class="link">Se alle løypene i kartet <Icon name="arrow-right" size={16} /></a>
+            </p>
+          </div>
+        </section>
+      )
+    }
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .loype {
+    padding-top: var(--s-lg);
+  }
+
+  .tilbake {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    margin-bottom: var(--s-sm);
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .topp {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--s-md);
+    margin-bottom: var(--s-md);
+  }
+
+  .topp .headline {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+    margin: 0;
+  }
+
+  /* Løypefargen som forklaring ved navnet (løyperegelen: farge bare der løypa vises) */
+  .topp .strek {
+    flex: none;
+    width: 0.9em;
+    height: 0.12em;
+    background: var(--loype);
+  }
+
+  .tall {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 1.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ramme {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    min-height: 460px;
+    max-height: 82svh;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    border: 1.5px solid var(--line-on-dark);
+    box-shadow: var(--shadow-embed);
+    background: var(--night);
+  }
+
+  .under {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-sm) var(--s-md);
+    margin-top: var(--s-sm);
+  }
+
+  .hjelp {
+    margin: 0;
+    max-width: 52ch;
+    font-size: var(--fs-body-sm);
+    line-height: 1.5;
+    color: var(--muted-on-dark);
+  }
+
+  /* Flere løyper */
+  .andre-liste {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+    gap: var(--s-xs);
+    margin: var(--s-md) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .andre-kort {
+    display: grid;
+    grid-template-columns: 26px 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--off-white);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    color: var(--dark);
+    text-decoration: none;
+  }
+
+  .andre-kort .strek {
+    grid-row: 1 / span 2;
+    grid-column: 1;
+    height: 4px;
+    background: var(--loype);
+  }
+
+  .stiplet .andre-kort .strek {
+    background: repeating-linear-gradient(90deg, var(--loype) 0 7px, transparent 7px 11px);
+  }
+
+  .andre-kort :global(svg) {
+    grid-row: 1 / span 2;
+    grid-column: 3;
+    color: var(--muted);
+  }
+
+  .andre-navn,
+  .andre-meta {
+    grid-column: 2;
+  }
+
+  .andre-navn {
+    font-family: var(--font-cond);
+    font-size: var(--fs-tag);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .andre-meta {
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .alle {
+    margin: var(--s-md) 0 0;
+  }
+
+  .alle .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 760px) {
+    .ramme {
+      aspect-ratio: auto;
+      height: min(78svh, 640px);
+      min-height: 420px;
+    }
+
+    .tall {
+      margin-bottom: 0;
+    }
+  }
+</style>

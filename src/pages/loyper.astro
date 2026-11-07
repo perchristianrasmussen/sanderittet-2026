@@ -1,0 +1,35 @@
+---
+// Løypene på Lersbrygga: oversiktskart med løypevelger og GPX-nedlasting.
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import AccentBar from '../components/ui/AccentBar.astro';
+import Loypeoversikt from '../features/loypekart/Loypeoversikt.astro';
+---
+
+<Base
+  title="Løypene på Lersbrygga – Sande Sykkelklubb"
+  description="Kart over terrengsykkelløypene på Lersbrygga i Sande i Vestfold. Velg hvilke XCO- og XCC-løyper du vil se, og last ned GPX."
+>
+  <Nav current="loyper" />
+
+  <main id="innhold">
+    <section class="section on-dark loyper" aria-labelledby="loyper-tittel">
+      <div class="container">
+        <h1 id="loyper-tittel" class="headline">Løypene på <span class="hl">Lersbrygga</span></h1>
+        <AccentBar />
+        <p class="lead">Klubbens løyper ligger i skogen rundt idrettsanlegget, med rundbane (XCO) og kortbane (XCC) i flere lengder. Velg hvilke løyper du vil se i kartet, og last ned GPX til klokka eller telefonen.</p>
+
+        <Loypeoversikt brukAdresse />
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .loyper {
+    padding-top: var(--s-xl);
+  }
+</style>

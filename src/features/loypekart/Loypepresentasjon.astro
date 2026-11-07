@@ -1,0 +1,795 @@
+---
+// Løypepresentasjon: 3D-flytur langs en GPX-løype med TV-grafikk oppå kartet.
+// Fyller forelderen; gi den en høyde (laben bruker hele vinduet).
+import 'maplibre-gl/dist/maplibre-gl.css';
+import Icon from '../../components/ui/Icon.astro';
+import { finnLoype, loyper } from './data/katalog.ts';
+import { fmtKm } from './motor/geo.ts';
+
+interface Props {
+  /** Løype fra katalogen. Fyller gpx, tittel, disiplin og farge. */
+  slug?: string;
+  /** URL til GPX-filen (når slug ikke er gitt) */
+  gpx?: string;
+  /** Overstyrer navnet som ellers leses fra filnavnet */
+  tittel?: string;
+  /** Overstyrer disiplinen som ellers leses fra filnavnet */
+  disiplin?: string;
+  /** Løypefargen fra indeksen (start | green | blue | red | orange | shortcut). Styrer streken, rytteren og høydeprofilen. */
+  farge?: string;
+  /** Les ?gpx= (slug eller URL) fra adressen og sett dokumenttittelen. Bare for helsides bruk. */
+  lesUrlParameter?: boolean;
+  /**
+   * Inne i en vanlig side: starter først når man trykker «Spill av» (stillbilde av løypa til da),
+   * kartet tar ikke imot mus, tastene virker bare med fokus i presentasjonen, og overskriftene er
+   * vanlig tekst så siden beholder sin egen h1.
+   */
+  innebygd?: boolean;
+}
+
+const { slug, lesUrlParameter = false, innebygd = false } = Astro.props;
+const l = finnLoype(slug);
+if (slug && !l) throw new Error(`Loypepresentasjon: fant ikke løypa «${slug}» i katalogen`);
+const gpx = Astro.props.gpx ?? l?.gpx ?? '';
+const tittel = Astro.props.tittel ?? l?.navn;
+const disiplin = Astro.props.disiplin ?? l?.disiplin;
+const farge = Astro.props.farge ?? l?.farge;
+const disc = disiplin ?? 'XCO';
+const Overskrift = innebygd ? 'p' : 'h1';
+const Overskrift2 = innebygd ? 'p' : 'h2';
+// ?gpx=<slug> slås opp i katalogen; bare med når adressen leses
+const indeks = lesUrlParameter ? JSON.stringify(loyper.map(({ slug, gpx, navn, disiplin, farge }) => ({ slug, gpx, navn, disiplin, farge }))) : undefined;
+
+// Stillbildet: løypa tegnet som SVG ved bygg (enkel projeksjon, nok for et lite område)
+// Viewboxen har løypas egne proporsjoner, så den fyller både brede og høye rammer
+let plakat: { d: string; start: [string, string]; viewBox: string } | null = null;
+if (innebygd && l) {
+  const [x0, y0, x1, y1] = l.bbox;
+  const k = Math.cos((((y0 + y1) / 2) * Math.PI) / 180);
+  const bw = (x1 - x0) * k, bh = y1 - y0;
+  const s = 1000 / Math.max(bw, bh), pad = 40;
+  const pt = ([x, y]: [number, number]): [string, string] => [(pad + (x - x0) * k * s).toFixed(1), (pad + (y1 - y) * s).toFixed(1)];
+  plakat = {
+    d: 'M' + l.coords.map((c) => pt(c).join(' ')).join('L'),
+    start: pt(l.coords[0]),
+    viewBox: `0 0 ${(bw * s + 2 * pad).toFixed(0)} ${(bh * s + 2 * pad).toFixed(0)}`,
+  };
+}
+const strekfarge = farge && farge !== 'ukjent' ? `var(--route-${farge})` : 'var(--red)';
+---
+
+<div
+  class:list={['lp', { innebygd }]}
+  data-phase="loading"
+  data-gpx={gpx}
+  data-tittel={tittel}
+  data-disiplin={disiplin}
+  data-farge={farge}
+  data-les-url={lesUrlParameter ? '' : undefined}
+  data-innebygd={innebygd ? '' : undefined}
+  data-loyper={indeks}
+  style={`--loype: ${strekfarge}`}
+>
+  <div class="map" data-ref="map"></div>
+  <div class="vignette"></div>
+
+  <div class="title hud">
+    <div class="tag"><b data-ref="discTag">{disc}</b><span>Løypepresentasjon</span></div>
+    <Overskrift class="navn" data-ref="courseName">{tittel ?? 'Løype'}</Overskrift>
+    <div class="sub" data-ref="courseSub"></div>
+    <div class="bar"></div>
+  </div>
+
+  <div class="stats hud">
+    <div class="stat"><div class="k">DISTANSE</div><div class="v"><span data-ref="sDist">0,00</span><small>KM</small></div></div>
+    <div class="stat"><div class="k">HØYDE</div><div class="v"><span data-ref="sEle">–</span><small>MOH</small></div></div>
+    <div class="stat"><div class="k">STIGNING</div><div class="v"><span data-ref="sGrad">–</span><small>%</small></div></div>
+  </div>
+
+  <div class="banner hud" data-ref="banner"><div class="bk" data-ref="bK"></div><div class="bv" data-ref="bV"></div></div>
+
+  <div class="summary hud">
+    <div class="tag"><b data-ref="discTag2">{disc}</b><span>Løypa</span></div>
+    <Overskrift2 class="navn" data-ref="sumName"></Overskrift2>
+    <div class="row">
+      <div class="stat"><div class="k">LENGDE</div><div class="v"><span data-ref="sumLen"></span><small>KM</small></div></div>
+      <div class="stat"><div class="k">HØYDEMETER</div><div class="v"><span data-ref="sumClimb"></span><small>M</small></div></div>
+      <div class="stat"><div class="k">HØYESTE PUNKT</div><div class="v"><span data-ref="sumMax"></span><small>MOH</small></div></div>
+      <div class="stat"><div class="k">BRATTESTE</div><div class="v"><span data-ref="sumSteep"></span><small>%</small></div></div>
+    </div>
+  </div>
+
+  <div class="profile hud"><div class="lbl">HØYDEPROFIL</div><canvas data-ref="prof"></canvas></div>
+
+  <div class="controls">
+    <button type="button" data-ref="bPlay" title="Mellomrom">Pause</button>
+    <button type="button" data-ref="bRestart" title="R">Start på nytt</button>
+    <select data-ref="bSpeed" title="Hastighet" aria-label="Hastighet">
+      <option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option>
+    </select>
+    <button type="button" data-ref="bBase">Topo</button>
+    <button type="button" data-ref="bClean" title="H">Skjul knapper</button>
+  </div>
+
+  <div class="loading" data-ref="loading"><div class="spin"></div><div data-ref="loadMsg">Laster løype og terreng…</div></div>
+  {!innebygd && <div class="drop" data-ref="drop">Slipp GPX-fil her</div>}
+
+  {
+    innebygd && (
+      <div class="plakat" data-ref="plakat">
+        {plakat && (
+          <svg class="plakat-kart" viewBox={plakat.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <path d={plakat.d} class="plakat-kant" />
+            <path d={plakat.d} class:list={['plakat-strek', { stiplet: l?.stiplet }]} />
+            <circle cx={plakat.start[0]} cy={plakat.start[1]} r="9" class="plakat-start" />
+          </svg>
+        )}
+        <div class="plakat-tekst">
+          <div class="tag">
+            <b>{disc}</b>
+            <span>{l ? `${fmtKm(l.lengde)} km` : 'Løypepresentasjon'}</span>
+          </div>
+          <button type="button" class="spill" data-ref="spill">
+            <Icon name="play" size={20} />
+            Spill av løypa
+          </button>
+          <p class="plakat-hint">Flytur i 3D med høydeprofil. Laster kart og terreng.</p>
+        </div>
+      </div>
+    )
+  }
+</div>
+
+<script>
+  // MapLibre (~1,5 MB) lastes først når presentasjonen faktisk skal starte
+  async function start(root: HTMLElement) {
+    const { startPresentasjon } = await import('./kart/presentasjon.ts');
+    const { gpx = '', tittel, disiplin, farge, loyper = '[]' } = root.dataset;
+    const indeks: { slug: string; gpx: string; navn: string; disiplin: string; farge: string }[] = JSON.parse(loyper);
+    return startPresentasjon(root, {
+      gpx,
+      tittel,
+      disiplin,
+      farge,
+      lesUrlParameter: 'lesUrl' in root.dataset,
+      innebygd: 'innebygd' in root.dataset,
+      finnLoype: (q) => {
+        const l = indeks.find((l) => l.slug === q);
+        return l && { gpx: l.gpx, tittel: l.navn, disiplin: l.disiplin, farge: l.farge };
+      },
+    });
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('.lp[data-gpx]')) {
+    const spill = root.querySelector<HTMLButtonElement>('[data-ref="spill"]');
+    if (!spill) {
+      start(root);
+      continue;
+    }
+    // Innebygd: ingenting lastes eller beveger seg før man ber om det
+    spill.addEventListener(
+      'click',
+      async () => {
+        spill.disabled = true;
+        root.dataset.startet = '';
+        await start(root);
+        root.querySelector('[data-ref="plakat"]')?.remove();
+        root.querySelector<HTMLButtonElement>('[data-ref="bPlay"]')?.focus({ preventScroll: true });
+      },
+      { once: true },
+    );
+  }
+</script>
+
+<style>
+  .lp {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--night);
+    color: var(--white);
+    font-family: var(--font-body);
+    line-height: normal;
+  }
+
+  .map {
+    position: absolute;
+    inset: 0;
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent 24%, transparent 68%, rgba(0, 0, 0, 0.6));
+  }
+
+  .hud {
+    position: absolute;
+    pointer-events: none;
+    transition:
+      opacity 0.6s ease,
+      transform 0.8s var(--ease-out);
+  }
+
+  /* Tittel */
+  .title {
+    left: 48px;
+    top: 44px;
+    max-width: calc(100% - 96px);
+  }
+
+  .tag {
+    display: inline-flex;
+    font-family: var(--font-cond);
+    font-weight: 700;
+    letter-spacing: var(--track-tag);
+    font-size: var(--fs-tag);
+    text-transform: uppercase;
+  }
+
+  .tag b {
+    background: var(--red);
+    padding: 5px 12px;
+    font-weight: 700;
+  }
+
+  .tag span {
+    background: var(--white);
+    color: var(--night);
+    padding: 5px 12px;
+  }
+
+  .title .navn {
+    font-family: var(--font-cond);
+    font-style: italic;
+    font-weight: 800;
+    font-size: clamp(52px, 8.5vw, 124px);
+    line-height: 0.85;
+    margin: 16px 0 12px;
+    text-transform: uppercase;
+    text-shadow: 0 6px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .title .sub {
+    font-family: var(--font-cond);
+    font-weight: 600;
+    font-size: 21px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  .bar {
+    width: 96px;
+    height: 6px;
+    background: var(--red);
+    margin-top: 16px;
+    transform: skewX(-24deg);
+  }
+
+  .lp:not([data-phase='intro']):not([data-phase='trans']) .title {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* Live-statistikk */
+  .stats {
+    right: 40px;
+    top: 40px;
+    display: flex;
+    gap: 6px;
+  }
+
+  .stat {
+    background: var(--panel);
+    border-top: 3px solid var(--red);
+    padding: 9px 16px 11px;
+    min-width: 136px;
+    backdrop-filter: blur(6px);
+  }
+
+  .stat .k {
+    font-family: var(--font-cond);
+    font-weight: 600;
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-tag);
+    color: var(--muted-on-dark);
+  }
+
+  .stat .v {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: var(--fs-stat);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+  }
+
+  .stat .v small {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--muted-on-dark);
+    margin-left: 4px;
+  }
+
+  .lp:not([data-phase='follow']) .stats {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  /* Banner (splits osv.) */
+  .banner {
+    left: 50%;
+    top: 19%;
+    transform: translate(-50%, -14px);
+    opacity: 0;
+    display: flex;
+    font-family: var(--font-cond);
+    text-transform: uppercase;
+  }
+
+  .banner:global(.show) {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .banner .bk {
+    background: var(--red);
+    font-weight: 800;
+    font-style: italic;
+    font-size: var(--fs-banner);
+    padding: 8px 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .banner .bv {
+    background: var(--panel);
+    font-weight: 600;
+    font-size: var(--fs-banner-value);
+    padding: 12px 20px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  /* Oppsummering */
+  .summary {
+    left: 50%;
+    top: 28px;
+    transform: translate(-50%, -24px);
+    opacity: 0;
+    text-align: center;
+    width: min(760px, 92vw);
+  }
+
+  .lp[data-phase='outro'] .summary,
+  .lp[data-phase='done'] .summary {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    transition-delay: 1.4s;
+  }
+
+  .summary .navn {
+    font-family: var(--font-cond);
+    font-style: italic;
+    font-weight: 800;
+    font-size: clamp(40px, 6vw, 80px);
+    line-height: 0.9;
+    margin: 10px 0 14px;
+    text-transform: uppercase;
+    text-shadow: 0 6px 40px rgba(0, 0, 0, 0.7);
+  }
+
+  .summary .row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .summary .stat {
+    text-align: left;
+  }
+
+  /* Høydeprofil */
+  .profile {
+    left: 24px;
+    right: 24px;
+    bottom: 20px;
+    height: 124px;
+    background: var(--panel);
+    border-left: 4px solid var(--red);
+    backdrop-filter: blur(6px);
+  }
+
+  .profile canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .profile .lbl {
+    position: absolute;
+    left: 14px;
+    top: 9px;
+    font-family: var(--font-cond);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--muted-on-dark);
+  }
+
+  /* Kontroller */
+  .controls {
+    position: absolute;
+    right: 24px;
+    bottom: 156px;
+    display: flex;
+    gap: 6px;
+    transition: opacity 0.3s;
+  }
+
+  .controls button,
+  .controls select {
+    font-family: var(--font-cond);
+    font-weight: 600;
+    font-size: var(--fs-meta);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--panel);
+    border: 1px solid var(--line-on-dark);
+    border-radius: var(--r-none);
+    padding: 8px 12px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+
+  .controls button:hover,
+  .controls select:hover {
+    border-color: var(--line-on-dark-strong);
+  }
+
+  .controls select option {
+    background: #111;
+  }
+
+  .lp:global(.clean) .controls {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .lp:global(.clean) :global(.maplibregl-ctrl-bottom-left) {
+    opacity: 0.5;
+  }
+
+  .lp :global(.maplibregl-ctrl-bottom-left) {
+    bottom: 148px;
+  }
+
+  .lp :global(.maplibregl-ctrl-attrib.maplibregl-compact) {
+    background: rgba(0, 0, 0, 0.5);
+    color: #ddd;
+  }
+
+  .lp :global(.maplibregl-ctrl-attrib a) {
+    color: #ddd;
+  }
+
+  /* Markører (lages av skriptet, derfor :global) */
+  .lp :global(.rider) {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--loype, var(--red));
+    border: 3px solid var(--white);
+    animation: pulse 1.4s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--loype, var(--red)) 75%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 18px color-mix(in srgb, var(--loype, var(--red)) 0%, transparent);
+    }
+  }
+
+  .lp :global(.pin) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .lp :global(.pin .l) {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    background: var(--white);
+    color: var(--night);
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+
+  .lp :global(.pin.split .l) {
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .lp :global(.pin.start .l) {
+    background: var(--night);
+    color: var(--white);
+    border: 1px solid var(--white);
+  }
+
+  .lp :global(.pin .s) {
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(var(--white), rgba(255, 255, 255, 0.3));
+  }
+
+  .lp :global(.pin .d) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--white);
+    margin-top: -1px;
+  }
+
+  .lp :global(.pin.start > *) {
+    transition: opacity 0.5s;
+  }
+
+  .lp[data-phase='outro'] :global(.pin.start > *),
+  .lp[data-phase='done'] :global(.pin.start > *) {
+    opacity: 0;
+  }
+
+  .lp :global(.pin.ev > *) {
+    transition:
+      opacity 0.4s,
+      transform 0.5s var(--ease-out);
+  }
+
+  .lp :global(.pin.ev:not(.on) > *) {
+    opacity: 0;
+  }
+
+  .lp :global(.pin.ev:not(.on) .l) {
+    transform: translateY(10px);
+  }
+
+  /* Lasting og slipp */
+  .loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--night);
+    font-family: var(--font-cond);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: opacity 0.8s;
+  }
+
+  .loading:global(.gone) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loading .spin {
+    width: 38px;
+    height: 38px;
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .drop {
+    position: absolute;
+    inset: 16px;
+    border: 3px dashed var(--red);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-cond);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    background: rgba(5, 7, 10, 0.7);
+    text-transform: uppercase;
+  }
+
+  .lp:global(.dragging) .drop {
+    display: flex;
+  }
+
+  @media (max-width: 760px) {
+    .title {
+      left: 16px;
+      top: 20px;
+      max-width: calc(100% - 32px);
+    }
+
+    .stats {
+      right: 16px;
+      left: 16px;
+      top: 16px;
+      justify-content: flex-end;
+    }
+
+    .stat {
+      min-width: 0;
+      padding: 7px 10px 8px;
+    }
+
+    .stat .v {
+      font-size: var(--fs-stat-sm);
+    }
+
+    .profile {
+      left: 16px;
+      right: 16px;
+      height: 96px;
+    }
+
+    .controls {
+      right: 16px;
+      bottom: 124px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .lp :global(.maplibregl-ctrl-bottom-left) {
+      bottom: 120px;
+    }
+
+    .banner .bk {
+      font-size: var(--fs-banner-sm);
+    }
+
+    .banner .bv {
+      font-size: 17px;
+    }
+  }
+
+  /* ---------- Innebygd i en side ---------- */
+  /* Titlene skaleres etter rammen, ikke vinduet */
+  .lp.innebygd {
+    container-type: inline-size;
+  }
+
+  .innebygd .title .navn {
+    font-size: clamp(40px, 8cqw, 104px);
+  }
+
+  .innebygd .summary .navn {
+    font-size: clamp(34px, 5.5cqw, 72px);
+  }
+
+  /* Stillbildet før avspilling: løypa i sin farge på natt, og knappen */
+  .plakat {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: grid;
+    background:
+      radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.05), transparent 70%),
+      var(--night);
+  }
+
+  /* Luft rundt løypa; nederst plass til knappeplata */
+  .plakat-kart {
+    position: absolute;
+    inset: 8% 6% 22%;
+    width: 88%;
+    height: 70%;
+  }
+
+  /* Streken har fast bredde på skjermen uansett hvor mye SVG-en skaleres */
+  .plakat-kant,
+  .plakat-strek {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .plakat-kant {
+    stroke: rgba(255, 255, 255, 0.16);
+    stroke-width: 11px;
+  }
+
+  .plakat-strek {
+    stroke: var(--loype);
+    stroke-width: 4px;
+  }
+
+  .plakat-strek.stiplet {
+    stroke-dasharray: 9px 6px;
+    stroke-linecap: butt;
+  }
+
+  .plakat-start {
+    fill: var(--white);
+    stroke: var(--night);
+    stroke-width: 3px;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .plakat-tekst {
+    position: relative;
+    align-self: end;
+    justify-self: start;
+    display: grid;
+    justify-items: start;
+    gap: 14px;
+    margin: 0 0 32px 32px;
+    padding: 16px 18px;
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+  }
+
+  .spill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0 22px;
+    font-family: var(--font-cond);
+    font-size: var(--fs-button-lg);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--red);
+    border: 0;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease-out-expo);
+  }
+
+  .spill:hover {
+    background: var(--red-dark);
+  }
+
+  .spill:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 3px;
+  }
+
+  .plakat-hint {
+    margin: 0;
+    font-size: var(--fs-body-sm);
+    color: var(--muted-on-dark);
+  }
+
+  @media (max-width: 760px) {
+    .plakat-tekst {
+      margin: 0 0 16px 16px;
+      max-width: calc(100% - 32px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp :global(.rider) {
+      animation: none;
+    }
+  }
+</style>
