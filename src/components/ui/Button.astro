@@ -1,26 +1,29 @@
 ---
 import Icon, { type IconName } from './Icon.astro';
 
-interface Props {
+interface Props extends Omit<astroHTML.JSX.AnchorHTMLAttributes, 'class' | 'href'> {
   href: string;
   variant?: 'primary' | 'outline' | 'outline-light';
+  /** lg er sidens hovedhandling, f.eks. Spond-knappen i heroen. */
+  size?: 'md' | 'lg';
   icon?: IconName;
   external?: boolean;
   class?: string;
 }
 
-const { href, variant = 'primary', icon, external = false, class: className } = Astro.props;
+const { href, variant = 'primary', size = 'md', icon, external = false, class: className, ...attrs } = Astro.props;
 const trailing = icon ?? (external ? 'external-link' : undefined);
 ---
 
 <a
   href={href}
-  class:list={['btn', `btn-${variant}`, className]}
+  class:list={['btn', `btn-${variant}`, { 'btn-lg': size === 'lg' }, className]}
   {...external ? { target: '_blank', rel: 'noopener' } : {}}
+  {...attrs}
 >
   <slot />
   {external && <span class="visually-hidden"> (åpnes i ny fane)</span>}
-  {trailing && <Icon name={trailing} size={18} />}
+  {trailing && <Icon name={trailing} size={size === 'lg' ? 20 : 18} />}
 </a>
 
 <style>
@@ -44,6 +47,14 @@ const trailing = icon ?? (external ? 'external-link' : undefined);
       background-color var(--t-fast),
       border-color var(--t-fast),
       transform var(--t-fast) var(--ease-out-expo);
+  }
+
+  /* Hovedhandlingen: sidens tyngste røde flate */
+  .btn-lg {
+    min-height: 56px;
+    padding: 1.1rem 2.25rem;
+    font-size: var(--fs-button-lg);
+    gap: 0.65rem;
   }
 
   /* Løftes ved hover, trykkes ned ved klikk */

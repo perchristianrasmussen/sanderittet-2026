@@ -5,15 +5,17 @@ interface Props {
   unit?: string;
   tone?: 'glass' | 'light';
   size?: 'md' | 'sm';
+  /** li når panelene står i en liste (<ul>). */
+  as?: 'div' | 'li';
 }
 
-const { label, value, unit, tone = 'glass', size = 'md' } = Astro.props;
+const { label, value, unit, tone = 'glass', size = 'md', as: Tag = 'div' } = Astro.props;
 ---
 
-<div class:list={['stat', `stat-${tone}`, `stat-${size}`]}>
+<Tag class:list={['stat', `stat-${tone}`, `stat-${size}`]}>
   <div class="k">{label}</div>
   <div class="v">{value}{unit && <small>{unit}</small>}</div>
-</div>
+</Tag>
 
 <style>
   /* Den røde topplinjen er et eget lag, så den kan tegnes inn i entreen */

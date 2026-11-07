@@ -25,6 +25,7 @@ export type NesteTrening =
 
 const DAG_MS = 86_400_000;
 const UKEDAGER = ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'];
+const MANEDER = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
 
 const oslo = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Europe/Oslo',
@@ -65,6 +66,12 @@ function isoOslo(dag: number, min: number) {
   const fortegn = off < 0 ? '-' : '+';
   const a = Math.abs(off) / 60_000;
   return `${dato}T${pad(Math.floor(min / 60))}:${pad(min % 60)}${fortegn}${pad(Math.floor(a / 60))}:${pad(a % 60)}`;
+}
+
+/** Kort dato på norsk, f.eks. «Tor 1. april». */
+function kortDato(dag: number) {
+  const d = new Date(dag * DAG_MS);
+  return `${UKEDAGER[isoUkedag(dag) - 1]} ${d.getUTCDate()}. ${MANEDER[d.getUTCMonth()]}`;
 }
 
 /** 1. påskedag etter gregoriansk kalender (anonym gregoriansk algoritme). */
@@ -132,5 +139,5 @@ export function nesteTrening(now: Date, plan: Treningsplan): NesteTrening {
   const neste = na.dag < s.fra ? s : sesong(na.ar + 1, plan);
   const forste = forsteOkt(plan, neste.fra, neste.til);
   const datetime = forste ? isoOslo(forste.dag, forste.min) : new Date(neste.fra * DAG_MS).toISOString().slice(0, 10);
-  return { state: 'utenfor-sesong', label: 'Sesongen starter', value: 'I påsken', datetime };
+  return { state: 'utenfor-sesong', label: 'Sesongen starter', value: kortDato(forste?.dag ?? neste.fra), datetime };
 }

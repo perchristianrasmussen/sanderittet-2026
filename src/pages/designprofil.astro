@@ -72,19 +72,22 @@ const progressX = w * 0.58;
 
       <div class="hero-body">
         <h1 id="hero-title" class="display">Sande <span class="hl">Sykkel</span>&shy;klubb</h1>
-        <p class="hero-sub">Trening for alle aldre på Lersbrygga, fra påske til høstferie.</p>
-        <div class="hero-action">
-          <NesteTreningBanner />
-          <Button href="https://group.spond.com/OXGYJ" external class="hero-cta">Bli med i Spond</Button>
+        <p class="hero-sub">Ukentlig sykkeltrening for barn og ungdom på Lersbrygga, fra påske til høstferie. Nybegynnere er velkomne, og foreldre kan gjerne bli med.</p>
+        <!-- Status på egen linje, så handlingen under er det tyngste røde -->
+        <div class="hero-status">
+          <NesteTreningBanner size="sm" />
         </div>
-        <p class="label hero-note">Påmelding og beskjeder skjer i appen Spond.</p>
+        <div class="hero-action" id="bli-med">
+          <p class="hero-note" id="spond-forklaring">Vi bruker appen Spond til påmelding og beskjeder. Knappen åpner gruppa vår.</p>
+          <Button href="https://group.spond.com/OXGYJ" external size="lg" class="hero-cta" aria-describedby="spond-forklaring">Bli med i Spond</Button>
+        </div>
       </div>
 
-      <div class="hero-stats">
-        <StatPanel label="Norgescup" value="2024" size="sm" />
-        <StatPanel label="Norgescup" value="2025" size="sm" />
-        <StatPanel label="NM terreng" value="2026" size="sm" />
-      </div>
+      <ul class="hero-stats" aria-label="Arrangementer på Lersbrygga">
+        <StatPanel as="li" label="Arrangør · Norgescup" value="2024" size="sm" />
+        <StatPanel as="li" label="Arrangør · Norgescup" value="2025" size="sm" />
+        <StatPanel as="li" label={'Arrangør · NM terreng'} value="2026" size="sm" />
+      </ul>
     </section>
 
     <!-- Innledning og farger deler én lys flate, så lyst og mørkt veksler nedover siden -->
@@ -235,7 +238,7 @@ const progressX = w * 0.58;
         <div class="demo-row">
           <Tag label="XCO" value="Rundbane" />
           <Tag label="Status" value="Avholdt" />
-          <Banner label="Sesongen starter" value="I påsken" />
+          <Banner label="Sesongen starter" value="Tor 1. april" />
         </div>
 
         <div class="hud">
@@ -330,7 +333,9 @@ const progressX = w * 0.58;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 0 var(--gutter) clamp(2.5rem, 7vh, 5rem);
+    gap: var(--s-lg);
+    /* Plass til navigasjonen over, også når menyen brytes til to linjer */
+    padding: calc(var(--header-h) + var(--s-sm)) var(--gutter) clamp(2.5rem, 7vh, 5rem);
     overflow: hidden;
     isolation: isolate;
   }
@@ -363,12 +368,15 @@ const progressX = w * 0.58;
     background: linear-gradient(90deg, var(--red) 0 33.3%, var(--white) 33.3% 66.6%, var(--blue) 66.6%);
   }
 
+  /* Tallpanelene står øverst til høyre i flyten under navigasjonen; i DOM kommer de etter handlingen */
   .hero-stats {
-    position: absolute;
-    top: 6.5rem;
-    right: var(--gutter);
+    order: -1;
+    align-self: flex-end;
     display: flex;
     gap: 6px;
+    margin: 0 0 auto;
+    padding: 0;
+    list-style: none;
   }
 
   .hero-body {
@@ -387,16 +395,26 @@ const progressX = w * 0.58;
     text-wrap: pretty;
   }
 
-  .hero-note {
-    margin-top: 0.75rem;
+  /* Neste trening er en statuslinje, ikke en knapp: egen rad under underteksten */
+  .hero-status {
+    margin-top: var(--s-md);
   }
 
+  /* Forklaringen står foran knappen og er bundet til den med aria-describedby */
   .hero-action {
     display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-    gap: 0.75rem;
-    margin-top: 1.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: var(--s-md);
+  }
+
+  .hero-note {
+    font-size: var(--fs-body-sm);
+    line-height: 1.5;
+    color: var(--soft-on-dark);
+    max-width: 42ch;
+    text-wrap: pretty;
   }
 
   /* «På lufta»: én entré på ca. 1 s ved lasting, bare i heroen.
@@ -412,11 +430,11 @@ const progressX = w * 0.58;
     animation: settle-sm 640ms 60ms var(--ease-out-expo) backwards;
   }
 
-  .hero-action :global(.bk) {
+  .hero-status :global(.bk) {
     animation: wipe-in 400ms 200ms var(--ease-out-expo) backwards;
   }
 
-  .hero-action :global(.bv) {
+  .hero-status :global(.bv) {
     animation: wipe-in 400ms 300ms var(--ease-out-expo) backwards;
   }
 
@@ -466,7 +484,7 @@ const progressX = w * 0.58;
     }
   }
 
-  /* Faller 10px; avstanden til knappen over er minst 20px, så ingenting overlapper */
+  /* Faller 10px; avstanden til det som står over (nav på desktop, knappen på mobil) er minst 16px, så ingenting overlapper */
   @keyframes drop-in {
     from {
       transform: translateY(-10px);
@@ -886,6 +904,7 @@ const progressX = w * 0.58;
 
   @media (max-width: 760px) {
     .hero {
+      gap: 1.25rem;
       padding-top: 6rem;
       padding-bottom: 1.5rem;
     }
@@ -899,21 +918,20 @@ const progressX = w * 0.58;
       font-size: var(--fs-display-sm);
     }
 
-    .hero-action {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.6rem;
-      margin-top: 1.25rem;
+    .hero-status {
+      margin-top: 1rem;
     }
 
-    .hero-action :global(.hero-cta) {
-      width: 100%;
+    .hero-action {
+      align-items: stretch;
+      margin-top: 1rem;
     }
 
     /* Tallpanelene i én kompakt rad under handlingen */
     .hero-stats {
-      position: static;
-      margin-top: 1.25rem;
+      order: 0;
+      align-self: stretch;
+      margin: 0;
     }
 
     .hero-stats :global(.stat) {

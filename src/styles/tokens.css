@@ -63,6 +63,8 @@
   --fs-label: 0.8125rem;
   --fs-nav: 1rem;
   --fs-button: 1.0625rem;
+  /* Hovedhandlingen (Button size="lg") */
+  --fs-button-lg: 1.25rem;
   --fs-lead: 1.125rem;
   --fs-body: 1.0625rem;
   --fs-body-sm: 0.9375rem;
@@ -87,6 +89,8 @@
   --gutter: 2.5rem;
   --container: 1200px;
   --container-narrow: 760px;
+  /* Navigasjonens høyde over heroen. Nav.astro måler den nøyaktig; dette er reserven uten JS. */
+  --header-h: 4.5rem;
 
   /* Bevegelse */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -101,6 +105,13 @@
   /* Dybde */
   --shadow-lift: 0 12px 40px rgba(22, 57, 122, 0.12);
   --shadow-embed: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Menyen brytes til to linjer i dette spennet */
+@media (min-width: 761px) and (max-width: 1000px) {
+  :root {
+    --header-h: 7.75rem;
+  }
 }
 
 @media (max-width: 760px) {

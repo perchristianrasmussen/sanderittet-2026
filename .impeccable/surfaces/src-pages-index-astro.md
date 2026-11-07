@@ -17,7 +17,7 @@ OWN-WORLD: Dagens arenastil fra DESIGN.md: arenamørk og lyse klubbflater, Bebas
 
 STORY: Dette er en ekte rittklubb med egen arena, og barnet mitt kan begynne på mandag. Jeg melder meg på i Spond, og ser deretter løypene og NM-historien.
 
-FIRST VIEWPORT: Fullhøyde hero med treningsbilde under arenagradient. Øverst trefargestripe og nav med rød «Bli med». Nede til venstre Bebas-H1 «Sande Sykkelklubb» med «Sykkel» i rødt, og banneret «Neste trening · man 18:00» med Spond-knapp. Ingen etikett over H1. Øverst til høyre tallpanelene NC 2024, NC 2025 og NM 2026.
+FIRST VIEWPORT: Fullhøyde hero med rittbilde fra klubben under arenagradient. Øverst trefargestripe og nav med hårstrek og rød «Bli med» (til /#bli-med). Nede til venstre Bebas-H1 «Sande Sykkelklubb» med «Sykkel» i rødt, og en undertekst til foreldre (ukentlig trening for barn og ungdom, nybegynnere velkomne, foreldre kan bli med). Under den, på egen linje, statusbanneret (liten størrelse) med neste trening eller første treningsdato utenfor sesong. Så handlingsraden #bli-med: én setning som forklarer Spond, og den store røde Spond-knappen som sidens tyngste røde flate. Ingen etikett over H1. Øverst til høyre, i flyten under navigasjonen, tallpanelene «Arrangør · Norgescup 2024», «Arrangør · Norgescup 2025» og «Arrangør · NM terreng 2026» som liste; på mobil står de som én rad under knappen.
 
 FORM: Videreføring av dagens stil, låst av brukeren (utenfor trekningens liste); seed:9b0f5c1fdd400c0c
 

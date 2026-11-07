@@ -41,13 +41,20 @@ const links: { id: Side; href: string; text: string }[] = [
           <a href={l.href} aria-current={current === l.id ? 'page' : undefined}>{l.text}</a>
         </li>
       ))}
-      <li class="nav-cta-item"><a href="/trening#bli-med" class="nav-cta">Bli med</a></li>
+      <li class="nav-cta-item"><a href="/#bli-med" class="nav-cta">Bli med</a></li>
     </ul>
   </nav>
 </header>
 
 <script>
   for (const header of document.querySelectorAll<HTMLElement>('[data-site-header]')) {
+    // Over hero: heroen holder avstand med --header-h, som måles her når menyen brytes over flere linjer
+    if (header.classList.contains('overlay')) {
+      const malHoyde = () =>
+        document.documentElement.style.setProperty('--header-h', `${header.offsetTop + header.offsetHeight}px`);
+      new ResizeObserver(malHoyde).observe(header);
+    }
+
     const knapp = header.querySelector<HTMLButtonElement>('.nav-toggle');
     const tekst = header.querySelector('[data-nav-toggle-text]');
     if (!knapp || !tekst) continue;
@@ -103,7 +110,8 @@ const links: { id: Side; href: string; text: string }[] = [
     justify-content: space-between;
     gap: 0.5rem 1rem;
     padding: 0.7rem var(--gutter);
-    border-bottom: 2px solid var(--red);
+    /* Hårstrek mot bildet; trefargestripen markerer toppen, så rødt trengs ikke her */
+    border-bottom: 1px solid var(--line-on-dark);
   }
 
   .nav-brand {
@@ -239,7 +247,7 @@ const links: { id: Side; href: string; text: string }[] = [
       gap: 0;
       padding: 0.5rem var(--gutter) var(--s-md);
       background: var(--dark);
-      border-bottom: 2px solid var(--red);
+      border-bottom: 1px solid var(--line-on-dark-strong);
     }
 
     [data-open] .nav-menu {
