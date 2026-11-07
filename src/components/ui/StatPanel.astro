@@ -10,10 +10,12 @@ interface Props {
 }
 
 const { label, value, unit, tone = 'glass', size = 'md', as: Tag = 'div' } = Astro.props;
+// Midtpunktet mellom etikettdeler får egen avstand, så det ikke leses som bindestrek
+const parts = label.split(' · ');
 ---
 
 <Tag class:list={['stat', `stat-${tone}`, `stat-${size}`]}>
-  <div class="k">{label}</div>
+  <div class="k">{parts.map((p, i) => <>{i > 0 && <>{' '}<span class="sep">·</span>{' '}</>}{p}</>)}</div>
   <div class="v">{value}{unit && <small>{unit}</small>}</div>
 </Tag>
 

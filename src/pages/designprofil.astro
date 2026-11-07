@@ -112,7 +112,7 @@ const progressX = w * 0.58;
                   <li>
                     <span class="chip" style={`background:${c.hex}`}></span>
                     <strong>{c.name}</strong>
-                    <span class="num meta">--{c.token} · {c.hex}</span>
+                    <span class="meta"><code class="token">--{c.token}</code> <span class="sep">·</span> <span class="num">{c.hex}</span></span>
                     {c.role && <span class="meta">{c.role}</span>}
                   </li>
                 ))}
@@ -129,35 +129,35 @@ const progressX = w * 0.58;
         <AccentBar />
         <div class="type-grid">
           <div class="type-row">
-            <span class="label">Display · Bebas Neue</span>
+            <span class="label">Display <span class="sep">·</span> Bebas Neue</span>
             <p class="display type-display">Lersbrygga</p>
           </div>
           <div class="type-row">
-            <span class="label">Headline · Bebas Neue</span>
+            <span class="label">Headline <span class="sep">·</span> Bebas Neue</span>
             <p class="headline">Faste <span class="hl">treninger</span></p>
           </div>
           <div class="type-row">
-            <span class="label">Title · Bebas Neue</span>
+            <span class="label">Title <span class="sep">·</span> Bebas Neue</span>
             <p class="title">Rundbane XCO</p>
           </div>
           <div class="type-row">
-            <span class="label">Stat · Barlow Condensed 700</span>
+            <span class="label">Stat <span class="sep">·</span> Barlow Condensed 700</span>
             <p class="num type-stat">18:00 <small>MAN</small></p>
           </div>
           <div class="type-row">
-            <span class="label">Banner · Barlow Condensed 800 kursiv</span>
+            <span class="label">Banner <span class="sep">·</span> Barlow Condensed 800 kursiv</span>
             <p class="type-banner">Trening i dag</p>
           </div>
           <div class="type-row">
-            <span class="label">Label · Barlow Condensed 600</span>
-            <p class="label">Lersbrygga · Mandag &amp; torsdag</p>
+            <span class="label">Label <span class="sep">·</span> Barlow Condensed 600</span>
+            <p class="label">Lersbrygga <span class="sep">·</span> Mandag &amp; torsdag</p>
           </div>
           <div class="type-row">
-            <span class="label">Lead · Barlow 400</span>
+            <span class="label">Lead <span class="sep">·</span> Barlow 400</span>
             <p class="lead">Sande Sykkelklubb har faste treninger for alle aldre fra påske til høstferie.</p>
           </div>
           <div class="type-row">
-            <span class="label">Body · Barlow 400</span>
+            <span class="label">Body <span class="sep">·</span> Barlow 400</span>
             <p class="body-sample">Opp til 10 år trener mandager kl. 18:00–19:00, over 10 år kl. 18:00–19:30. Teknikk og moro i terrenget – foreldre er velkomne til å bli med. Påmelding og informasjon deles i Spond.</p>
           </div>
         </div>
@@ -190,7 +190,7 @@ const progressX = w * 0.58;
         <div class="demo-grid">
           <article class="card">
             <div class="card-day title">Man</div>
-            <p class="label">Mandager · påske–høstferie</p>
+            <p class="label">Mandager <span class="sep">·</span> påske–høstferie</p>
             <h3 class="card-h">Trening for alle aldre</h3>
             <p class="card-p">Opp til 10 år kl. 18:00–19:00. Over 10 år kl. 18:00–19:30.</p>
           </article>
@@ -215,7 +215,7 @@ const progressX = w * 0.58;
         <div class="motion-grid">
           <a href="#" class="card card-link">
             <div class="card-day title">Løyper</div>
-            <p class="label">Lersbrygga · XCO og XCC</p>
+            <p class="label">Lersbrygga <span class="sep">·</span> XCO og XCC</p>
             <p class="card-h">Se løypene <Icon name="arrow-right" size={18} /></p>
           </a>
           <a href="#" class="photo-frame motion-photo">
@@ -256,7 +256,7 @@ const progressX = w * 0.58;
           </div>
           <div class="hud-controls">
             <button type="button"><Icon name="play" size={16} /> Spill av</button>
-            <button type="button" aria-pressed="false" data-toggle>1×</button>
+            <button type="button" aria-pressed="false" data-toggle aria-label="Hastighet 1×">1×</button>
             <button type="button" aria-pressed="true" data-toggle>Topo</button>
           </div>
           <div class="profile">
@@ -309,7 +309,7 @@ const progressX = w * 0.58;
     <div class="container footer-inner">
       <div>
         <p class="footer-brand">Sande <b>Sykkel</b>klubb</p>
-        <p class="label">Lersbrygga · 3070 Sande i Vestfold</p>
+        <p class="label">Lersbrygga <span class="sep">·</span> 3070 Sande i Vestfold</p>
       </div>
       <p class="label">En del av <a href="https://sandesk.no/grupper/sykkel/">Sande Sportsklubb</a></p>
     </div>
@@ -534,6 +534,14 @@ const progressX = w * 0.58;
   .meta {
     font-size: var(--fs-meta);
     color: var(--muted);
+  }
+
+  /* Tokennavn er kode: Barlow Condensed slår «--» sammen til én lang strek */
+  .token {
+    font-family: ui-monospace, monospace;
+    font-size: 0.92em;
+    font-variant-ligatures: none;
+    font-feature-settings: 'liga' 0, 'dlig' 0;
   }
 
   /* Typografi */
@@ -898,8 +906,9 @@ const progressX = w * 0.58;
     color: var(--white);
   }
 
+  /* Hvit også ved hover; den delte streken tegnes inn (red-light gir 4,2:1 på dark) */
   .footer a:hover {
-    color: var(--red-light);
+    color: var(--white);
   }
 
   @media (max-width: 760px) {
@@ -964,13 +973,21 @@ const progressX = w * 0.58;
       grid-template-columns: 1fr;
     }
 
+    /* Tre like kolonner med små tall, så enheten aldri klippes */
     .hud-stats {
       width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .hud-stats :global(.stat) {
-      flex: 1;
       min-width: 0;
+      padding: 10px 10px 9px;
+    }
+
+    .hud-stats :global(.v) {
+      font-size: var(--fs-stat-sm);
+      white-space: nowrap;
     }
 
     .hud-note {

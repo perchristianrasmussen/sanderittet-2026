@@ -56,7 +56,7 @@ a {
   transition: color var(--t-fast);
 }
 
-/* Klokkeslett og datoer står alltid med tabulære sifre */
+/* Klokkeslett og datoer stÃ¥r alltid med tabulÃ¦re sifre */
 time {
   font-variant-numeric: tabular-nums;
 }
@@ -65,8 +65,8 @@ a:hover {
   color: var(--red);
 }
 
-/* Tekstlenker: hårstrek i ro, og en full strek som tegnes fra venstre ved hover.
-   Gjelder lenker uten klasse (brødtekst) og .link. */
+/* Tekstlenker: hÃ¥rstrek i ro, og en full strek som tegnes fra venstre ved hover.
+   Gjelder lenker uten klasse (brÃ¸dtekst) og .link. */
 :where(a:not([class]), .link) {
   text-decoration: none;
   background-image:
@@ -90,7 +90,7 @@ a:hover {
     100% 1px;
 }
 
-/* Klikkbare kort: flate i ro, løft og skygge ved hover, trykkes ned ved klikk */
+/* Klikkbare kort: flate i ro, lÃ¸ft og skygge ved hover, trykkes ned ved klikk */
 .card-link {
   display: block;
   color: inherit;
@@ -141,7 +141,7 @@ a:is(:hover, :focus-visible) .photo-frame img {
   outline-color: var(--white);
 }
 
-/* Hopp til innhold: skjult til den får fokus */
+/* Hopp til innhold: skjult til den fÃ¥r fokus */
 .skip-link {
   position: absolute;
   top: var(--s-xs);
@@ -252,6 +252,27 @@ a:is(:hover, :focus-visible) .photo-frame img {
   color: var(--muted-on-dark);
 }
 
+/* Midtpunkt mellom etikettdeler: tegnes som en rund prikk, sÃ¥ det ikke leses som bindestrek.
+   Tegnet stÃ¥r igjen i teksten for skjermlesere og kopiering. */
+.sep {
+  display: inline-block;
+  width: 0.28em;
+  height: 0.28em;
+  margin-inline: 0.05em;
+  border-radius: 50%;
+  background: currentColor;
+  overflow: hidden;
+  text-indent: 1em;
+  white-space: nowrap;
+  vertical-align: 0.2em;
+  letter-spacing: 0;
+}
+
+/* I sperret tekst fÃ¥r ordet foran sperring etter seg; samme luft etter punktet */
+:is(.label, .stat) .sep {
+  margin-right: var(--track-tag);
+}
+
 .num {
   font-family: var(--font-cond);
   font-variant-numeric: tabular-nums;
@@ -275,7 +296,7 @@ a:is(:hover, :focus-visible) .photo-frame img {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
-    /* Uten forsinkelse blir ikke startstillingen stående mens den venter */
+    /* Uten forsinkelse blir ikke startstillingen stÃ¥ende mens den venter */
     animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

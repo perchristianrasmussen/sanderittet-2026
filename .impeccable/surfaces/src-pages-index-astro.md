@@ -5,6 +5,13 @@ primary_target: "src/pages/index.astro"
 related_targets: []
 ---
 
+---
+version: 1
+slug: "src-pages-index-astro"
+primary_target: "src/pages/index.astro"
+related_targets: []
+---
+
 # Forsiden (sandesykkel.no /)
 
 Modus: Persuade. Primærbruker: nye familier som vurderer trening. Handling: bli med i Spond-gruppa / komme på mandagstrening. Bevis: egne bilder, Norgescup 2024/2025, NM 2026, egne løyper på Lersbrygga. Ikke: barnslig, mørk og aggressiv, korporativ eller mal-aktig.
@@ -24,5 +31,5 @@ FORM: Videreføring av dagens stil, låst av brukeren (utenfor trekningens liste
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
 ## Uavklart
-- Om «neste trening» skal regnes ut fra treningsplanen (sesong påske–høstferie) eller settes manuelt.
-- Hvilket bilde som blir hero (kandidater: legacy/img/trening.jpg, hero.jpg).
+- Datoene for høstferien hvert år må bekreftes av klubben (sesongslutt i src/data/trening.ts).
+- Første trening etter påske må bekreftes av klubben.
