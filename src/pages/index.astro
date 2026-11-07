@@ -17,6 +17,7 @@ import ungRytter from '../assets/img/ung-rytter.jpg';
 import startstrek from '../assets/img/startstrek.jpg';
 import norgescupPremie from '../assets/img/norgescup-premie.jpg';
 import rytterFart from '../assets/img/rytter-fart.jpg';
+import xcoKart from '../assets/img/xco-loypekart.png';
 
 // Treningstidene kommer fra treningsplanen, så forsiden og banneret alltid sier det samme
 const dager = ['', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'];
@@ -90,14 +91,28 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
       <div class="container">
         <h2 id="finn-frem-tittel" class="headline">Finn frem til <span class="hl">Lersbrygga</span></h2>
         <AccentBar />
-        <p class="lead">Treningene og rittene våre holder til på {adresse.navn}, der klubben har egne løyper. Kartet viser løypetraséer, arena, parkering og fasiliteter.</p>
+        <p class="lead">Treningene og rittene våre holder til på {adresse.navn}, der klubben har egne løyper i skogen rundt arenaen. Parkering og fasiliteter står i arenakartet i Google Maps.</p>
 
         <div class="kart-grid">
           <div class="kart">
-            <div class="kart-ramme">
-              <iframe src={arenakart.embed} title="Interaktivt kart over Lersbrygga med løyper, parkering og fasiliteter" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <!-- Kartmodul: klubbens eget løypekart med etikettfelt, tittel og forklaring som HUD -->
+            <div class="kartmodul">
+              <Image src={xcoKart} alt="Tegnet kart over Lersbrygga med rundbaneløypene i skogen rundt friidrettsbanen og idrettshallen" class="kart-bilde" widths={[700, 1100, 1600]} sizes="(max-width: 1000px) 100vw, 800px" />
+              <div class="kart-hud">
+                <Tag label="XCO" value="Lersbrygga" />
+                <p class="title kart-tittel">Rundbane</p>
+              </div>
+              <ul class="kart-forklaring" aria-label="Løypene i kartet">
+                <li style="--linje: var(--route-start)">Startloop</li>
+                <li style="--linje: var(--route-green)">XCO 6–9 år</li>
+                <li style="--linje: var(--route-blue)">XCO 10–12 år</li>
+                <li style="--linje: var(--route-red)">XCO 13+</li>
+              </ul>
             </div>
-            <a href={arenakart.apne} class="link kart-lenke" target="_blank" rel="noopener">Åpne i Google Maps<span class="visually-hidden"> (åpnes i ny fane)</span> <Icon name="external-link" size={16} /></a>
+            <p class="kart-lenker">
+              <a href={arenakart.apne} class="link kart-lenke" target="_blank" rel="noopener">Åpne i Google Maps<span class="visually-hidden"> (åpnes i ny fane)</span> <Icon name="external-link" size={16} /></a>
+              <a href="/loyper" class="link kart-lenke">Se løypene <Icon name="arrow-right" size={16} /></a>
+            </p>
           </div>
 
           <div class="kart-info">
@@ -107,7 +122,7 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
             </div>
             <div class="info-card">
               <h3 class="label">Parkering</h3>
-              <p>Parkering ved idrettsanlegget. Se kartet for detaljer.</p>
+              <p>Parkering ved idrettsanlegget. Arenakartet i Google Maps viser hvor.</p>
             </div>
             <div class="info-card">
               <h3 class="label">Løyper</h3>
@@ -116,7 +131,6 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
                 <Tag label="XCC" value={`${antall('XCC')} løyper`} />
               </p>
               <p>Rundbane og kortbane i flere lengder, med løypekart og GPX.</p>
-              <a href="/loyper" class="link info-lenke">Se løypene <Icon name="arrow-right" size={16} /></a>
             </div>
           </div>
         </div>
@@ -193,8 +207,8 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
           <ul class="sponsorer">
             {sponsorer.map((s) => (
               <li>
-                <a href={s.url} class={`card-link sponsor sponsor-${s.form}`} target="_blank" rel="noopener">
-                  <Image src={s.logo} alt={s.navn} width={s.form === 'bred' ? 360 : 200} />
+                <a href={s.url} class={`card-link sponsor sponsor-${s.form}`} style={{ '--skala': s.skala ?? 1, background: s.bakgrunn }} target="_blank" rel="noopener">
+                  <Image src={s.logo} alt={s.navn} width={s.form === 'bred' ? 400 : 240} />
                   <span class="visually-hidden"> (åpnes i ny fane)</span>
                 </a>
               </li>
@@ -355,7 +369,9 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
     align-items: start;
   }
 
-  .kart-ramme {
+  /* Kartmodul: natt-ramme med 6px radius, HUD-en ligger oppå bildet */
+  .kartmodul {
+    position: relative;
     overflow: hidden;
     border-radius: var(--r-lg);
     border: 1.5px solid var(--line-on-dark);
@@ -363,11 +379,72 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
     background: var(--night);
   }
 
-  .kart-ramme iframe {
-    display: block;
+  .kartmodul :global(.kart-bilde) {
     width: 100%;
-    height: 480px;
-    border: 0;
+    height: auto;
+  }
+
+  /* Mørk skygge øverst til venstre, så tittelen står mot det lyse kartet */
+  .kartmodul::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 55% 60% at 0% 0%, rgba(7, 9, 13, 0.72), transparent 75%);
+    pointer-events: none;
+  }
+
+  .kart-hud {
+    position: absolute;
+    top: var(--s-sm);
+    left: var(--s-sm);
+    display: grid;
+    justify-items: start;
+    gap: 0.4rem;
+  }
+
+  .kart-tittel {
+    color: var(--white);
+    text-shadow: 0 6px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .kart-forklaring {
+    position: absolute;
+    left: var(--s-sm);
+    bottom: var(--s-sm);
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 10px 14px;
+    list-style: none;
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    font-family: var(--font-cond);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .kart-forklaring li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .kart-forklaring li::before {
+    content: '';
+    width: 22px;
+    height: 3px;
+    background: var(--linje);
+  }
+
+  .kart-lenker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-md);
+    margin-top: var(--s-xs);
   }
 
   .kart-lenke {
@@ -375,7 +452,6 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
     align-items: center;
     gap: 0.35rem;
     min-height: 44px;
-    margin-top: var(--s-xs);
     font-weight: 600;
     color: var(--white);
   }
@@ -396,16 +472,6 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
 
   .info-card p {
     color: var(--soft-on-dark);
-  }
-
-  .info-lenke {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    justify-self: start;
-    min-height: 44px;
-    font-weight: 600;
-    color: var(--white);
   }
 
   /* Sanderittet */
@@ -509,29 +575,28 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
     list-style: none;
   }
 
+  /* Grunnhøyde per form ganges med logoens skala (sponsorer.ts), så flisene veier likt */
   .sponsor {
+    --logo-h: 4.5rem;
     display: grid;
     place-items: center;
-    height: 8rem;
-    padding: var(--s-md);
+    height: 8.5rem;
+    padding: var(--s-sm);
     background: var(--white);
     border: 1.5px solid var(--line);
     border-radius: var(--r-md);
+  }
+
+  .sponsor-bred {
+    --logo-h: 2.75rem;
   }
 
   .sponsor :global(img) {
     width: auto;
     height: auto;
     max-width: 100%;
+    max-height: calc(var(--logo-h) * var(--skala, 1));
     object-fit: contain;
-  }
-
-  .sponsor-kvadrat :global(img) {
-    max-height: 5rem;
-  }
-
-  .sponsor-bred :global(img) {
-    max-height: 3rem;
   }
 
   .sponsor-bunn {
@@ -624,8 +689,17 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
       flex-basis: 100%;
     }
 
-    .kart-ramme iframe {
-      height: 360px;
+    /* Smalt kart: forklaringen står under bildet i rammen, så løypene ikke dekkes */
+    .kart-hud {
+      top: var(--s-xs);
+      left: var(--s-xs);
+    }
+
+    .kart-forklaring {
+      position: static;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.4rem var(--s-sm);
+      backdrop-filter: none;
     }
 
     .tidslinje li {
@@ -647,8 +721,13 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
     }
 
     .sponsor {
-      height: 6.5rem;
-      padding: var(--s-sm);
+      --logo-h: 3.25rem;
+      height: 7rem;
+      padding: var(--s-sm) var(--s-xs);
+    }
+
+    .sponsor-bred {
+      --logo-h: 2rem;
     }
 
     .panel-blue {

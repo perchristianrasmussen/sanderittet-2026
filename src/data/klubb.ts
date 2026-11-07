@@ -10,9 +10,8 @@ export const adresse = {
   poststed: '3070 Sande i Vestfold',
 };
 
-// Arenakartet i Google My Maps (løyper, parkering og fasiliteter)
+// Arenakartet i Google My Maps (løyper, parkering og fasiliteter). Lenkes, bygges ikke inn.
 export const arenakart = {
-  embed: 'https://www.google.com/maps/d/embed?mid=1datrdzmdxW2jajR8Jm-aCLSSoBuVZIQ&ll=59.56487205617529%2C10.255352623532689&z=16',
   apne: 'https://www.google.com/maps/d/viewer?mid=1datrdzmdxW2jajR8Jm-aCLSSoBuVZIQ&ll=59.56487205617529%2C10.255352623532689&z=17',
 };
 

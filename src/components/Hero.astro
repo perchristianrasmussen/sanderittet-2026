@@ -44,7 +44,7 @@ const { merInfo } = Astro.props;
     <!-- På mobil står «Arrangør» én gang over raden i stedet for i hvert panel -->
     <p class="label hero-stats-cap" aria-hidden="true">Arrangør på Lersbrygga</p>
     <ul aria-label="Arrangementer på Lersbrygga">
-      {arrangementer.map((a) => <StatPanel as="li" label={`Arrangør · ${a.navn}`} value={a.ar} size="sm" />)}
+      {arrangementer.map((a) => <StatPanel as="li" label={`Arrangør · ${a.navn}`} value={a.ar} size="xs" />)}
     </ul>
   </div>
 </section>
@@ -284,8 +284,12 @@ const { merInfo } = Astro.props;
       object-position: 55% 50%;
     }
 
+    /* Radial skygge bak tittelen, så det røde ordet holder en hard kant mot det røde ermet.
+       Innholdet står nederst, så skyggen måles fra bunnen. */
     .hero-scrim {
-      background: linear-gradient(180deg, transparent 25%, rgba(13, 24, 36, 0.55) 55%, rgba(13, 24, 36, 0.7));
+      background:
+        radial-gradient(ellipse 110% 200px at 30% calc(100% - 570px), rgba(13, 24, 36, 0.8), rgba(13, 24, 36, 0.5) 60%, transparent 100%),
+        linear-gradient(180deg, transparent 25%, rgba(13, 24, 36, 0.55) 55%, rgba(13, 24, 36, 0.7));
     }
 
     .h1-b {

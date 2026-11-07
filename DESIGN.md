@@ -67,6 +67,12 @@ typography:
     fontWeight: 700
     lineHeight: 1
     fontFeature: "'tnum'"
+  stat-xs:
+    fontFamily: "'Barlow Condensed', 'Arial Narrow', sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 600
+    lineHeight: 1
+    fontFeature: "'tnum'"
   banner:
     fontFamily: "'Barlow Condensed', 'Arial Narrow', sans-serif"
     fontSize: "1.875rem"
@@ -339,8 +345,8 @@ Fontene serveres fra prosjektet med `@font-face` og lastes ikke fra Google Fonts
 - **Sub**: undertekst rett under hero-H1.
 - **Headline**: H2 på seksjoner.
 - **Title**: korttitler, sideheadere på smale sider og karttitler.
-- **Stat / Stat-sm**: tall i tallpaneler (lengde, høydemeter, årstall, tider), alltid med tabulære sifre og enhet i liten, dempet vekt.
-- **Banner / Banner-sm / Banner-value**: nøkkelen i bannere i kursiv 800 (Banner-sm under 760px), og verdien i 600 med tabulære sifre. Verdien er mindre enn nøkkelen på desktop og blir `body`-størrelse under 760px.
+- **Stat / Stat-sm / Stat-xs**: tall i tallpaneler (lengde, høydemeter, årstall, tider), alltid med tabulære sifre og enhet i liten, dempet vekt. Stat-xs (600) er bare heroens arrangørpaneler, så de veier mindre enn bannerverdien.
+- **Banner / Banner-sm / Banner-value**: nøkkelen i bannere i kursiv 800 (Banner-sm under 760px), og verdien i 600 med tabulære sifre. Verdien er mindre enn nøkkelen i `md`. I `sm` krymper bare nøkkelen; verdien beholder `banner-value` fra 761px, så neste trening er det første og største tallet i heroen (større enn `stat-xs` i arrangørpanelene). Under 760px blir verdien `body`-størrelse.
 - **Tag / Label**: etikettfelt, seksjonsetiketter, metadata som tider og steder, og skjemalabels. Alltid versaler med sperring 0.16em.
 - **Nav / Menu / Button**: versaler i Barlow Condensed. Menu er radene i mobilmenyen.
 - **Brand**: ordmerket i nav og footer.
@@ -357,7 +363,7 @@ Fontene serveres fra prosjektet med `@font-face` og lastes ikke fra Google Fonts
 - **Seksjonsrytme:** 6rem vertikalt på desktop og 4rem på mobil. Det er mer luft over en overskrift enn under.
 - **Lys/mørk-veksling:** seksjonene bytter mellom mørk (`dark`) og lys (white / off-white / blue-pale). To like flater skal ikke ligge etter hverandre.
 - **Seksjonsstart:** Bebas-H2 med rødt ord → skråstilt aksentstrek → ingress. Ingen dekorativ etikett over titler.
-- **Hero:** komponenten `Hero.astro`, brukt både på forsiden og på /designprofil. Fullhøyde, foto fra klubben under arenagradient, trefargestripe øverst og innholdet nederst til venstre i rekkefølgen H1 (alltid «Sande» / «Sykkelklubb» på to linjer fra 761px), undertekst til foreldre, statusbanneret på egen linje (`size="sm"`) og handlingsraden `#bli-med`: en kort tekst i `body-sm` og `soft-on-dark` som forklarer Spond («Første gang kan dere bare møte opp. Vil dere fortsette, skjer påmelding og beskjeder i Spond-appen. Knappen åpner gruppa vår.»), bundet til knappen med `aria-describedby`, og så Spond-knappen i `size="lg"`. På forsiden står en tekstlenke «Tider, alder og utstyr ↓» til `#trening` ved siden av knappen. Bildet er bredere enn heroen (118 %, 145 % mellom 761 og 1100px) og forankret til venstre, så rytteren står til høyre for tekstkolonnen, og en lokal skygge (`dark`, radial fra nede til venstre) ligger bak teksten så H1 og det røde ordet holder kontrast. Knappen er den tyngste røde flaten i første skjermbilde; banneret står aldri ved siden av den. Tallpanelene står som en liste (`<ul aria-label="Arrangementer på Lersbrygga">`) øverst til høyre på desktop, i flyten under navigasjonen: heroen har `padding-top: calc(var(--header-h) + var(--s-sm))`, og `Nav.astro` måler `--header-h` når menyen brytes over to linjer. Ingen absolutt plassering. På mobil er rekkefølgen H1, undertekst, banner, Spond-linjen, Spond-knappen i full bredde og så tallpanelene som én kompakt rad nederst, slik at knappen alltid er i første skjermbilde. Der står «Arrangør på Lersbrygga» én gang over raden, og panelene viser bare arrangementet (for skjermlesere står «Arrangør» fortsatt i hvert panel).
+- **Hero:** komponenten `Hero.astro`, brukt både på forsiden og på /designprofil. Fullhøyde, foto fra klubben under arenagradient, trefargestripe øverst og innholdet nederst til venstre i rekkefølgen H1 (alltid «Sande» / «Sykkelklubb» på to linjer fra 761px), undertekst til foreldre, statusbanneret på egen linje (`size="sm"`) og handlingsraden `#bli-med`: en kort tekst i `body-sm` og `soft-on-dark` som forklarer Spond («Første gang kan dere bare møte opp. Vil dere fortsette, skjer påmelding og beskjeder i Spond-appen. Knappen åpner gruppa vår.»), bundet til knappen med `aria-describedby`, og så Spond-knappen i `size="lg"`. På forsiden står en tekstlenke «Tider, alder og utstyr» med `arrow-down`-ikonet til `#trening` ved siden av knappen. Bildet er bredere enn heroen (118 %, 145 % mellom 761 og 1100px) og forankret til venstre, så rytteren står til høyre for tekstkolonnen, og en lokal skygge (`dark`, radial fra nede til venstre) ligger bak teksten så H1 og det røde ordet holder kontrast. Under 760px står rytteren midt i bildet, og skyggen er en radial flekk bak tittelen, målt fra bunnen av heroen, så det røde ordet holder en hard kant mot rytterens røde erme. Knappen er den tyngste røde flaten i første skjermbilde; banneret står aldri ved siden av den. Tallpanelene (`size="xs"`) står som en liste (`<ul aria-label="Arrangementer på Lersbrygga">`) øverst til høyre på desktop, i flyten under navigasjonen: heroen har `padding-top: calc(var(--header-h) + var(--s-sm))`, og `Nav.astro` måler `--header-h` når menyen brytes over to linjer. Ingen absolutt plassering. På mobil er rekkefølgen H1, undertekst, banner, Spond-linjen, Spond-knappen i full bredde og så tallpanelene som én kompakt rad nederst, slik at knappen alltid er i første skjermbilde. Der står «Arrangør på Lersbrygga» én gang over raden, og panelene viser bare arrangementet (for skjermlesere står «Arrangør» fortsatt i hvert panel).
 - **Kart og presentasjon:** kartmoduler kan gå i full bredde. Grafikk (tittel, tallpaneler, høydeprofil) ligger som HUD over kartet.
 - **Breakpoint:** 760px. Under det stables gridder til én kolonne, tallpaneler brytes til en rad som kan rulles sideveis eller krympes, og navigasjonen blir en hamburgermeny.
 
@@ -396,13 +402,13 @@ To felt kant i kant: nøkkel i `red` med hvit tekst og verdi i hvitt med `night`
 ### Banner
 Nøkkel i `red` (kursiv 800) og verdi i `panel`, kant i kant. Brukes til status og kunngjøringer. Hero-banneret følger yngste gruppe og har gruppa bak verdien, så det aldri er tvil om hvem tiden gjelder: «Trening i dag · 18:00 · opptil 10 år», «Neste trening · Man 18:00 · opptil 10 år» eller utenfor sesong «Sesongen starter · Man 5. april · opptil 10 år» (første trening for gruppa regnet ut fra treningsplanen, i `<time datetime>`). Nøkkelen er alltid uten gruppe, så den holder seg kort; blir raden for smal, brytes verdien under nøkkelen som én blokk. Feltene viskes inn fra venstre (se Bevegelse).
 
-**Regelen om status, ikke kontroll.** Banneret er en avlesning og skal aldri se ut som noe man kan trykke på: ingen lenke, ingen peker (`cursor: default`), ingen hover og aldri på samme rad som en knapp. Ved siden av en hovedhandling brukes `size="sm"` (nøkkel i `banner-sm`, verdi i `body`), så knappen er det tyngste røde.
+**Regelen om status, ikke kontroll.** Banneret er en avlesning og skal aldri se ut som noe man kan trykke på: ingen lenke, ingen peker (`cursor: default`), ingen hover og aldri på samme rad som en knapp. Ved siden av en hovedhandling brukes `size="sm"` (nøkkel i `banner-sm`, verdien i `banner-value` fra 761px og `body` under), så knappen er det tyngste røde mens tallet fortsatt leses først.
 
 ### Høydeprofil
 Et panel i `panel` med 3px rød topplinje, likt tallpanelene, og etiketten «HØYDEPROFIL». Profilen er en hvit, gjennomsiktig flate, og fremdriften er rød med en gradient, km-merker i `label` og min/maks i meter. Den brukes i løypepresentasjoner og på løypesidene.
 
 ### Buttons
-- **Primary:** `red`, hvit tekst, `button`-typografi i versaler, 2px radius, minst 48px høy. Hover gir `red-dark` og `translateY(-2px)`, klikk `scale(.98)`; `red-light` brukes ikke bak hvit tekst (4,2:1). Pil-glyf for retning (`→` ny side, `↓` hopp ned, `↗` ekstern). Lenker som åpnes i ny fane har skjult tekst «(åpnes i ny fane)».
+- **Primary:** `red`, hvit tekst, `button`-typografi i versaler, 2px radius, minst 48px høy. Hover gir `red-dark` og `translateY(-2px)`, klikk `scale(.98)`; `red-light` brukes ikke bak hvit tekst (4,2:1). Retning vises med SVG-ikoner fra ikonsettet (`Icon.astro`), aldri med tegn: `arrow-right` til en ny side, `arrow-down` for å hoppe ned på siden og `external-link` for eksterne lenker (settes automatisk av `external` på `Button`). Tekstlenker bruker de samme ikonene i 16–18px. Lenker som åpnes i ny fane har skjult tekst «(åpnes i ny fane)».
 - **Stor (`size="lg"`):** sidens hovedhandling, i dag Spond-knappen i heroen. `button-lg` (1.25rem), minst 56px høy og padding 1.1rem 2.25rem. Én per skjermbilde. Full bredde under 760px.
 - **Outline:** transparent med `1.5px` `line-on-dark-strong`-kant på mørkt, eller `blue` på lyst.
 - **HUD-kontroll:** `panel`-glass, 1px `line-on-dark-strong`, Barlow Condensed versaler, 0 radius og minst 44×44px (spill av, hastighet, kartlag). Brytere har `aria-pressed`; aktiv bryter er hvit med `night`-tekst og 3px rød bunnlinje.
@@ -429,6 +435,11 @@ Et konsekvent linjeikonsett med 1.75px strek i `currentColor`, servert som inlin
 ### Kartmodul (signatur)
 MapLibre over `night`, med flyfoto eller Kartverket topo og 3D-terreng. HUD-en ligger oppå: etikettfelt og Bebas-tittel øverst til venstre, tallpaneler øverst til høyre, høydeprofil nederst og HUD-kontroller over profilen. Løypa tegnes med mørk kant, en hvit stiplet «spøkelseslinje» for gjenstående og rød fremdrift med glød. Startpinner er hvite etiketter på en tynn stang.
 
+**Statisk kartplate (forsiden).** Der et levende kart ikke trengs, står klubbens eget løypekart (`xco-loypekart.png`) som bilde i samme ramme: `night`, 6px radius, `line-on-dark`-kant og kartmodul-skygge. Etikettfelt («XCO | Lersbrygga») og Bebas-tittel ligger øverst til venstre over en mørk radial skygge, og forklaringen med løypefargene står i `panel`-glass nede til venstre (under bildet i rammen på mobil). Lenkene «Åpne i Google Maps» og «Se løypene» står som tekstlenker under rammen. Ingen innebygde tredjepartskart (iframe) med fremmede steder og ruter.
+
+### Sponsorfliser
+Hvite fliser med 4px radius og svak kant, én logo per flis, lenket til sponsoren med hover-løft. Logoene veies optisk i `src/data/sponsorer.ts`: hver har en form (`bred` eller `kvadrat`) som gir grunnhøyden, og en `skala` som justerer for luft i filen og tynne streker, så flisene leses som likeverdige. Sponsorlogo kan ha egen bakgrunn når logoen krever det (`bakgrunn`), f.eks. Kjeldaas, som er lys og står på sin egen røde bunn `#b32013` slik som på klubbens gamle sponsorside. Det er sponsorens farge og ikke klubbens røde signal, og den brukes bare på flisen til den logoen.
+
 ### Footer
 Komponenten `Footer.astro`. `dark` med 3px rød topplinje. Samme ordmerke som i navigasjonen. Metadata står i `label` i dempet hvit. Lenker er hvite med den delte lenkestreken, som tegnes inn ved hover; de blir ikke røde, fordi `red-light` på `dark` gir bare 4,2:1. Lenke til Sande Sportsklubb er alltid med.
 
@@ -445,7 +456,7 @@ Komponenten `Footer.astro`. `dark` med 3px rød topplinje. Samme ordmerke som i 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** bruk tokens fra den felles stilfilen, og aldri hardkodede hex-verdier.
+- **Do** bruk tokens fra den felles stilfilen, og aldri hardkodede hex-verdier. Eneste unntak er en sponsors egen bakgrunnsfarge bak logoen (se Sponsorfliser).
 - **Do** veksle mellom mørke og lyse seksjoner.
 - **Do** sett alle viktige tall i tallpaneler eller i Barlow Condensed med tabulære sifre og dempet enhet.
 - **Do** åpne seksjoner med Bebas-tittel og skråstilt aksentstrek, både på mørkt og lyst.

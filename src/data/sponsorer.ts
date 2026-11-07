@@ -14,16 +14,21 @@ export interface Sponsor {
   logo: ImageMetadata;
   /** Brede logoer får lavere høyde enn kvadratiske, så de veier likt. */
   form: 'bred' | 'kvadrat';
+  /** Optisk justering av høyden (1 = grunnhøyden for formen). Luft i filen og tynne streker veies opp her. */
+  skala?: number;
+  /** Egen bakgrunn når logoen krever det, f.eks. lys logo som forsvinner på hvitt. */
+  bakgrunn?: string;
 }
 
 // Rekkefølge og lenker fra legacy/sponsorer.html (sponsorer 2026)
 export const sponsorer: Sponsor[] = [
-  { navn: 'Gastromat', url: 'https://gastromat.no', logo: gastromat, form: 'kvadrat' },
-  { navn: 'BD Samferdsel', url: 'https://www.bdsamferdsel.no', logo: bdSamferdsel, form: 'kvadrat' },
-  { navn: 'Berg-Hansen', url: 'https://www.berg-hansen.no', logo: bergHansen, form: 'bred' },
-  { navn: 'Sande Dyreklinikk', url: 'https://www.sandedyreklinikk.no', logo: sandeDyreklinikk, form: 'bred' },
-  { navn: 'GK', url: 'https://www.gk.no', logo: gk, form: 'kvadrat' },
-  { navn: 'Rolls Sykkel', url: 'https://www.rolls-sykkelservice.no', logo: rollsSykkel, form: 'kvadrat' },
-  { navn: 'Kjeldaas', url: 'https://kjeldaas-as.no', logo: kjeldaas, form: 'bred' },
-  { navn: 'OneMed', url: 'https://www.onemed.com/no', logo: onemed, form: 'bred' },
+  { navn: 'Gastromat', url: 'https://gastromat.no', logo: gastromat, form: 'kvadrat', skala: 1.3 },
+  { navn: 'BD Samferdsel', url: 'https://www.bdsamferdsel.no', logo: bdSamferdsel, form: 'kvadrat', skala: 1.1 },
+  { navn: 'Berg-Hansen', url: 'https://www.berg-hansen.no', logo: bergHansen, form: 'bred', skala: 0.9 },
+  { navn: 'Sande Dyreklinikk', url: 'https://www.sandedyreklinikk.no', logo: sandeDyreklinikk, form: 'bred', skala: 1.5 },
+  { navn: 'GK', url: 'https://www.gk.no', logo: gk, form: 'kvadrat', skala: 1.35 },
+  { navn: 'Rolls Sykkel', url: 'https://www.rolls-sykkelservice.no', logo: rollsSykkel, form: 'kvadrat', skala: 0.95 },
+  // Lys logo: samme røde bunn som på klubbens gamle sponsorside
+  { navn: 'Kjeldaas', url: 'https://kjeldaas-as.no', logo: kjeldaas, form: 'bred', skala: 1.05, bakgrunn: '#b32013' },
+  { navn: 'OneMed', url: 'https://www.onemed.com/no', logo: onemed, form: 'bred', skala: 0.85 },
 ];

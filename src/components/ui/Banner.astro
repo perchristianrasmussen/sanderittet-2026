@@ -7,7 +7,7 @@ interface Props extends Omit<astroHTML.JSX.HTMLAttributes, 'class'> {
   datetime?: string;
   /** Tilstand som kan styres fra CSS/JS, f.eks. "neste" eller "utenfor-sesong". */
   state?: string;
-  /** sm brukes ved siden av en hovedhandling, så banneret ikke veier mer enn knappen. */
+  /** sm brukes ved siden av en hovedhandling: nøkkelen krymper, så knappen er det tyngste røde, mens verdien beholder størrelsen. */
   size?: 'md' | 'sm';
 }
 
@@ -65,7 +65,6 @@ const { label, value, datetime, state, size = 'md', ...attrs } = Astro.props;
 
   .banner-sm .bv {
     padding: 9px 14px;
-    font-size: var(--fs-body);
   }
 
   @media (max-width: 760px) {

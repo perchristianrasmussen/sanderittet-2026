@@ -49,6 +49,8 @@
   --fs-title: clamp(1.6rem, 3vw, 2.2rem);
   --fs-stat: 2.75rem;
   --fs-stat-sm: 1.75rem;
+  /* Tallpanel i heroen: lettere enn bannerverdien, så neste trening leses først */
+  --fs-stat-xs: 1.375rem;
   --fs-banner: 1.875rem;
   --fs-banner-value: 1.5rem;
   /* Bannerets nøkkel under 760px */

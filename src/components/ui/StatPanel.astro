@@ -4,7 +4,8 @@ interface Props {
   value: string;
   unit?: string;
   tone?: 'glass' | 'light';
-  size?: 'md' | 'sm';
+  /** xs er heroens arrangørpaneler: lettere enn statusbanneret ved siden av. */
+  size?: 'md' | 'sm' | 'xs';
   /** li når panelene står i en liste (<ul>). */
   as?: 'div' | 'li';
 }
@@ -72,6 +73,16 @@ const parts = label.split(' · ');
 
   .stat-sm .v {
     font-size: var(--fs-stat-sm);
+  }
+
+  .stat-xs {
+    padding: 10px 12px 9px;
+    min-width: 0;
+  }
+
+  .stat-xs .v {
+    font-size: var(--fs-stat-xs);
+    font-weight: 600;
   }
 
   small {
