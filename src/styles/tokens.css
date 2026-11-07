@@ -32,6 +32,12 @@
   --route-orange: #e87820;
   --route-shortcut: #d4a840;
 
+  /* Farger fra løypekartet (xco-loypekart.png) – kun i kart. Prøvd fra strekene i bildet, så forklaringen stemmer med tegningen. */
+  --map-xco-start: #ecf70f;
+  --map-xco-6-9: #48e442;
+  --map-xco-10-12: #22a4f8;
+  --map-xco-13: #f62d98;
+
   /* Terreng i kartplassholderen – kun der ekte kart ikke er lastet */
   --map-ph-glade: #2c3a2e;
   --map-ph-forest: #1a2620;

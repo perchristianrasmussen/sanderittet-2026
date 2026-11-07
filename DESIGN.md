@@ -27,6 +27,10 @@ colors:
   route-blue: "#3a9eff"
   route-orange: "#e87820"
   route-shortcut: "#d4a840"
+  map-xco-start: "#ecf70f"
+  map-xco-6-9: "#48e442"
+  map-xco-10-12: "#22a4f8"
+  map-xco-13: "#f62d98"
   map-ph-glade: "#2c3a2e"
   map-ph-forest: "#1a2620"
   map-ph-floor: "#0f1512"
@@ -320,6 +324,8 @@ Klubbfargene rødt og blått mot en dyp arenablå og kjølige lyse nøytraler, m
 ### Løypefarger (kun i kart)
 `route-start`, `route-green`, `route-blue`, `red` (XCO 13+), `route-orange` og `route-shortcut` (stiplet). De er kartspråk og knyttet til aldersklasser.
 
+**Farger fra løypekartet, kun i kart** (`map-xco-start`, `map-xco-6-9`, `map-xco-10-12`, `map-xco-13`): prøvd fra strekene i det tegnede løypekartet `xco-loypekart.png` (gul startloop, grønn 6–9 år, blå 10–12 år og magenta 13+). De brukes bare i forklaringen til det bildet, så fargen i forklaringen er den samme som streken i tegningen. Byttes bildet, prøves fargene på nytt.
+
 ### Terreng i kartplassholder (kun kartplassholder)
 `map-ph-glade`, `map-ph-forest` og `map-ph-floor` er en dempet skoggrønn flate bak HUD-en der det ekte kartet ikke er lastet (stilsiden, statisk reserve). De brukes ikke til noe annet.
 
@@ -435,10 +441,10 @@ Et konsekvent linjeikonsett med 1.75px strek i `currentColor`, servert som inlin
 ### Kartmodul (signatur)
 MapLibre over `night`, med flyfoto eller Kartverket topo og 3D-terreng. HUD-en ligger oppå: etikettfelt og Bebas-tittel øverst til venstre, tallpaneler øverst til høyre, høydeprofil nederst og HUD-kontroller over profilen. Løypa tegnes med mørk kant, en hvit stiplet «spøkelseslinje» for gjenstående og rød fremdrift med glød. Startpinner er hvite etiketter på en tynn stang.
 
-**Statisk kartplate (forsiden).** Der et levende kart ikke trengs, står klubbens eget løypekart (`xco-loypekart.png`) som bilde i samme ramme: `night`, 6px radius, `line-on-dark`-kant og kartmodul-skygge. Etikettfelt («XCO | Lersbrygga») og Bebas-tittel ligger øverst til venstre over en mørk radial skygge, og forklaringen med løypefargene står i `panel`-glass nede til venstre (under bildet i rammen på mobil). Lenkene «Åpne i Google Maps» og «Se løypene» står som tekstlenker under rammen. Ingen innebygde tredjepartskart (iframe) med fremmede steder og ruter.
+**Statisk kartplate (forsiden).** Der et levende kart ikke trengs, står klubbens eget løypekart (`xco-loypekart.png`) som bilde i samme ramme: `night`, 6px radius, `line-on-dark`-kant og kartmodul-skygge. Etikettfelt («XCO | Lersbrygga») og Bebas-tittel ligger sammen på én plate i `panel`-glass øverst til venstre i rammen (0 radius, padding 12px 16px, 10px 12px under 760px, `s-xs` mellom feltet og tittelen), så tittelen aldri står rett på den travle illustrasjonen. Forklaringen med løypefargene står i `panel`-glass nede til venstre (under bildet i rammen på mobil), med strekfargene fra selve bildet (`map-xco-*`). Lenkene «Åpne i Google Maps» og «Se løypene» står som tekstlenker under rammen. Ingen innebygde tredjepartskart (iframe) med fremmede steder og ruter.
 
 ### Sponsorfliser
-Hvite fliser med 4px radius og svak kant, én logo per flis, lenket til sponsoren med hover-løft. Logoene veies optisk i `src/data/sponsorer.ts`: hver har en form (`bred` eller `kvadrat`) som gir grunnhøyden, og en `skala` som justerer for luft i filen og tynne streker, så flisene leses som likeverdige. Sponsorlogo kan ha egen bakgrunn når logoen krever det (`bakgrunn`), f.eks. Kjeldaas, som er lys og står på sin egen røde bunn `#b32013` slik som på klubbens gamle sponsorside. Det er sponsorens farge og ikke klubbens røde signal, og den brukes bare på flisen til den logoen.
+Hvite fliser med 4px radius og svak kant, én logo per flis, lenket til sponsoren med hover-løft. Logoene veies optisk i `src/data/sponsorer.ts`: hver har en form (`bred` eller `kvadrat`) som gir grunnhøyden, og en `skala` som justerer for luft i filen og tynne streker, så flisene leses som likeverdige. Flisen er alltid hvit. Krever logoen en egen bunn (`bakgrunn`), f.eks. Kjeldaas, som er lys og står på sin egen røde `#b32013` slik som på klubbens gamle sponsorside, ligger fargen som en plate i logoens størrelse (2px radius, litt luft rundt logoen) midt i den hvite flisen, med hvit marg rundt. Platen blir aldri en farget flis. Det er sponsorens farge og ikke klubbens røde signal, og den brukes bare bak den logoen.
 
 ### Footer
 Komponenten `Footer.astro`. `dark` med 3px rød topplinje. Samme ordmerke som i navigasjonen. Metadata står i `label` i dempet hvit. Lenker er hvite med den delte lenkestreken, som tegnes inn ved hover; de blir ikke røde, fordi `red-light` på `dark` gir bare 4,2:1. Lenke til Sande Sportsklubb er alltid med.
