@@ -5,6 +5,7 @@ import Button from '../components/ui/Button.astro';
 import Tag from '../components/ui/Tag.astro';
 import StatPanel from '../components/ui/StatPanel.astro';
 import Banner from '../components/ui/Banner.astro';
+import NesteTreningBanner from '../components/NesteTreningBanner.astro';
 import AccentBar from '../components/ui/AccentBar.astro';
 import Icon, { type IconName } from '../components/ui/Icon.astro';
 import heroPhoto from '../assets/img/rytter-sti.jpg';
@@ -88,7 +89,7 @@ const progressX = w * 0.58;
       <h1 id="hero-title" class="display">Sande <span class="hl">Sykkel</span>&shy;klubb</h1>
       <p class="hero-sub">Trening for alle aldre på Lersbrygga, fra påske til høstferie.</p>
       <div class="hero-action">
-        <Banner label="Neste trening" value="Man 18:00" />
+        <NesteTreningBanner />
         <Button href="https://group.spond.com/OXGYJ" external>Bli med i Spond</Button>
       </div>
     </div>

@@ -1,14 +1,20 @@
 ---
-interface Props {
+interface Props extends Omit<astroHTML.JSX.HTMLAttributes, 'class'> {
   label: string;
   value?: string;
+  /** Maskinlesbar tid for verdien; gir <time datetime> rundt verdien. */
+  datetime?: string;
+  /** Tilstand som kan styres fra CSS/JS, f.eks. "neste" eller "utenfor-sesong". */
+  state?: string;
 }
 
-const { label, value } = Astro.props;
+const { label, value, datetime, state, ...attrs } = Astro.props;
 ---
 
-<div class="banner">
-  <span class="bk">{label}</span>{value && <span class="bv">{value}</span>}
+<div class="banner" data-banner data-state={state} {...attrs}>
+  <span class="bk" data-banner-label>{label}</span>{value && (
+    <span class="bv">{datetime ? <time datetime={datetime} data-banner-value>{value}</time> : <span data-banner-value>{value}</span>}</span>
+  )}
   <slot />
 </div>
 

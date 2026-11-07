@@ -1,0 +1,31 @@
+---
+import Banner from './ui/Banner.astro';
+import { treningsplan } from '../data/trening.ts';
+import { nesteTrening } from '../lib/nesteTrening.ts';
+
+// Byggeverdien vises uten JS; skriptet under regner ut på nytt ved lasting,
+// så en statisk side ikke blir stående med en utgått treningstid.
+const neste = nesteTrening(new Date(), treningsplan);
+const planJson = JSON.stringify(treningsplan).replace(/</g, '\u003c');
+---
+
+<Banner label={neste.label} value={neste.value} datetime={neste.datetime} state={neste.state} data-neste-trening />
+<script type="application/json" id="treningsplan" is:inline set:html={planJson} />
+
+<script>
+  import { nesteTrening, type Treningsplan } from '../lib/nesteTrening.ts';
+
+  const data = document.getElementById('treningsplan')?.textContent;
+  if (data) {
+    const neste = nesteTrening(new Date(), JSON.parse(data) as Treningsplan);
+    for (const banner of document.querySelectorAll<HTMLElement>('[data-neste-trening]')) {
+      const label = banner.querySelector('[data-banner-label]');
+      const verdi = banner.querySelector('time[data-banner-value]');
+      if (!label || !verdi) continue;
+      banner.dataset.state = neste.state;
+      label.textContent = neste.label;
+      verdi.textContent = neste.value;
+      verdi.setAttribute('datetime', neste.datetime);
+    }
+  }
+</script>
