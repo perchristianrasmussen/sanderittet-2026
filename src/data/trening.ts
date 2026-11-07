@@ -10,8 +10,12 @@ export const treningsplan: Treningsplan = {
     { ukedag: 4, gruppe: '11 år og eldre', start: '18:00', slutt: '19:30' },
   ],
   // Første dag i høstferien per år ("YYYY-MM-DD"). Siste trening er før denne datoen.
-  // TODO: bekreft med klubben hvert år.
+  // Sesongregelen (uka etter påske til høstferien i uke 41) er bekreftet av klubben 2026-11-07.
+  // Legg inn et år her bare ved unntak.
   hostferie: {},
-  // Uten oppføring over brukes mandag i ISO-uke 41 (Vestfold har som regel høstferie i uke 40 eller 41).
+  // Uten oppføring over brukes mandag i ISO-uke 41.
   hostferieUke: 41,
 };
+
+// Hero-banneret følger yngste gruppe, siden det er foreldre til små barn som leser det.
+export const yngsteGruppe = 'Opptil 10 år';

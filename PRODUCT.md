@@ -36,6 +36,10 @@ Klubben som har sine egne løyper og sin egen arena på Lersbrygga, som arranger
 ## Operating Context
 
 - **Treninger** på Lersbrygga Idrettsanlegg, 3070 Sande i Vestfold, fra påske til høstferie. Mandager: opptil 10 år kl. 18:00–19:00, over 10 år kl. 18:00–19:30. Torsdager: 11 år og eldre kl. 18:00–19:30.
+- **Sesong:** første trening er i uka etter påske (torsdagen etter 2. påskedag, deretter mandager og torsdager). Siste trening er før høstferien i uke 41. Bekreftet av klubben 2026-11-07.
+- **Hvem kan begynne:** det finnes ingen fast aldersgrense. Barnet må kunne sykle selv på en sykkel med minst 20" hjul.
+- **Utstyr:** hjelm er påkrevd, og sykkel kan lånes av klubben.
+- **Prøvetrening:** nye kan bare møte opp. Spond trengs først når de vil fortsette.
 - **Påmelding og kommunikasjon** skjer i Spond (gruppelenke `https://group.spond.com/OXGYJ`).
 - **Kontakt:** leder.sykkel@sandesk.no.
 - **Moderklubb:** Sande Sportsklubb (`https://sandesk.no/grupper/sykkel/`).

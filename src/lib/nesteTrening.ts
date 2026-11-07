@@ -109,10 +109,10 @@ export function sesong(ar: number, plan: Treningsplan) {
 }
 
 /** Første økt (dag og starttid) i [fra, til), der økter i dag må slutte etter `naMin`. */
-function forsteOkt(plan: Treningsplan, fra: number, til: number, naMin = -1) {
+function forsteOkt(okter: Okt[], fra: number, til: number, naMin = -1) {
   for (let dag = fra; dag < til; dag++) {
     const wd = isoUkedag(dag);
-    const starter = plan.okter
+    const starter = okter
       .filter((o) => o.ukedag === wd && (dag > fra || minutter(o.slutt) > naMin))
       .map((o) => minutter(o.start));
     if (starter.length) return { dag, min: Math.min(...starter) };
@@ -120,24 +120,30 @@ function forsteOkt(plan: Treningsplan, fra: number, til: number, naMin = -1) {
   return null;
 }
 
-export function nesteTrening(now: Date, plan: Treningsplan): NesteTrening {
+/**
+ * Neste trening for alle grupper, eller bare for `gruppe` (samme tekst som `Okt.gruppe`).
+ * Med gruppe står gruppenavnet bak verdien, f.eks. «Man 18:00 · opptil 10 år».
+ */
+export function nesteTrening(now: Date, plan: Treningsplan, gruppe?: string): NesteTrening {
+  const okter = gruppe ? plan.okter.filter((o) => o.gruppe === gruppe) : plan.okter;
+  const hale = gruppe ? ` · ${gruppe.charAt(0).toLowerCase()}${gruppe.slice(1)}` : '';
   const na = osloDeler(now.getTime());
   const s = sesong(na.ar, plan);
 
   if (na.dag >= s.fra && na.dag < s.til) {
-    const okt = forsteOkt(plan, na.dag, s.til, na.min);
+    const okt = forsteOkt(okter, na.dag, s.til, na.min);
     if (okt) {
       const tid = `${pad(Math.floor(okt.min / 60))}:${pad(okt.min % 60)}`;
       const datetime = isoOslo(okt.dag, okt.min);
       return okt.dag === na.dag
-        ? { state: 'i-dag', label: 'Trening i dag', value: tid, datetime }
-        : { state: 'neste', label: 'Neste trening', value: `${UKEDAGER[isoUkedag(okt.dag) - 1]} ${tid}`, datetime };
+        ? { state: 'i-dag', label: 'Trening i dag', value: tid + hale, datetime }
+        : { state: 'neste', label: 'Neste trening', value: `${UKEDAGER[isoUkedag(okt.dag) - 1]} ${tid}${hale}`, datetime };
     }
   }
 
   // Utenfor sesong: pek på første trening i neste sesong.
   const neste = na.dag < s.fra ? s : sesong(na.ar + 1, plan);
-  const forste = forsteOkt(plan, neste.fra, neste.til);
+  const forste = forsteOkt(okter, neste.fra, neste.til);
   const datetime = forste ? isoOslo(forste.dag, forste.min) : new Date(neste.fra * DAG_MS).toISOString().slice(0, 10);
-  return { state: 'utenfor-sesong', label: 'Sesongen starter', value: kortDato(forste?.dag ?? neste.fra), datetime };
+  return { state: 'utenfor-sesong', label: 'Sesongen starter', value: kortDato(forste?.dag ?? neste.fra) + hale, datetime };
 }

@@ -5,13 +5,6 @@ primary_target: "src/pages/index.astro"
 related_targets: []
 ---
 
----
-version: 1
-slug: "src-pages-index-astro"
-primary_target: "src/pages/index.astro"
-related_targets: []
----
-
 # Forsiden (sandesykkel.no /)
 
 Modus: Persuade. Primærbruker: nye familier som vurderer trening. Handling: bli med i Spond-gruppa / komme på mandagstrening. Bevis: egne bilder, Norgescup 2024/2025, NM 2026, egne løyper på Lersbrygga. Ikke: barnslig, mørk og aggressiv, korporativ eller mal-aktig.
@@ -24,12 +17,11 @@ OWN-WORLD: Dagens arenastil fra DESIGN.md: arenamørk og lyse klubbflater, Bebas
 
 STORY: Dette er en ekte rittklubb med egen arena, og barnet mitt kan begynne på mandag. Jeg melder meg på i Spond, og ser deretter løypene og NM-historien.
 
-FIRST VIEWPORT: Fullhøyde hero med rittbilde fra klubben under arenagradient. Øverst trefargestripe og nav med hårstrek og rød «Bli med» (til /#bli-med). Nede til venstre Bebas-H1 «Sande Sykkelklubb» med «Sykkel» i rødt, og en undertekst til foreldre (ukentlig trening for barn og ungdom, nybegynnere velkomne, foreldre kan bli med). Under den, på egen linje, statusbanneret (liten størrelse) med neste trening eller første treningsdato utenfor sesong. Så handlingsraden #bli-med: én setning som forklarer Spond, og den store røde Spond-knappen som sidens tyngste røde flate. Ingen etikett over H1. Øverst til høyre, i flyten under navigasjonen, tallpanelene «Arrangør · Norgescup 2024», «Arrangør · Norgescup 2025» og «Arrangør · NM terreng 2026» som liste; på mobil står de som én rad under knappen.
+FIRST VIEWPORT: Fullhøyde hero med rittbilde fra klubben under arenagradient. Øverst trefargestripe og nav med hårstrek og rød «Bli med» (til /#bli-med). Nede til venstre Bebas-H1 «Sande Sykkelklubb» med «Sykkel» i rødt, og en undertekst til foreldre (ukentlig trening for barn og ungdom, nybegynnere velkomne, foreldre kan bli med). Under den, på egen linje, statusbanneret (liten størrelse) for yngste gruppe med gruppa i verdien: «Neste trening · Man 18:00 · opptil 10 år», «Trening i dag · 18:00 · opptil 10 år», eller utenfor sesong første treningsdato, f.eks. «Sesongen starter · Man 5. april · opptil 10 år». Så handlingsraden #bli-med: én setning som forklarer Spond, og den store røde Spond-knappen som sidens tyngste røde flate. Ingen etikett over H1. Øverst til høyre, i flyten under navigasjonen, tallpanelene «Arrangør · Norgescup 2024», «Arrangør · Norgescup 2025» og «Arrangør · NM terreng 2026» som liste; på mobil står de som én rad under knappen.
 
 FORM: Videreføring av dagens stil, låst av brukeren (utenfor trekningens liste); seed:9b0f5c1fdd400c0c
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
 ## Uavklart
-- Datoene for høstferien hvert år må bekreftes av klubben (sesongslutt i src/data/trening.ts).
-- Første trening etter påske må bekreftes av klubben.
+Ingen kjente åpne fakta.
