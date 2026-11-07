@@ -200,30 +200,51 @@ components:
     typography: "{typography.button}"
     rounded: "{rounded.sm}"
     padding: "0.9rem 1.75rem"
+  button-outline-light:
+    backgroundColor: "transparent"
+    textColor: "{colors.blue}"
+    typography: "{typography.button}"
+    rounded: "{rounded.sm}"
+    padding: "0.9rem 1.75rem"
+  button-outline-light-hover:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.white}"
   tag-split-key:
     backgroundColor: "{colors.red}"
     textColor: "{colors.white}"
     typography: "{typography.tag}"
     rounded: "{rounded.none}"
-    padding: "5px 12px"
+    padding: "6px 12px"
   tag-split-value:
     backgroundColor: "{colors.white}"
     textColor: "{colors.night}"
     typography: "{typography.tag}"
     rounded: "{rounded.none}"
-    padding: "5px 12px"
+    padding: "6px 12px"
+  tag-split-value-dark:
+    backgroundColor: "{colors.dark}"
+    textColor: "{colors.white}"
+    typography: "{typography.tag}"
+    rounded: "{rounded.none}"
+    padding: "6px 12px"
   stat-panel:
     backgroundColor: "{colors.panel}"
     textColor: "{colors.white}"
     typography: "{typography.stat}"
     rounded: "{rounded.none}"
-    padding: "9px 16px 11px"
+    padding: "12px 16px 11px"
   stat-panel-light:
     backgroundColor: "{colors.white}"
     textColor: "{colors.dark}"
     typography: "{typography.stat}"
     rounded: "{rounded.none}"
-    padding: "9px 16px 11px"
+    padding: "12px 16px 11px"
+  stat-panel-xs:
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.white}"
+    typography: "{typography.stat-xs}"
+    rounded: "{rounded.none}"
+    padding: "10px 12px 9px"
   banner-key:
     backgroundColor: "{colors.red}"
     textColor: "{colors.white}"
@@ -242,11 +263,17 @@ components:
     typography: "{typography.banner-sm}"
     rounded: "{rounded.none}"
     padding: "6px 14px"
+  banner-value-sm:
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.white}"
+    typography: "{typography.banner-value}"
+    rounded: "{rounded.none}"
+    padding: "9px 14px"
   nav:
     backgroundColor: "{colors.dark}"
     textColor: "{colors.white}"
     typography: "{typography.nav}"
-    padding: "0.9rem 2.5rem"
+    padding: "0.7rem 2.5rem"
   card:
     backgroundColor: "{colors.white}"
     rounded: "{rounded.md}"
@@ -270,6 +297,17 @@ components:
   map-module:
     backgroundColor: "{colors.night}"
     rounded: "{rounded.lg}"
+  map-hud-plate:
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.white}"
+    typography: "{typography.title}"
+    rounded: "{rounded.none}"
+    padding: "12px 16px 10px"
+  sponsor-tile:
+    backgroundColor: "{colors.white}"
+    rounded: "{rounded.md}"
+    padding: "0.5rem 1rem"
+    height: "8.5rem"
   footer:
     backgroundColor: "{colors.dark}"
     textColor: "{colors.muted-on-dark}"
@@ -277,7 +315,7 @@ components:
     padding: "2.5rem"
 ---
 
-<!-- v2 (2026-11-07): videreføring av sanderittet.no-stilen med TV-grafikk fra MapLibre-prototypen. Fastsatt før bygging; justeres mot den ferdige siden og .impeccable/design.json oppdateres da. -->
+<!-- v3 (2026-11-07): dokumentert mot den ferdige forsiden (src/pages/index.astro), de felles komponentene og src/styles/tokens.css etter ferdigkontroll («ship»). Videreføring av sanderittet.no-stilen med TV-grafikk fra MapLibre-prototypen. .impeccable/design.json er oppdatert samtidig. -->
 
 # Design System: Sande Sykkelklubb
 
@@ -289,7 +327,7 @@ Profilen er rittdagen på Lersbrygga slik den ville sett ut på TV. Vi beholder 
 
 De mørke flatene bærer det stolte og seriøse: NM 2026, Norgescup, løypene og 3D-kartene. De lyse flatene bærer det lokale og inkluderende: treningstider, Spond og «alle aldre er velkomne». TV-grafikken binder dem sammen og brukes på begge flatene, så ikke bare på mørke sider. Uttrykket skal være sportslig og presist, aldri barnslig, aldri aggressivt og mørkt hele veien, og aldri glatt og korporativt.
 
-Systemet bor i én felles stilfil med tokens (Astro-layout). Frontmatter i denne filen er fasit.
+Systemet bor i én felles stilfil med tokens (`src/styles/tokens.css`, lastet via `global.css` i Astro-layouten). Frontmatter i denne filen er fasit, og tokenfilen speiler den.
 
 **Key Characteristics:**
 - Mørke arenaseksjoner vekslet med lyse klubbseksjoner (hvit / off-white / blue-pale).
@@ -344,14 +382,16 @@ Klubbfargene rødt og blått mot en dyp arenablå og kjølige lyse nøytraler, m
 
 **Character:** Bebas er startnummeret: smalt, versalt og tett. Barlow Condensed er TV-grafikken med tall, etiketter og paneler, med tabulære sifre. Barlow er klubbens stemme i løpende tekst, og tilhører samme familie som grafikken.
 
-Fontene serveres fra prosjektet med `@font-face` og lastes ikke fra Google Fonts.
+Fontene serveres fra prosjektet (`@fontsource`-pakkene, importert i layouten) og lastes ikke fra Google Fonts.
+
+**Ø-rettingen.** Barlow Condensed har for bred Ø/ø i 500–800 rett, så det blir et hull etter bokstaven. Rettede kopier i `src/assets/fonts/` (`barlow-condensed-oslash-500…800.woff`, laget med `scripts/rett-oslash.mjs`) tar over bare for U+D8 og U+F8 via `unicode-range` i `global.css`. Filene er endret OFL-programvare, og lisensen ligger ved som `src/assets/fonts/OFL-Barlow.txt`. Kommer det en ny vekt av Barlow Condensed i bruk, skal den også få en rettet Ø.
 
 ### Hierarchy
 - **Display**: hero-H1, én per side. **Display-sm** er samme stil under 760px og i stilprøver.
 - **Sub**: undertekst rett under hero-H1.
 - **Headline**: H2 på seksjoner.
 - **Title**: korttitler, sideheadere på smale sider og karttitler.
-- **Stat / Stat-sm / Stat-xs**: tall i tallpaneler (lengde, høydemeter, årstall, tider), alltid med tabulære sifre og enhet i liten, dempet vekt. Stat-xs (600) er bare heroens arrangørpaneler, så de veier mindre enn bannerverdien.
+- **Stat / Stat-sm / Stat-xs**: tall i tallpaneler (lengde, høydemeter, årstall, tider), alltid med tabulære sifre og enhet i liten, dempet vekt (0.42em, 600). Stat-sm er årstallene i historikken under 760px. Stat-xs (600) er bare heroens arrangørpaneler, så de veier mindre enn bannerverdien.
 - **Banner / Banner-sm / Banner-value**: nøkkelen i bannere i kursiv 800 (Banner-sm under 760px), og verdien i 600 med tabulære sifre. Verdien er mindre enn nøkkelen i `md`. I `sm` krymper bare nøkkelen; verdien beholder `banner-value` fra 761px, så neste trening er det første og største tallet i heroen (større enn `stat-xs` i arrangørpanelene). Under 760px blir verdien `body`-størrelse.
 - **Tag / Label**: etikettfelt, seksjonsetiketter, metadata som tider og steder, og skjemalabels. Alltid versaler med sperring 0.16em.
 - **Nav / Menu / Button**: versaler i Barlow Condensed. Menu er radene i mobilmenyen.
@@ -365,13 +405,13 @@ Fontene serveres fra prosjektet med `@font-face` og lastes ikke fra Google Fonts
 
 ## Layout
 
-- **Container:** 1200px på brede sider og 760px på skjema- og listesider. Sidemarg 2.5rem på desktop og 1rem på mobil.
-- **Seksjonsrytme:** 6rem vertikalt på desktop og 4rem på mobil. Det er mer luft over en overskrift enn under.
-- **Lys/mørk-veksling:** seksjonene bytter mellom mørk (`dark`) og lys (white / off-white / blue-pale). To like flater skal ikke ligge etter hverandre.
+- **Container:** 1200px innhold pluss sidemarg på hver side. 760px (`container-narrow`) er satt av til skjema- og listesider; ingen slik side er bygget ennå. Sidemarg 2.5rem på desktop og 1rem på mobil.
+- **Seksjonsrytme:** 6rem vertikalt på desktop og 4rem på mobil. Det er mer luft over en overskrift enn under. Ingressen får 2.5rem (`lg`) luft under seg før innholdet; gridder har 4rem (`xl`) mellom kolonnene og 2.5rem når de stables. To seksjoner som deler samme flate (sponsorer og kontakt på hvitt) slås sammen: den andre mister toppluften.
+- **Lys/mørk-veksling:** seksjonene bytter mellom mørk (`dark`) og lys (white / off-white / blue-pale). To like flater skal ikke ligge etter hverandre, med mindre de er slått sammen til én flate som over. Forsiden går hero (mørk) → trening (hvit) → finn frem (mørk) → Sanderittet (blekblå) → historikk (mørk) → sponsorer og kontakt (hvit) → footer (mørk).
 - **Seksjonsstart:** Bebas-H2 med rødt ord → skråstilt aksentstrek → ingress. Ingen dekorativ etikett over titler.
 - **Hero:** komponenten `Hero.astro`, brukt både på forsiden og på /designprofil. Fullhøyde, foto fra klubben under arenagradient, trefargestripe øverst og innholdet nederst til venstre i rekkefølgen H1 (alltid «Sande» / «Sykkelklubb» på to linjer fra 761px), undertekst til foreldre, statusbanneret på egen linje (`size="sm"`) og handlingsraden `#bli-med`: en kort tekst i `body-sm` og `soft-on-dark` som forklarer Spond («Første gang kan dere bare møte opp. Vil dere fortsette, skjer påmelding og beskjeder i Spond-appen. Knappen åpner gruppa vår.»), bundet til knappen med `aria-describedby`, og så Spond-knappen i `size="lg"`. På forsiden står en tekstlenke «Tider, alder og utstyr» med `arrow-down`-ikonet til `#trening` ved siden av knappen. Bildet er bredere enn heroen (118 %, 145 % mellom 761 og 1100px) og forankret til venstre, så rytteren står til høyre for tekstkolonnen, og en lokal skygge (`dark`, radial fra nede til venstre) ligger bak teksten så H1 og det røde ordet holder kontrast. Under 760px står rytteren midt i bildet, og skyggen er en radial flekk bak tittelen, målt fra bunnen av heroen, så det røde ordet holder en hard kant mot rytterens røde erme. Knappen er den tyngste røde flaten i første skjermbilde; banneret står aldri ved siden av den. Tallpanelene (`size="xs"`) står som en liste (`<ul aria-label="Arrangementer på Lersbrygga">`) øverst til høyre på desktop, i flyten under navigasjonen: heroen har `padding-top: calc(var(--header-h) + var(--s-sm))`, og `Nav.astro` måler `--header-h` når menyen brytes over to linjer. Ingen absolutt plassering. På mobil er rekkefølgen H1, undertekst, banner, Spond-linjen, Spond-knappen i full bredde og så tallpanelene som én kompakt rad nederst, slik at knappen alltid er i første skjermbilde. Der står «Arrangør på Lersbrygga» én gang over raden, og panelene viser bare arrangementet (for skjermlesere står «Arrangør» fortsatt i hvert panel).
 - **Kart og presentasjon:** kartmoduler kan gå i full bredde. Grafikk (tittel, tallpaneler, høydeprofil) ligger som HUD over kartet.
-- **Breakpoint:** 760px. Under det stables gridder til én kolonne, tallpaneler brytes til en rad som kan rulles sideveis eller krympes, og navigasjonen blir en hamburgermeny.
+- **Breakpoints:** 760px er hovedskillet. Under det stables gridder til én kolonne, tallpaneler brytes til en rad som krympes, og navigasjonen blir en hamburgermeny. 1000px er et mellomtrinn: kart-, historikk- og kontaktgriddene stables, sponsorflisene går fra fire til tre kolonner (to under 760px), og mellom 761 og 1000px brytes menyen over to linjer (`--header-h` 7.75rem). Heroen har et eget trinn til 1100px for bildeutsnittet.
 
 ## Elevation & Depth
 
@@ -381,7 +421,9 @@ Systemet er flatt. Dybde lages med tone (mørke mot lyse flater) og med panelgla
 - **Hover-løft** (`box-shadow: 0 12px 40px rgba(22,57,122,0.12)` + `translateY(-3px)`): klikkbare kort.
 - **Kartmodul** (`box-shadow: 0 8px 32px rgba(0,0,0,0.3)`): innebygde kart på mørk flate.
 - **Tekstskygge på bilde** (`text-shadow: 0 6px 40px rgba(0,0,0,0.6)`): store titler over foto eller kart.
-- **Panelglass**: `panel` + `backdrop-filter: blur(6px)` for tallpaneler, bannere og kontroller over bilde eller kart.
+- **Panelglass**: `panel` + `backdrop-filter: blur(6px)` for tallpaneler, bannere, kartplater og kontroller over bilde eller kart.
+- **Menyglass** (`rgba(13,24,36,0.55)` + `blur(10px)`): bare navigasjonen over heroen; blir hel `dark` når heroen er rullet forbi.
+- **Arenagradient og lokal skygge**: heroens bilde ligger under en lineær `dark`-gradient (0.7 → 0.15 → 0.35 → 0.92 ovenfra) med et svakt blått lys øverst til høyre, og en radial `dark`-skygge bak tekstkolonnen.
 
 ### Named Rules
 **Regelen om flatt til noe skjer.** Kort og paneler er flate i ro. Løft og skygge kommer ved hover eller når noe svever over innhold.
@@ -400,10 +442,10 @@ Systemet er flatt. Dybde lages med tone (mørke mot lyse flater) og med panelgla
 ## Components
 
 ### Etikettfelt (tag-split)
-To felt kant i kant: nøkkel i `red` med hvit tekst og verdi i hvitt med `night`-tekst, begge i `tag`-typografi og versaler. Eksempler: `XCO | 4,2 KM`, `TRENING | I DAG`, `NM | 2026`. Feltet bærer alltid informasjon: disiplin, status, dato eller kategori. Det brukes i kartheadere, på løype- og arrangementskort og i HUD-er, og **aldri som pynt over en tittel**. På lyse flater kan verdifeltet bli `dark` med hvit tekst.
+To felt kant i kant (padding 6px 12px): nøkkel i `red` med hvit tekst og verdi i hvitt med `night`-tekst, begge i `tag`-typografi og versaler. Eksempler: `XCO | 4,2 KM`, `TRENING | I DAG`, `NM | 2026`. Feltet bærer alltid informasjon: disiplin, status, dato eller kategori. Det brukes i kartheadere, på løype- og arrangementskort og i HUD-er, og **aldri som pynt over en tittel**. På lyse flater kan verdifeltet bli `dark` med hvit tekst.
 
 ### Tallpanel (stat-panel)
-`panel` (på mørkt eller over bilde) eller `white` (på lyst), med 3px `red` topplinje og 0 radius. Nøkkelen står i `label` i versaler og dempet farge (midtpunktet mellom deler i `.sep`, tegnet som en rund prikk så det ikke leses som bindestrek), tallet i `stat` med enhet i liten 600-vekt. Panelene står på rad med 6px mellomrom. Brukes til løypetall, årstall, treningstider og neste trening. Årstall for arrangementer sier hva klubben gjorde: «Arrangør · Norgescup 2024», «Arrangør · Norgescup 2025», «Arrangør · NM terreng 2026», aldri bare «Norgescup 2024», som kan leses som at klubben deltok. Flere panel som hører sammen står i en liste (`StatPanel as="li"` i en `<ul>` med `aria-label`). Treningstider skrives med dag og aldersgruppe i nøkkelen («Man · opptil 10 år», «Man · over 10 år», «Tor · 11 år og eldre») og starttid som tall med sluttid som dempet enhet («18:00 –19:30»), så gruppene aldri overlapper.
+`panel` (på mørkt eller over bilde) eller `white` (på lyst), med 3px `red` topplinje og 0 radius. Nøkkelen står i `label` i versaler og dempet farge (midtpunktet mellom deler i `.sep`, tegnet som en rund prikk så det ikke leses som bindestrek), tallet i `stat` med enhet i liten 600-vekt. Panelene står på rad med 6px mellomrom. Størrelsen `xs` (heroens arrangørpaneler) har tettere padding (10px 12px 9px) og ingen minstebredde. Brukes til løypetall, årstall, treningstider og neste trening. Årstall for arrangementer sier hva klubben gjorde: «Arrangør · Norgescup 2024», «Arrangør · Norgescup 2025», «Arrangør · NM terreng 2026», aldri bare «Norgescup 2024», som kan leses som at klubben deltok. Flere panel som hører sammen står i en liste (`StatPanel as="li"` i en `<ul>` med `aria-label`). Treningstider skrives med dag og aldersgruppe i nøkkelen («Man · opptil 10 år», «Man · over 10 år», «Tor · 11 år og eldre») og starttid som tall med sluttid som dempet enhet («18:00 –19:30»), så gruppene aldri overlapper.
 
 ### Banner
 Nøkkel i `red` (kursiv 800) og verdi i `panel`, kant i kant. Brukes til status og kunngjøringer. Hero-banneret følger yngste gruppe og har gruppa bak verdien, så det aldri er tvil om hvem tiden gjelder: «Trening i dag · 18:00 · opptil 10 år», «Neste trening · Man 18:00 · opptil 10 år» eller utenfor sesong «Sesongen starter · Man 5. april · opptil 10 år» (første trening for gruppa regnet ut fra treningsplanen, i `<time datetime>`). Nøkkelen er alltid uten gruppe, så den holder seg kort; blir raden for smal, brytes verdien under nøkkelen som én blokk. Feltene viskes inn fra venstre (se Bevegelse).
@@ -416,19 +458,25 @@ Et panel i `panel` med 3px rød topplinje, likt tallpanelene, og etiketten «HØ
 ### Buttons
 - **Primary:** `red`, hvit tekst, `button`-typografi i versaler, 2px radius, minst 48px høy. Hover gir `red-dark` og `translateY(-2px)`, klikk `scale(.98)`; `red-light` brukes ikke bak hvit tekst (4,2:1). Retning vises med SVG-ikoner fra ikonsettet (`Icon.astro`), aldri med tegn: `arrow-right` til en ny side, `arrow-down` for å hoppe ned på siden og `external-link` for eksterne lenker (settes automatisk av `external` på `Button`). Tekstlenker bruker de samme ikonene i 16–18px. Lenker som åpnes i ny fane har skjult tekst «(åpnes i ny fane)».
 - **Stor (`size="lg"`):** sidens hovedhandling, i dag Spond-knappen i heroen. `button-lg` (1.25rem), minst 56px høy og padding 1.1rem 2.25rem. Én per skjermbilde. Full bredde under 760px.
-- **Outline:** transparent med `1.5px` `line-on-dark-strong`-kant på mørkt, eller `blue` på lyst.
+- **Outline:** transparent med `1.5px` `line-on-dark-strong`-kant og hvit tekst på mørkt; kanten blir hvit ved hover. På lyse flater (`outline-light`) er tekst og kant `blue`, og hover fyller knappen med `blue` og hvit tekst.
 - **HUD-kontroll:** `panel`-glass, 1px `line-on-dark-strong`, Barlow Condensed versaler, 0 radius og minst 44×44px (spill av, hastighet, kartlag). Brytere har `aria-pressed`; aktiv bryter er hvit med `night`-tekst og 3px rød bunnlinje.
 
 ### Cards / Containers
 - **Lyst kort:** `white`, 4px, 1.5px svak kant og padding 2rem. Klikkbare kort får hover-løft.
-- **Mørkt infokort:** `rgba(255,255,255,0.05)` med `line-on-dark`-kant, etikett i `label` og hvit tekst.
-- **Blått panel:** `blue` med Bebas-tittel, skråstilt aksentstrek og rød knapp. Brukes til CTA.
+- **Mørkt infokort:** `rgba(255,255,255,0.05)` med 1px `line-on-dark`-kant, 4px radius, padding 1.5rem, etikett i `label` og tekst i `soft-on-dark`.
+- **Blått panel:** `blue` med Bebas-tittel, skråstilt aksentstrek, tekst i `soft-on-dark` og rød knapp. Padding 2.5rem (1.5rem under 760px). Brukes til CTA.
+
+### Faktaliste
+En definisjonsliste for praktiske fakta (før første trening, kontakt): nøkkelen i `label` til venstre (11–13rem kolonne, `blue` på lyst), svaret i `body` til høyre med maks ~52 tegn, og `line`-hårstrek mellom radene. Under 760px står nøkkelen over svaret.
+
+### Tidslinje (historikk)
+En nummerert liste over avholdte arrangementer på mørk flate: årstallet i Barlow Condensed med tabulære sifre (`stat`, `stat-sm` under 760px) i `muted-on-dark`, tittel i `title` og tekst i `soft-on-dark`, med `line-on-dark` mellom radene. Mesterskapet (NM) får 3px rød topplinje som tallpanelene og hvitt årstall. Årstallene sier hva klubben arrangerte, aldri deltakelse.
 
 ### Inputs / Fields
 `off-white`-bakgrunn, 1.5px `line-strong`-kant, 2px radius og Barlow. Labels står i `label`. Fokus gir `blue-mid`-kant, hvit bakgrunn og fokusringen. Feil gir `red`-kant og en feilboks i `error-bg` med 1px rød kant, et ikon og en tekst som sier hva som er galt og hvordan det rettes.
 
 ### Navigation
-Mørk (`dark`) med en 1px `line-on-dark`-hårstrek i bunnen, og fast plassering med glass på forsiden (`overlay`): trefargestripen ligger i toppen av menyen, og glasset blir hel `dark` når heroen er rullet forbi, så lenkene holder kontrast over lyse seksjoner. Ankere får `scroll-padding-top` lik menyhøyden. Ingen rød bunnlinje: trefargestripen markerer allerede toppen, og rødt i navigasjonen er bare CTA-en og streken under lenker. Logo pluss ordmerket «Sande **Sykkel**klubb» i `brand` (Bebas), der «Sykkel» er det ene røde ordet. Lenkene står i `nav`-typografi, 70 % hvit, og blir hvite ved hover. Siste lenke er en rød CTA («Bli med») til `/#bli-med`, forsidens handlingsrad. Mens `#bli-med` er synlig, dempes den til omriss (`line-on-dark-strong`), så heroens Spond-knapp er det eneste tunge røde; den blir rød igjen når handlingsraden er ute av syne (IntersectionObserver). Uten JS står den rød. Lenker og CTA har minst 44px treffflate, og siden man står på får `aria-current` og rød understrek. Navigasjonen ligger i `<header>` (komponenten `Nav.astro`). Under 760px blir den en hamburgerknapp («Meny» / «Lukk meny», `aria-expanded`) som åpner et mørkt panel i full bredde med store rader (≥48px), `line-on-dark-strong` i bunnen og den røde CTA-en; Escape lukker og gir fokus tilbake til knappen. Uten JS står lenkene synlige under logoen.
+Mørk (`dark`) med en 1px `line-on-dark`-hårstrek i bunnen, og fast plassering med glass på forsiden (`overlay`): trefargestripen ligger i toppen av menyen, og glasset blir hel `dark` når heroen er rullet forbi, så lenkene holder kontrast over lyse seksjoner. Ankere får `scroll-padding-top` lik menyhøyden. Ingen rød bunnlinje: trefargestripen markerer allerede toppen, og rødt i navigasjonen er bare CTA-en og streken under lenker. Logo pluss ordmerket «Sande **Sykkel**klubb» i `brand` (Bebas), der «Sykkel» er det ene røde ordet. Lenkene står i `nav`-typografi, 75 % hvit, og blir hvite ved hover. Siste lenke er en rød CTA («Bli med») til `/#bli-med`, forsidens handlingsrad. Mens `#bli-med` er synlig, dempes den til omriss (`line-on-dark-strong`), så heroens Spond-knapp er det eneste tunge røde; den blir rød igjen når handlingsraden er ute av syne (IntersectionObserver). Uten JS står den rød. Lenker og CTA har minst 44px treffflate, og siden man står på får `aria-current` og rød understrek. Navigasjonen ligger i `<header>` (komponenten `Nav.astro`). Under 760px blir den en hamburgerknapp («Meny» / «Lukk meny», `aria-expanded`) som åpner et mørkt panel i full bredde med store rader (56px, `menu`-typografi), `line-on-dark-strong` i bunnen og den røde CTA-en; siden man står på markeres der med en 3px rød strek til venstre i stedet for understrek; Escape lukker og gir fokus tilbake til knappen. Uten JS står lenkene synlige under logoen.
 
 **Regelen om én vei inn.** Alle «Bli med» på siden går til samme sted: forsidens handlingsrad `#bli-med` (forklaring og Spond-knappen). Navigasjonens CTA lenker dit, og heroens knapp er Spond-lenken i den raden. Kommer det en egen treningsside, flyttes `#bli-med` dit og alle «Bli med» følger etter samtidig.
 
@@ -441,10 +489,10 @@ Et konsekvent linjeikonsett med 1.75px strek i `currentColor`, servert som inlin
 ### Kartmodul (signatur)
 MapLibre over `night`, med flyfoto eller Kartverket topo og 3D-terreng. HUD-en ligger oppå: etikettfelt og Bebas-tittel øverst til venstre, tallpaneler øverst til høyre, høydeprofil nederst og HUD-kontroller over profilen. Løypa tegnes med mørk kant, en hvit stiplet «spøkelseslinje» for gjenstående og rød fremdrift med glød. Startpinner er hvite etiketter på en tynn stang.
 
-**Statisk kartplate (forsiden).** Der et levende kart ikke trengs, står klubbens eget løypekart (`xco-loypekart.png`) som bilde i samme ramme: `night`, 6px radius, `line-on-dark`-kant og kartmodul-skygge. Etikettfelt («XCO | Lersbrygga») og Bebas-tittel ligger sammen på én plate i `panel`-glass øverst til venstre i rammen (0 radius, padding 12px 16px, 10px 12px under 760px, `s-xs` mellom feltet og tittelen), så tittelen aldri står rett på den travle illustrasjonen. Forklaringen med løypefargene står i `panel`-glass nede til venstre (under bildet i rammen på mobil), med strekfargene fra selve bildet (`map-xco-*`). Lenkene «Åpne i Google Maps» og «Se løypene» står som tekstlenker under rammen. Ingen innebygde tredjepartskart (iframe) med fremmede steder og ruter.
+**Statisk kartplate (forsiden).** Der et levende kart ikke trengs, står klubbens eget løypekart (`xco-loypekart.png`) som bilde i samme ramme: `night`, 6px radius, `line-on-dark`-kant og kartmodul-skygge. Etikettfelt («XCO | Lersbrygga») og Bebas-tittel ligger sammen på én plate i `panel`-glass øverst til venstre i rammen (0 radius, padding 12px 16px 10px, 10px 12px 8px under 760px, `s-xs` mellom feltet og tittelen), så tittelen aldri står rett på den travle illustrasjonen. Forklaringen med løypefargene står i `panel`-glass nede til venstre (under bildet i rammen på mobil, i to kolonner), med en 22×3px strek i fargen fra selve bildet (`map-xco-*`) foran hver løype, i `label`-størrelse og versaler. Lenkene «Åpne i Google Maps» og «Se løypene» står som tekstlenker under rammen. Ingen innebygde tredjepartskart (iframe) med fremmede steder og ruter.
 
 ### Sponsorfliser
-Hvite fliser med 4px radius og svak kant, én logo per flis, lenket til sponsoren med hover-løft. Logoene veies optisk i `src/data/sponsorer.ts`: hver har en form (`bred` eller `kvadrat`) som gir grunnhøyden, og en `skala` som justerer for luft i filen og tynne streker, så flisene leses som likeverdige. Flisen er alltid hvit. Krever logoen en egen bunn (`bakgrunn`), f.eks. Kjeldaas, som er lys og står på sin egen røde `#b32013` slik som på klubbens gamle sponsorside, ligger fargen som en plate i logoens størrelse (2px radius, litt luft rundt logoen) midt i den hvite flisen, med hvit marg rundt. Platen blir aldri en farget flis. Det er sponsorens farge og ikke klubbens røde signal, og den brukes bare bak den logoen.
+Hvite fliser med 4px radius og 1.5px `line`-kant, fast høyde (8.5rem, 7rem under 760px), én logo per flis, lenket til sponsoren med hover-løft (klikkbart kort). Logoene veies optisk i `src/data/sponsorer.ts`: hver har en form (`bred` eller `kvadrat`) som gir grunnhøyden, og en `skala` som justerer for luft i filen og tynne streker, så flisene leses som likeverdige. Flisen er alltid hvit. Krever logoen en egen bunn (`bakgrunn`), f.eks. Kjeldaas, som er lys og står på sin egen røde `#b32013` slik som på klubbens gamle sponsorside, ligger fargen som en plate i logoens størrelse (2px radius, litt luft rundt logoen) midt i den hvite flisen, med hvit marg rundt. Platen blir aldri en farget flis. Det er sponsorens farge og ikke klubbens røde signal, og den brukes bare bak den logoen.
 
 ### Footer
 Komponenten `Footer.astro`. `dark` med 3px rød topplinje. Samme ordmerke som i navigasjonen. Metadata står i `label` i dempet hvit. Lenker er hvite med den delte lenkestreken, som tegnes inn ved hover; de blir ikke røde, fordi `red-light` på `dark` gir bare 4,2:1. Lenke til Sande Sportsklubb er alltid med.
@@ -455,8 +503,8 @@ Komponenten `Footer.astro`. `dark` med 3px rød topplinje. Samme ordmerke som i 
 ### Bevegelse
 Én komponert entré, tydelig respons på handlinger og ingenting som avsløres ved scrolling. Kurven er eksponentiell utbremsing (`--ease-out-expo`, `cubic-bezier(0.16, 1, 0.3, 1)`); utgang er raskere enn inngang og akselererer (`--ease-in`).
 - **«På lufta» (bare heroen, én gang per lasting, ca. 1,05 s):** H1 setter seg fra 16px (0–700ms) og underteksten fra 12px (60–700ms), begge synlige fra start. Bannerets nøkkel viskes inn fra venstre med `clip-path` (200–600ms), verdien et slag etter (300–700ms) og knappen på raden under til slutt (400–780ms); Spond-setningen over knappen står i ro. Tallpanelene faller 10px og rulles ut ovenfra ett og ett (420/500/580ms, 450ms hver), og den røde topplinjen tegnes fra venstre 80ms etter hvert panel (`scaleX`, 400ms). Alt bruker `fill-mode: backwards`, så sluttilstanden er standardstilen. Forskyvningene er mindre enn avstandene, så ingenting overlapper på mobil.
-- **Statusbytte i banneret:** når skriptet regner ut en annen tekst enn byggeverdien, viskes feltet som endres ut mot høyre og inn fra venstre (340ms, verdien 60ms etter nøkkelen), og teksten byttes mens feltet er skjult. Uendret tekst røres ikke, og spiller entreen fortsatt, byttes teksten rett. Én animasjon uten fill, så feltet aldri blir stående skjult.
-- **Respons (`--t-press` 0.1s, `--t-fast` 0.2s, `--t-lift` 0.3s, `--t-zoom` 0.6s):** knapper løftes 2px ved hover og trykkes til `scale(.98)` ved klikk; klikkbare kort (`.card-link`) løftes 3px med `--shadow-lift` og `blue-mid`-kant; bilder i lenker (`.photo-frame`) zoomer til 1.03 inne i rammen; tekstlenker (lenker uten klasse og `.link`) har hårstrek i ro og en 2px strek som tegnes fra venstre ved hover og fokus; navlenker får en rød strek som tegnes ved hover og står fast for `aria-current`; HUD-kontroller får mørkere flate ved hover og `scale(.96)` ved klikk.
+- **Statusbytte i banneret:** når skriptet regner ut en annen tekst enn byggeverdien, viskes feltet som endres ut mot høyre og inn fra venstre (340ms, verdien 60ms etter nøkkelen), og teksten byttes mens feltet er skjult. Uendret tekst røres ikke, og spiller entreen fortsatt, byttes teksten rett. Én animasjon uten fill, så feltet aldri blir stående skjult. Utvisking bruker `--ease-in`, innvisking `--ease-out-expo`.
+- **Respons (`--t-press` 0.1s, `--t-fast` 0.2s, `--t-lift` 0.3s, `--t-zoom` 0.6s):** knapper løftes 2px ved hover; pilen i en hopp-ned-lenke («Tider, alder og utstyr») flytter seg 2px ned ved hover; og trykkes til `scale(.98)` ved klikk; klikkbare kort (`.card-link`) løftes 3px med `--shadow-lift` og `blue-mid`-kant; bilder i lenker (`.photo-frame`) zoomer til 1.03 inne i rammen; tekstlenker (lenker uten klasse og `.link`) har hårstrek i ro og en 2px strek som tegnes fra venstre ved hover og fokus; navlenker får en rød strek som tegnes ved hover og står fast for `aria-current`; HUD-kontroller får mørkere flate ved hover og `scale(.96)` ved klikk.
 - **Redusert bevegelse:** varighet og forsinkelse settes til 0, så alt står i sluttilstand med en gang og ingenting er skjult. Statusbyttet skjer uten animasjon. 3D-presentasjoner vises som et statisk oversiktsbilde med tallene.
 
 ## Do's and Don'ts
