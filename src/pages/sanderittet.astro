@@ -32,7 +32,7 @@ const status = nesteRitt
   <main id="innhold">
     <Sidetopp id="ritt-tittel" bilde={svabergSti} bildeAlt="To ryttere på et svaberg mellom sperrebånd i skogsløypa" fokus="50% 50%">
       <Fragment slot="tittel">Sande<span class="hl">rittet</span></Fragment>
-      <p class="lead">Klubbens årlige terrengritt på Lersbrygga, i løypene i skogen rundt idrettsanlegget. Dato, program og påmelding for neste ritt kommer på denne siden.</p>
+      <p class="lead">Klubbens årlige terrengritt på Lersbrygga, i løypene i skogen rundt idrettsanlegget. {nesteRitt ? 'Program og påmelding kommer på denne siden.' : 'Dato, program og påmelding for neste ritt kommer på denne siden.'}</p>
       <div class="topp-rad">
         <Banner label={status.label} value={status.value} datetime={status.datetime} size="sm" />
       </div>

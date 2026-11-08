@@ -13,6 +13,7 @@ import { treningsplan, sted } from '../data/trening.ts';
 import { adresse, arenakart, epost, moderklubbUrl, spondUrl } from '../data/klubb.ts';
 import { loyper } from '../features/loypekart/data/katalog.ts';
 import { sponsorer } from '../data/sponsorer.ts';
+import { nesteRitt } from '../data/sanderittet.ts';
 import treningGruppe from '../assets/img/trening-gruppe.jpg';
 import ungRytter from '../assets/img/ung-rytter.jpg';
 import startstrek from '../assets/img/startstrek.jpg';
@@ -146,7 +147,7 @@ const antall = (d: string) => loyper.filter((l) => l.disiplin === d).length;
           <AccentBar />
           <p class="lead">Hvert år arrangerer klubben Sanderittet på Lersbrygga, et av regionens mest populære terrengritt. Informasjon, løyper og påmelding samles på rittets egen side.</p>
           <p class="tags">
-            <Tag label="Ritt" value="Hvert år" tone="dark" />
+            {nesteRitt ? <Tag label={`Sanderittet ${nesteRitt.ar}`} value={nesteRitt.datoTekst} tone="dark" /> : <Tag label="Ritt" value="Hvert år" tone="dark" />}
             <Tag label="Sted" value="Lersbrygga" tone="dark" />
           </p>
           <Button href="/sanderittet" variant="outline-light" icon="arrow-right">Til Sanderittet</Button>

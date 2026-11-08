@@ -19,7 +19,7 @@ Siden får adressen `https://sandesykkel.<konto>.workers.dev` til domenet er kob
 ## Før lansering
 
 1. Gå gjennom alle sidene på workers.dev-adressen, også på mobil.
-2. Fyll inn `src/data/sanderittet.ts` (`nesteRitt`) når datoen for neste Sanderittet er klar.
+2. Legg påmeldingslenken inn i `src/data/sanderittet.ts` (`nesteRitt.pamelding`) når påmeldingen åpner. Datoen for 2027 (24.–25. april) er lagt inn.
 3. Åpne for søkemotorer:
    - `public/robots.txt`: bytt til `Allow: /` og legg til `Sitemap:` om vi lager et nettstedskart.
    - `src/layouts/Base.astro`: sett standardverdien til `noindex = false`. Kåringer og 404 sender fortsatt `noindex` selv.
